@@ -25,25 +25,23 @@ export function mountPathEdge(opts: PathEdgeOptions) {
     return pathThrough(currentId, all);
   }
 
+  function setExpanded(on: boolean) {
+    expanded = on;
+    root.querySelector('.pe-stage')?.classList.toggle('is-expanded', on);
+    const status = root.querySelector('[data-pe-status]');
+    const nodes = path();
+    if (status) {
+      status.textContent = `Path Edge · ${on ? 'expanded' : 'idle'} · ${nodes.map((n) => n.label).join(' / ')}`;
+    }
+  }
+
   function bindExpand(el: HTMLElement) {
-    const on = () => {
-      expanded = true;
-      render();
-    };
-    const off = () => {
-      expanded = false;
-      render();
-    };
-    el.addEventListener('mouseenter', on);
-    el.addEventListener('mouseleave', (e) => {
-      const next = e.relatedTarget as Node | null;
-      if (next && el.contains(next)) return;
-      off();
-    });
-    el.addEventListener('focusin', on);
+    el.addEventListener('pointerenter', () => setExpanded(true));
+    el.addEventListener('pointerleave', () => setExpanded(false));
+    el.addEventListener('focusin', () => setExpanded(true));
     el.addEventListener('focusout', (e) => {
       if (e.relatedTarget && el.contains(e.relatedTarget as Node)) return;
-      off();
+      setExpanded(false);
     });
   }
 
@@ -59,8 +57,8 @@ export function mountPathEdge(opts: PathEdgeOptions) {
           <input type="range" min="40" max="95" value="${ceiling}" data-ceiling />
           <span>${ceiling}%</span>
         </label>
-        <span>
-          Path Edge · ${expanded ? 'expanded' : 'idle'} · ${nodes.map((n) => n.label).join(' / ')}
+        <span data-pe-status>
+          Path Edge · idle · ${nodes.map((n) => n.label).join(' / ')}
         </span>
       </div>
       <div class="pe-stage ${expanded ? 'is-expanded' : ''}" style="--ceiling:${ceiling}%">
@@ -111,7 +109,9 @@ export function mountPathEdge(opts: PathEdgeOptions) {
         const id = (el as HTMLElement).dataset.goto;
         if (id) {
           currentId = id;
+          const stayOpen = expanded;
           render();
+          if (stayOpen) setExpanded(true);
         }
       });
     });

@@ -3,3 +3,4 @@
 * `/demos/path-edge/` — paired hover, top labels, current-first left marks, compress ceiling + scroll unfold
 * Hub lists Variant C
 * Version 0.3.0
+* Fix: hover expand no longer sticks — toggle CSS class instead of rebuilding the DOM on enter/leave
