@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-11 — Map stage 16:10, tree stems, VT queue
+
+* Demo stage is 16:10; tree stems stop short of the node; map VT waits its turn instead of skipping
+
 == 2026-08-11 — Map activity is a product mock
 
 * The page above the tree is a product-skin mock (inbox, console, search, YouTube, …), not demo-card copy

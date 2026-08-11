@@ -326,7 +326,9 @@ button.variant-switch-item.is-current:hover {
   --vt-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --vt-ms: 0.48s;
   position: relative;
-  min-height: 26rem;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  min-height: 22.5rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
@@ -1250,7 +1252,7 @@ button.variant-switch-item.is-current:hover {
   align-items: flex-start;
   gap: 0.7rem;
   position: relative;
-  padding-top: 1.15rem;
+  padding-top: 0.85rem;
 }
 
 .cr-tree-kids::before {
@@ -1258,8 +1260,12 @@ button.variant-switch-item.is-current:hover {
   position: absolute;
   top: 0;
   left: 50%;
-  height: 0.55rem;
+  height: 0.85rem;
   border-left: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.cr-tree-kids > .cr-tree-node {
+  padding-top: 1.45rem;
 }
 
 .cr-tree-kids > .cr-tree-node::before {
@@ -1268,7 +1274,7 @@ button.variant-switch-item.is-current:hover {
   top: 0;
   left: 0;
   right: 0;
-  height: 0.55rem;
+  height: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
 
@@ -1289,7 +1295,7 @@ button.variant-switch-item.is-current:hover {
   position: absolute;
   top: 0;
   left: 50%;
-  height: 1.15rem;
+  height: 1.05rem;
   border-left: 1px solid rgba(255, 255, 255, 0.22);
 }
 

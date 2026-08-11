@@ -15,35 +15,67 @@ export function isMapVtStyle(value: string | undefined): value is MapVtStyle {
   return mapVtStyles.some((s) => s.id === value);
 }
 
-type TransitionHost = {
-  startViewTransition?: (update: () => void) => { finished: Promise<void> };
+type TransitionHandle = {
+  finished: Promise<void>;
+  ready: Promise<void>;
 };
 
-/** Scoped VT on the stage when the browser has it; document VT otherwise. */
+type TransitionHost = {
+  startViewTransition?: (update: () => void) => TransitionHandle;
+};
+
+let inflight: Promise<void> = Promise.resolve();
+
+/**
+ * Document VT so Astro's router and a scoped stage VT don't cancel each other.
+ * Queues behind an in-flight map transition; still applies the DOM if VT is skipped.
+ */
 export function runMapViewTransition(
   stage: HTMLElement,
   style: MapVtStyle,
   update: () => void,
-) {
+): Promise<void> {
   stage.dataset.crVt = style;
-  const host = stage as HTMLElement & TransitionHost;
-  if (typeof host.startViewTransition === 'function') {
-    host.startViewTransition(update);
-    return;
-  }
+  const run = () => play(stage, style, update);
+  const next = inflight.then(run, run);
+  inflight = next.then(
+    () => undefined,
+    () => undefined,
+  );
+  return next;
+}
 
+function play(stage: HTMLElement, style: MapVtStyle, update: () => void): Promise<void> {
   const doc = document as Document & TransitionHost;
   const html = document.documentElement;
-  if (typeof doc.startViewTransition === 'function') {
-    html.classList.add('is-map-vt');
-    html.dataset.crVt = style;
-    const t = doc.startViewTransition(update);
-    void t.finished.finally(() => {
-      html.classList.remove('is-map-vt');
-      delete html.dataset.crVt;
-    });
-    return;
+
+  if (typeof doc.startViewTransition !== 'function') {
+    update();
+    return Promise.resolve();
   }
 
-  update();
+  html.classList.add('is-map-vt');
+  html.dataset.crVt = style;
+  stage.dataset.crVt = style;
+
+  let t: TransitionHandle;
+  try {
+    t = doc.startViewTransition(update);
+  } catch {
+    html.classList.remove('is-map-vt');
+    delete html.dataset.crVt;
+    update();
+    return Promise.resolve();
+  }
+
+  const done = () => {
+    html.classList.remove('is-map-vt');
+    delete html.dataset.crVt;
+  };
+
+  void t.ready.catch(() => {
+    /* skipped (another page VT, hidden tab, etc.) — DOM already updated */
+  });
+
+  return t.finished.then(done, done);
 }

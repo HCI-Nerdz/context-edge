@@ -30,12 +30,13 @@ export function mountVanillaRails(opts: MountOptions) {
     const map = root.querySelector('.cr-map');
     stage?.classList.toggle('is-revealed', navOpen);
     map?.setAttribute('aria-hidden', navOpen ? 'false' : 'true');
-    if (navOpen) {
-      root.querySelector('.cr-tree-card.is-current')?.scrollIntoView({
-        block: 'nearest',
-        inline: 'center',
-      });
-    }
+  }
+
+  function scrollCurrent() {
+    root.querySelector('.cr-tree-card.is-current')?.scrollIntoView({
+      block: 'nearest',
+      inline: 'center',
+    });
   }
 
   function applyVtStyle() {
@@ -53,9 +54,11 @@ export function mountVanillaRails(opts: MountOptions) {
       applyReveal();
       return;
     }
-    runMapViewTransition(stage, vtStyle, () => {
+    void runMapViewTransition(stage, vtStyle, () => {
       navOpen = open;
       applyReveal();
+    }).then(() => {
+      if (navOpen) scrollCurrent();
     });
   }
 
@@ -120,7 +123,7 @@ export function mountVanillaRails(opts: MountOptions) {
         navOpen = false;
         render();
       };
-      if (stage) runMapViewTransition(stage, vtStyle, go);
+      if (stage) void runMapViewTransition(stage, vtStyle, go);
       else go();
     });
     root.querySelectorAll<HTMLButtonElement>('[data-vt]').forEach((btn) => {
