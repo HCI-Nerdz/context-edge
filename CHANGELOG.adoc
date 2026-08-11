@@ -1,5 +1,10 @@
 = Changelog
 
+== 2026-08-11 — Path corner stays joined; nav says Edge Bar
+
+* Path rails animate idle→hover as real width/left (not snapped custom props), so the L-join stays under the pointer
+* Footer and back links say Edge Bar, not Hub
+
 == 2026-08-11 — Framework impedance match
 
 * README, hub, and agent notes use the full heading

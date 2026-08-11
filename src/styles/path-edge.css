@@ -140,8 +140,6 @@
   --idle: 0.42rem;
   --hover-top: 2.6rem;
   --hover-left: 3.4rem;
-  --rail-top: var(--idle);
-  --rail-left: var(--idle);
   --top-length: 72%;
   --left-length: 72%;
   --blend: color;
@@ -155,9 +153,23 @@
     #101418;
 }
 
-.pe-stage.is-expanded {
-  --rail-top: var(--hover-top);
-  --rail-left: var(--hover-left);
+/* Specified values must change (idle → hover), or width/left never interpolate. */
+.pe-stage.is-open .pe-corner,
+.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-corner {
+  width: calc(var(--hover-left) + 2px);
+  height: calc(var(--hover-top) + 2px);
+}
+
+.pe-stage.is-open .pe-top,
+.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-top {
+  height: var(--hover-top);
+  left: calc(var(--hover-left) - 1px);
+}
+
+.pe-stage.is-open .pe-left,
+.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-left {
+  width: var(--hover-left);
+  top: calc(var(--hover-top) - 1px);
 }
 
 .pe-corner {
@@ -165,8 +177,8 @@
   top: 0;
   left: 0;
   z-index: 5;
-  width: calc(var(--rail-left) + 2px);
-  height: calc(var(--rail-top) + 2px);
+  width: calc(var(--idle) + 2px);
+  height: calc(var(--idle) + 2px);
   padding: 0;
   border: 0;
   cursor: pointer;
@@ -217,9 +229,9 @@
 .pe-top {
   position: absolute;
   top: 0;
-  left: calc(var(--rail-left) - 1px);
+  left: calc(var(--idle) - 1px);
   right: 0;
-  height: var(--rail-top);
+  height: var(--idle);
   display: flex;
   flex-direction: row;
   z-index: 4;
@@ -228,10 +240,10 @@
 
 .pe-left {
   position: absolute;
-  top: calc(var(--rail-top) - 1px);
+  top: calc(var(--idle) - 1px);
   left: 0;
   bottom: 0;
-  width: var(--rail-left);
+  width: var(--idle);
   display: flex;
   flex-direction: column;
   z-index: 4;
@@ -319,8 +331,10 @@
   line-height: 1;
 }
 
-.pe-stage.is-expanded .pe-label,
-.pe-stage.is-expanded .pe-mark {
+.pe-stage.is-open .pe-label,
+.pe-stage.is-open .pe-mark,
+.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-label,
+.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-mark {
   opacity: 1;
 }
 
@@ -353,8 +367,10 @@
   opacity: 0;
 }
 
-.pe-stage.is-tint.is-expanded .pe-seg-color,
-.pe-stage.is-tint.is-expanded .pe-corner-color {
+.pe-stage.is-tint.is-open .pe-seg-color,
+.pe-stage.is-tint.is-open .pe-corner-color,
+.pe-stage.is-tint:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-seg-color,
+.pe-stage.is-tint:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-corner-color {
   opacity: 1;
   -webkit-mask-image: radial-gradient(
     6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
@@ -387,8 +403,9 @@
   mix-blend-mode: normal;
 }
 
-.pe-stage.is-tint.is-expanded .pe-corner-color,
-.pe-stage.is-tint.is-blend-preview .pe-corner-color {
+.pe-stage.is-tint.is-open .pe-corner-color,
+.pe-stage.is-tint.is-blend-preview .pe-corner-color,
+.pe-stage.is-tint:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover) .pe-corner-color {
   mix-blend-mode: var(--blend, color);
 }
 

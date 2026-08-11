@@ -125,11 +125,11 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       if (!stage) return;
       if (mode) {
         stage.style.setProperty('--blend', mode);
-        stage.classList.add('is-expanded', 'is-blend-preview');
+        stage.classList.add('is-open', 'is-blend-preview');
       } else {
         stage.style.setProperty('--blend', which === 'subtle' ? blendSubtle : blendColor);
         stage.classList.remove('is-blend-preview');
-        if (!expanded.has(id)) stage.classList.remove('is-expanded');
+        if (!expanded.has(id)) stage.classList.remove('is-open');
       }
     });
   }
@@ -137,7 +137,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   function setExpanded(id: StageKind, on: boolean) {
     if (on) expanded.add(id);
     else expanded.delete(id);
-    root.querySelector(`[data-stage="${id}"]`)?.classList.toggle('is-expanded', on);
+    root.querySelector(`[data-stage="${id}"]`)?.classList.toggle('is-open', on);
     if (!on && expanded.size === 0) {
       focusFromRoot = null;
       applyLayout();
@@ -373,7 +373,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     STAGES.forEach((s) => {
       const stage = root.querySelector(`[data-stage="${s.id}"]`) as HTMLElement | null;
       if (stage) {
-        if (expanded.has(s.id)) stage.classList.add('is-expanded');
+        if (expanded.has(s.id)) stage.classList.add('is-open');
         bindStage(stage, s.id, s.live, s.subtle);
       }
     });
