@@ -27,8 +27,8 @@ type TransitionHost = {
 let inflight: Promise<void> = Promise.resolve();
 
 /**
- * Document VT so Astro's router and a scoped stage VT don't cancel each other.
- * Queues behind an in-flight map transition; still applies the DOM if VT is skipped.
+ * Prefer a scoped stage VT so the page chrome is not snapshotted.
+ * Document VT is clipped to the stage and drops every name except the sheet.
  */
 export function runMapViewTransition(
   stage: HTMLElement,
@@ -46,36 +46,52 @@ export function runMapViewTransition(
 }
 
 function play(stage: HTMLElement, style: MapVtStyle, update: () => void): Promise<void> {
-  const doc = document as Document & TransitionHost;
-  const html = document.documentElement;
+  const scoped = typeof (stage as HTMLElement & TransitionHost).startViewTransition === 'function';
+  const host = (scoped ? stage : document) as TransitionHost;
 
-  if (typeof doc.startViewTransition !== 'function') {
+  if (typeof host.startViewTransition !== 'function') {
     update();
     return Promise.resolve();
   }
 
-  html.classList.add('is-map-vt');
-  html.dataset.crVt = style;
+  const html = document.documentElement;
   stage.dataset.crVt = style;
+
+  if (!scoped) pinDocumentVtToStage(stage, style);
 
   let t: TransitionHandle;
   try {
-    t = doc.startViewTransition(update);
+    t = host.startViewTransition(update);
   } catch {
-    html.classList.remove('is-map-vt');
-    delete html.dataset.crVt;
+    clearDocumentVtPin();
     update();
     return Promise.resolve();
   }
 
-  const done = () => {
-    html.classList.remove('is-map-vt');
-    delete html.dataset.crVt;
-  };
-
   void t.ready.catch(() => {
-    /* skipped (another page VT, hidden tab, etc.) — DOM already updated */
+    /* skipped — DOM already updated */
   });
 
-  return t.finished.then(done, done);
+  return t.finished.then(clearDocumentVtPin, clearDocumentVtPin);
+}
+
+function pinDocumentVtToStage(stage: HTMLElement, style: MapVtStyle) {
+  const html = document.documentElement;
+  const r = stage.getBoundingClientRect();
+  html.classList.add('is-map-vt');
+  html.dataset.crVt = style;
+  html.style.setProperty('--cr-vt-inset-t', `${Math.max(0, r.top)}px`);
+  html.style.setProperty('--cr-vt-inset-r', `${Math.max(0, window.innerWidth - r.right)}px`);
+  html.style.setProperty('--cr-vt-inset-b', `${Math.max(0, window.innerHeight - r.bottom)}px`);
+  html.style.setProperty('--cr-vt-inset-l', `${Math.max(0, r.left)}px`);
+}
+
+function clearDocumentVtPin() {
+  const html = document.documentElement;
+  html.classList.remove('is-map-vt');
+  delete html.dataset.crVt;
+  html.style.removeProperty('--cr-vt-inset-t');
+  html.style.removeProperty('--cr-vt-inset-r');
+  html.style.removeProperty('--cr-vt-inset-b');
+  html.style.removeProperty('--cr-vt-inset-l');
 }

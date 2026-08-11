@@ -1570,7 +1570,35 @@ button.variant-switch-item.is-current:hover {
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
 }
 
-/* Map Edge: old sheet snapshot leaves; the map page is already underneath. */
+/* Map Edge: keep VT inside the stage. Scoped API paints on .cr-stage; document fallback is clipped. */
+html.is-map-vt {
+  view-transition-name: none;
+}
+
+html.is-map-vt * {
+  view-transition-name: none !important;
+}
+
+html.is-map-vt .cr-sheet {
+  view-transition-name: cr-sheet !important;
+}
+
+html.is-map-vt .cr-stage.is-revealed .cr-sheet {
+  view-transition-name: none !important;
+}
+
+html.is-map-vt::view-transition {
+  clip-path: inset(
+    var(--cr-vt-inset-t, 0px) var(--cr-vt-inset-r, 0px) var(--cr-vt-inset-b, 0px)
+      var(--cr-vt-inset-l, 0px)
+  );
+}
+
+.cr-stage::view-transition {
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .cr-stage::view-transition-old(root),
 .cr-stage::view-transition-new(root),
 html.is-map-vt::view-transition-old(root),
