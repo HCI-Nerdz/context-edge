@@ -14,16 +14,6 @@ import DemoHead from '../../components/DemoHead.astro';
       title="Map Edge"
       lede="Click the L-edge for a wireframe directory. Streets under the activity, not tabs on the roof."
     />
-    <div id="vanilla-root" transition:animate="fade"></div>
+    <div id="vanilla-root"></div>
   </main>
 </BaseLayout>
-
-<script data-astro-rerun>
-  import { mountVanillaRails } from '../../components/vanilla/mount';
-
-  const root = document.getElementById('vanilla-root');
-  if (root) {
-    root.replaceChildren();
-    mountVanillaRails({ root, initialId: 'admin' });
-  }
-</script>

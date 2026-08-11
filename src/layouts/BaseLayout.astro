@@ -20,6 +20,7 @@ const { title, description = 'Context rails demos' } = Astro.props;
     <meta name="description" content={description} />
     <title>{title}</title>
     <ClientRouter />
+    <script src="../scripts/boot-demos.ts"></script>
   </head>
   <body>
     <slot />

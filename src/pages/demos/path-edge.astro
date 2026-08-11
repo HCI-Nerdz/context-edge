@@ -14,16 +14,6 @@ import '../../styles/path-edge.css';
       title="Path Edge"
       lede="The L-edge is a path trace. Color and Subtle on row one; Live and Live Subtle on row two."
     />
-    <div id="path-edge-root" transition:animate="fade"></div>
+    <div id="path-edge-root"></div>
   </main>
 </BaseLayout>
-
-<script data-astro-rerun>
-  import { mountPathWorkshop } from '../../components/vanilla/mountPathEdge';
-
-  const root = document.getElementById('path-edge-root');
-  if (root) {
-    root.replaceChildren();
-    mountPathWorkshop({ root });
-  }
-</script>

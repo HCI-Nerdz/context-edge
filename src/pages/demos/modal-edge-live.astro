@@ -15,16 +15,6 @@ import '../../styles/modal-edge.css';
       title="Modal Edge"
       lede="The edge is this sheet. Click to slide it back; ancestor layers stay underneath."
     />
-    <div id="modal-edge-root" transition:animate="fade"></div>
+    <div id="modal-edge-root" data-live="1"></div>
   </main>
 </BaseLayout>
-
-<script data-astro-rerun>
-  import { mountModalEdge } from '../../components/vanilla/mountModalEdge';
-
-  const root = document.getElementById('modal-edge-root');
-  if (root) {
-    root.replaceChildren();
-    mountModalEdge({ root, live: true });
-  }
-</script>
