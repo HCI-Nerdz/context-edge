@@ -8,6 +8,7 @@ import {
 import { appMockHtml, nodeSkin } from '../../lib/app-mock';
 import { findOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
 import { applyMockTheme, readMockTheme, themeSwitchHtml } from '../../lib/theme';
+import { bindTreePan, panTreeCurrentIntoView } from '../../lib/tree-pan';
 
 export type MountOptions = {
   root: HTMLElement;
@@ -34,10 +35,8 @@ export function mountVanillaRails(opts: MountOptions) {
   }
 
   function scrollCurrent() {
-    root.querySelector('.cr-tree-card.is-current')?.scrollIntoView({
-      block: 'nearest',
-      inline: 'center',
-    });
+    const tree = root.querySelector<HTMLElement>('.cr-tree');
+    if (tree) panTreeCurrentIntoView(tree);
   }
 
   function applyVtStyle() {
@@ -93,9 +92,11 @@ export function mountVanillaRails(opts: MountOptions) {
         <div class="cr-map" aria-hidden="${navOpen ? 'false' : 'true'}">
           <div class="cr-map-head">
             <button type="button" class="close" data-close>Back</button>
-            <h2>Ecosystem map</h2>
+            <div class="cr-map-copy">
+              <h2>Ecosystem map</h2>
+              <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
+            </div>
           </div>
-          <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
           <div class="cr-tree">${orgTreeHtml(activeId)}</div>
         </div>
         <div class="cr-sheet" data-theme="${readMockTheme()}" data-skin="${nodeSkin(active.id)}">
@@ -139,6 +140,8 @@ export function mountVanillaRails(opts: MountOptions) {
         });
       });
     });
+    const tree = root.querySelector<HTMLElement>('.cr-tree');
+    if (tree) bindTreePan(tree);
     applyMockTheme(readMockTheme());
   }
 

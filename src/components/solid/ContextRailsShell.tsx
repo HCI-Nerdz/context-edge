@@ -1,5 +1,5 @@
 /** @jsxImportSource solid-js */
-import { createSignal, For, Show } from 'solid-js';
+import { createEffect, createSignal, For, Show } from 'solid-js';
 import {
   defaultMapVtStyle,
   mapVtStyles,
@@ -9,6 +9,7 @@ import {
 import { appMockHtml, nodeSkin } from '../../lib/app-mock';
 import { findOrg, flattenOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
 import { readMockTheme, themeSwitchHtml } from '../../lib/theme';
+import { bindTreePan, panTreeCurrentIntoView } from '../../lib/tree-pan';
 
 type Props = {
   title?: string;
@@ -23,6 +24,16 @@ export default function ContextRailsShell(props: Props) {
   const [overload, setOverload] = createSignal(false);
   const [vtStyle, setVtStyle] = createSignal<MapVtStyle>(defaultMapVtStyle);
   let stageEl: HTMLDivElement | undefined;
+  let treeEl: HTMLDivElement | undefined;
+
+  createEffect(() => {
+    const el = treeEl;
+    navOpen();
+    activeId();
+    if (!el) return;
+    bindTreePan(el);
+    if (navOpen()) queueMicrotask(() => panTreeCurrentIntoView(el));
+  });
 
   const active = () => findOrg(activeId());
 
@@ -96,11 +107,14 @@ export default function ContextRailsShell(props: Props) {
             <button type="button" class="close" onClick={() => reveal(false)}>
               Back
             </button>
-            <h2>Ecosystem map</h2>
+            <div class="cr-map-copy">
+              <h2>Ecosystem map</h2>
+              <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
+            </div>
           </div>
-          <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
           <div
             class="cr-tree"
+            ref={treeEl}
             innerHTML={orgTreeHtml(activeId())}
             onClick={(e) => {
               const id = orgIdFromEvent(e.target);

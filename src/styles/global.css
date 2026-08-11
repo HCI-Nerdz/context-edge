@@ -473,11 +473,19 @@ button.variant-switch-item.is-current:hover {
 }
 
 .cr-map-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.55rem 0.75rem;
+  margin: 0.45rem 0.85rem 0.35rem;
+}
+
+.cr-map-copy {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.75rem;
-  margin: 0.45rem 0.85rem 0.2rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.85rem;
+  min-width: 0;
 }
 
 .cr-map-head h2 {
@@ -487,12 +495,14 @@ button.variant-switch-item.is-current:hover {
 }
 
 .cr-map .meta {
-  margin: 0 1.1rem 0.55rem;
+  margin: 0;
   font-size: 0.85rem;
   opacity: 0.7;
 }
 
 .cr-map .close {
+  grid-column: 1;
+  align-self: start;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: transparent;
   color: inherit;
@@ -1365,12 +1375,22 @@ button.variant-switch-item.is-current:hover {
 .cr-tree {
   flex: 1;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.cr-tree.is-panning,
+.cr-tree.is-panning .cr-tree-card {
+  cursor: grabbing;
 }
 
 .cr-tree-canvas {
   min-width: max-content;
+  width: max-content;
   padding: 0.35rem 1.25rem 1.4rem;
+  will-change: transform;
 }
 
 .cr-tree-node {

@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-11 — Map header row and drag canvas
+
+* Title and disclaimer share a line; Back is its own column; the tree pans with click-drag / touch
+
 == 2026-08-11 — Map view transitions stay inside the stage
 
 * Sheet VT is scoped to the mock stage so the real page chrome does not animate

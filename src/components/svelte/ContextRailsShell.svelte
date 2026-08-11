@@ -8,6 +8,7 @@
   import { appMockHtml, nodeSkin } from '../../lib/app-mock';
   import { findOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
   import { readMockTheme, themeSwitchHtml } from '../../lib/theme';
+  import { bindTreePan, panTreeCurrentIntoView } from '../../lib/tree-pan';
 
   type Props = {
     title?: string;
@@ -23,6 +24,16 @@
   let navOpen = $state(false);
   let vtStyle = $state<MapVtStyle>(defaultMapVtStyle);
   let stageEl = $state<HTMLDivElement | undefined>();
+  let treeEl = $state<HTMLDivElement | undefined>();
+
+  $effect(() => {
+    if (!treeEl) return;
+    bindTreePan(treeEl);
+    if (navOpen) {
+      activeId;
+      queueMicrotask(() => treeEl && panTreeCurrentIntoView(treeEl));
+    }
+  });
 
   const active = $derived(findOrg(activeId));
   const stageStyle = $derived(
@@ -80,11 +91,14 @@
     <div class="cr-map" aria-hidden={navOpen ? 'false' : 'true'}>
       <div class="cr-map-head">
         <button type="button" class="close" onclick={() => reveal(false)}>Back</button>
-        <h2>Community map</h2>
+        <div class="cr-map-copy">
+          <h2>Community map</h2>
+          <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
+        </div>
       </div>
-      <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
       <div
         class="cr-tree"
+        bind:this={treeEl}
         onclick={(e) => {
           const id = orgIdFromEvent(e.target);
           if (id) pick(id);

@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { flushSync } from 'react-dom';
 import {
   defaultMapVtStyle,
@@ -10,6 +10,7 @@ import {
 import { appMockHtml, nodeSkin } from '../../lib/app-mock';
 import { findOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
 import { readMockTheme, themeSwitchHtml } from '../../lib/theme';
+import { bindTreePan, panTreeCurrentIntoView } from '../../lib/tree-pan';
 
 type Props = {
   title?: string;
@@ -23,7 +24,15 @@ export default function ContextRailsShell({
   const [navOpen, setNavOpen] = useState(false);
   const [vtStyle, setVtStyle] = useState<MapVtStyle>(defaultMapVtStyle);
   const stageRef = useRef<HTMLDivElement>(null);
+  const treeRef = useRef<HTMLDivElement>(null);
   const active = useMemo(() => findOrg(activeId), [activeId]);
+
+  useEffect(() => {
+    const el = treeRef.current;
+    if (!el) return;
+    bindTreePan(el);
+    if (navOpen) panTreeCurrentIntoView(el);
+  }, [navOpen, activeId]);
 
   const stageStyle = {
     '--overlay': active.overlay,
@@ -86,12 +95,15 @@ export default function ContextRailsShell({
             <button type="button" className="close" onClick={() => reveal(false)}>
               Back
             </button>
-            <h2>Suite map</h2>
+            <div className="cr-map-copy">
+              <h2>Suite map</h2>
+              <p className="meta">
+                Alphabet / Google product tree · demo map, not an official org chart
+              </p>
+            </div>
           </div>
-          <p className="meta">
-            Alphabet / Google product tree · demo map, not an official org chart
-          </p>
           <div
+            ref={treeRef}
             className="cr-tree"
             dangerouslySetInnerHTML={{ __html: orgTreeHtml(activeId) }}
             onClick={(e) => {
