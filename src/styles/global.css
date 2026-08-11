@@ -1341,7 +1341,6 @@ button.variant-switch-item.is-current:hover {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 0.7rem;
   position: relative;
   padding-top: 0.85rem;
 }
@@ -1351,12 +1350,14 @@ button.variant-switch-item.is-current:hover {
   position: absolute;
   top: 0;
   left: 50%;
-  height: 0.85rem;
-  border-left: 1px solid var(--line);
+  width: 1px;
+  height: calc(0.85rem + 1px);
+  margin-left: -0.5px;
+  background: var(--line);
 }
 
 .cr-tree-kids > .cr-tree-node {
-  padding-top: 1.45rem;
+  padding: 1.45rem 0.35rem 0;
 }
 
 .cr-tree-kids > .cr-tree-node::before {
@@ -1365,16 +1366,16 @@ button.variant-switch-item.is-current:hover {
   top: 0;
   left: 0;
   right: 0;
-  height: 0;
-  border-top: 1px solid var(--line);
+  height: 1px;
+  background: var(--line);
 }
 
 .cr-tree-kids > .cr-tree-node:first-child::before {
-  left: 50%;
+  left: calc(50% - 0.5px);
 }
 
 .cr-tree-kids > .cr-tree-node:last-child::before {
-  right: 50%;
+  right: calc(50% - 0.5px);
 }
 
 .cr-tree-kids > .cr-tree-node:only-child::before {
@@ -1386,8 +1387,10 @@ button.variant-switch-item.is-current:hover {
   position: absolute;
   top: 0;
   left: 50%;
+  width: 1px;
   height: 1.05rem;
-  border-left: 1px solid var(--line);
+  margin-left: -0.5px;
+  background: var(--line);
 }
 
 .cr-tree-card {
