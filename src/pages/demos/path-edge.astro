@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Throggle from '../../components/Throggle.astro';
+import VariantSwitch from '../../components/VariantSwitch.astro';
 import { hrefWithBase } from '../../lib/base';
 ---
 
@@ -18,7 +18,7 @@ import { hrefWithBase } from '../../lib/base';
       Left edge: current level top-most, one mark per level, ancestors compress then unfold on
       scroll.
     </p>
-    <Throggle current="path" />
+    <VariantSwitch current="path" />
     <div id="path-edge-root"></div>
   </main>
 </BaseLayout>

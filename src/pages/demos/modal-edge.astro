@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Throggle from '../../components/Throggle.astro';
+import VariantSwitch from '../../components/VariantSwitch.astro';
 import { hrefWithBase } from '../../lib/base';
 ---
 
@@ -17,7 +17,7 @@ import { hrefWithBase } from '../../lib/base';
       <em>current</em> node’s color. Click the edge — the sheet slides down and right (View
       Transitions API) and ancestor layers show through. Click a layer to jump there.
     </p>
-    <Throggle current="modal" />
+    <VariantSwitch current="modal" />
     <div id="modal-edge-root"></div>
   </main>
 </BaseLayout>

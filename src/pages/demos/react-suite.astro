@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Throggle from '../../components/Throggle.astro';
+import VariantSwitch from '../../components/VariantSwitch.astro';
 import ContextRailsShell from '../../components/react/ContextRailsShell';
 import { hrefWithBase } from '../../lib/base';
 ---
@@ -16,7 +16,7 @@ import { hrefWithBase } from '../../lib/base';
     <p class="lede">
       Portable toward Next.js App Router as a client layout wrapper around page content.
     </p>
-    <Throggle current="map" />
+    <VariantSwitch current="map" />
     <ContextRailsShell client:load initialId="mail" />
   </main>
 </BaseLayout>

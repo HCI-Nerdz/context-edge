@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Throggle from '../../components/Throggle.astro';
+import VariantSwitch from '../../components/VariantSwitch.astro';
 import ContextRailsShell from '../../components/svelte/ContextRailsShell.svelte';
 import { hrefWithBase } from '../../lib/base';
 ---
@@ -16,7 +16,7 @@ import { hrefWithBase } from '../../lib/base';
     <p class="lede">
       Subsection and role navigation as substrate — not ephemeral header pills on the feed.
     </p>
-    <Throggle current="map" />
+    <VariantSwitch current="map" />
     <ContextRailsShell client:load initialId="docs" />
   </main>
 </BaseLayout>

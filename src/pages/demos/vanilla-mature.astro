@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Throggle from '../../components/Throggle.astro';
+import VariantSwitch from '../../components/VariantSwitch.astro';
 import { hrefWithBase } from '../../lib/base';
 ---
 
@@ -15,7 +15,7 @@ import { hrefWithBase } from '../../lib/base';
     <p class="lede">
       The bar’s presence and color suggest the affordance. Click still opens the wireframe map.
     </p>
-    <Throggle current="map" />
+    <VariantSwitch current="map" />
     <div id="vanilla-root"></div>
   </main>
 </BaseLayout>

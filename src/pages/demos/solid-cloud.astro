@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Throggle from '../../components/Throggle.astro';
+import VariantSwitch from '../../components/VariantSwitch.astro';
 import ContextRailsShell from '../../components/solid/ContextRailsShell';
 import { hrefWithBase } from '../../lib/base';
 ---
@@ -17,7 +17,7 @@ import { hrefWithBase } from '../../lib/base';
       Fine-grained signals drive hover/open/platform identity. Toggle header overload to feel the
       anti-pattern.
     </p>
-    <Throggle current="map" />
+    <VariantSwitch current="map" />
     <ContextRailsShell client:load showOverloadToggle={true} initialId="cloud" />
   </main>
 </BaseLayout>

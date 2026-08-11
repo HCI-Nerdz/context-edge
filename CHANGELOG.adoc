@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-10 — Label the switch Variant
+
+* Visible control name is Variant (Map / Modal / Path), not a joke label
+
 == 2026-08-10 — Variant throggle
 
 * link:changelog-details/2026-08-10%20-%20throggle.adoc[Details]
