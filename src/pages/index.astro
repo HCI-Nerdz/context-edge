@@ -6,16 +6,17 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
-  title="Context rails · HCI Nerdz"
-  description="Astro island demos for edge-summoned ecosystem navigation — Solid, React, Svelte, vanilla."
+  title="Nav Edge · HCI Nerdz"
+  description="Two Nav Edge variants: Map Edge (wireframe directory) and Modal Edge (View Transitions ancestry stack)."
 >
   <main class="shell">
     <p class="eyebrow">HCI Nerdz · MVP</p>
-    <h1>Context rails</h1>
+    <h1>Nav Edge</h1>
     <p class="lede">
-      Thin top and left edges summon ecosystem navigation. Hover expands the rail; click opens a
-      wireframe platform map. Each subplatform keeps a stable color overlay — streets under
-      skyscrapers, not tabs painted on the roof.
+      Ecosystem navigation lives on the edge — not stuffed into the content header. Two variants
+      help compare the idea: a <strong>Map Edge</strong> that summons a wireframe directory, and a
+      <strong>Modal Edge</strong> that slides the current sheet to reveal colored ancestor layers
+      (windows on windows). Published docs still use “context rails” for the map-shaped claim.
     </p>
     <p class="meta-row">
       <a href="https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/">Essay</a>
@@ -24,6 +25,13 @@ const base = import.meta.env.BASE_URL;
       <span>v{version.version}</span>
     </p>
 
+    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:1.5rem 0 0.65rem">
+      Variant A · Map Edge
+    </h2>
+    <p style="color:var(--muted);max-width:42rem;line-height:1.55;margin:0 0 0.85rem">
+      Click the edge → full wireframe / directory of platforms. Streets as substrate. Overlay
+      colors identify which building you are in.
+    </p>
     <div class="demo-grid">
       <a class="demo-card" href={`${base}demos/solid-cloud/`}>
         <strong>Solid · cloud</strong>
@@ -43,6 +51,21 @@ const base = import.meta.env.BASE_URL;
       </a>
     </div>
 
+    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:0.5rem 0 0.65rem">
+      Variant B · Modal Edge
+    </h2>
+    <p style="color:var(--muted);max-width:42rem;line-height:1.55;margin:0 0 0.85rem">
+      The edge <em>is</em> the current node. Click → View Transitions slide the sheet down and
+      right; ancestor contexts remain as colored layers underneath. Click a layer to jump to that
+      node. Also called Context Edge / Nav Edge in conversation.
+    </p>
+    <div class="demo-grid">
+      <a class="demo-card" href={`${base}demos/modal-edge/`}>
+        <strong>Modal Edge · VT stack</strong>
+        <span>Ancestry layers with slide-to-reveal (View Transitions API).</span>
+      </a>
+    </div>
+
     <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:0 0 0.5rem">
       Framework impedance (short)
     </h2>
@@ -53,7 +76,8 @@ const base = import.meta.env.BASE_URL;
       </li>
       <li>
         <strong style="color:var(--ink)">React / Next.js</strong> — same shell as a
-        <code>"use client"</code> layout wrapper; keep overlay identity in client state.
+        <code>"use client"</code> layout wrapper; keep overlay identity in client state. Modal Edge
+        pairs well with the View Transitions API in supporting browsers.
       </li>
       <li>
         <strong style="color:var(--ink)">Svelte / SvelteKit</strong> — strong for edge motion; Kit

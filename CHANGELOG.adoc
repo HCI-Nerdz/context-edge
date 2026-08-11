@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-10 — Modal Edge View Transitions variant
+
+* link:changelog-details/2026-08-10%20-%20modal-edge-vt.adoc[Details]
+
 == 2026-08-10 — Initial Astro islands MVP
 
 * link:changelog-details/2026-08-10%20-%20initial-astro-islands.adoc[Details]

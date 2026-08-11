@@ -63,19 +63,29 @@ Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 | Route | Island / aesthetic
 
 | `/demos/solid-cloud/`
-| Solid — cloud-console parody + overload toggle
+| Solid — Map Edge · cloud-console parody + overload toggle
 
 | `/demos/react-suite/`
-| React — suite shell, duo-tone overlays (Next-portable)
+| React — Map Edge · suite shell, duo-tone overlays (Next-portable)
 
 | `/demos/svelte-community/`
-| Svelte — community/spaces chrome
+| Svelte — Map Edge · community/spaces chrome
 
 | `/demos/vanilla-mature/`
-| Vanilla — color-only mature rails
+| Vanilla — Map Edge · color-only mature rails
+
+| `/demos/modal-edge/`
+| Vanilla — *Modal Edge* · View Transitions ancestry stack (Variant B)
 |===
 
-Shared contract: `src/lib/platforms.ts`.
+Shared contracts: `src/lib/platforms.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge).
+
+Two click models (do not force into one gesture while studying):
+
+* *Map Edge* — edge opens a wireframe / directory of destinations
+* *Modal Edge* — edge is the current node; click slides the sheet to reveal colored ancestor layers
++
+Also called Nav Edge / Context Edge in conversation.
 
 ifdef::env-github[]
 ++++

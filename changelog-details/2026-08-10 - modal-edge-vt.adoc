@@ -1,0 +1,6 @@
+= 2026-08-10 — Modal Edge View Transitions variant
+
+* Add `/demos/modal-edge/` — ancestry stack with slide-down-right reveal
+* Hub reframed as Nav Edge with Variant A (Map Edge) vs Variant B (Modal Edge)
+* Shared `src/lib/nav-stack.ts` path model
+* Version 0.2.0
