@@ -304,8 +304,12 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           <div class="pe-rails" data-rails>
             <button type="button" class="pe-corner" data-goto="${current.id}" title="${current.label}"
               style="--top-seg:${current.color};--left-seg:${current.color}">
-              <span class="pe-corner-miter" aria-hidden="true"></span>
-              <span class="pe-corner-color" aria-hidden="true"></span>
+              <span class="pe-corner-miter" aria-hidden="true">
+                <span class="pe-miter-top"></span><span class="pe-miter-left"></span>
+              </span>
+              <span class="pe-corner-color" aria-hidden="true">
+                <span class="pe-miter-top"></span><span class="pe-miter-left"></span>
+              </span>
             </button>
             <div class="pe-top" role="toolbar" aria-label="${label} top path">
               <div class="pe-stack pe-stack-top">${segs(list, 'top', current.color)}</div>

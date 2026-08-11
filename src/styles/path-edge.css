@@ -182,25 +182,35 @@
   pointer-events: none;
 }
 
-/* One fill along the box diagonal — no two-triangle hairline. */
-.pe-corner-miter {
-  background: linear-gradient(
-    to bottom right,
-    var(--miter-a) 0,
-    var(--miter-a) calc(50% - 0.5px),
-    var(--miter-b) calc(50% + 0.5px),
-    var(--miter-b) 100%
-  );
+.pe-miter-top,
+.pe-miter-left {
+  position: absolute;
+  inset: 0;
 }
 
-.pe-corner-color {
-  background: linear-gradient(
-    to bottom right,
-    var(--top-seg) 0,
-    var(--top-seg) calc(50% - 0.5px),
-    var(--left-seg) calc(50% + 0.5px),
-    var(--left-seg) 100%
-  );
+/* Upper-right = top rail; lower-left = left rail. Overlap the shared diagonal. */
+.pe-miter-top {
+  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(100% + 2px));
+}
+
+.pe-miter-left {
+  clip-path: polygon(-2px -2px, calc(100% + 2px) calc(100% + 2px), -2px calc(100% + 2px));
+}
+
+.pe-corner-miter .pe-miter-top {
+  background: var(--miter-a);
+}
+
+.pe-corner-miter .pe-miter-left {
+  background: var(--miter-b);
+}
+
+.pe-corner-color .pe-miter-top {
+  background: var(--top-seg);
+}
+
+.pe-corner-color .pe-miter-left {
+  background: var(--left-seg);
 }
 
 .pe-top {
