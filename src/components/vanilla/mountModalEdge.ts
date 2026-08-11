@@ -78,6 +78,13 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
         <div class="me-sheet" style="view-transition-name: me-sheet">
           <button
             type="button"
+            class="cr-rail cr-rail-corner me-edge"
+            data-toggle
+            aria-label="Reveal navigation stack from the corner"
+            style="--overlay:${current.overlay}"
+          ></button>
+          <button
+            type="button"
             class="cr-rail cr-rail-top me-edge"
             data-toggle
             aria-label="Reveal navigation stack from top edge"

@@ -7,6 +7,7 @@
   } from '../../lib/map-vt';
   import { appMockHtml, nodeSkin } from '../../lib/app-mock';
   import { findOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
+  import { themeSwitchHtml } from '../../lib/theme';
 
   type Props = {
     title?: string;
@@ -49,6 +50,7 @@
     <span>
       Svelte island · community shell · {navOpen ? 'map open' : 'rails idle'} · {active.label}
     </span>
+    {@html themeSwitchHtml()}
     <nav class="variant-switch" aria-label="Transition style">
       <span class="variant-switch-name">Transition style</span>
       <div class="variant-switch-track" role="radiogroup">
@@ -93,6 +95,12 @@
     </div>
 
     <div class="cr-sheet" data-skin={nodeSkin(active.id)}>
+      <button
+        type="button"
+        class="cr-rail cr-rail-corner"
+        aria-label="Open ecosystem navigation"
+        onclick={() => reveal(true)}
+      ></button>
       <button
         type="button"
         class="cr-rail cr-rail-top"

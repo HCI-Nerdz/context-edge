@@ -8,6 +8,7 @@ import {
 } from '../../lib/map-vt';
 import { appMockHtml, nodeSkin } from '../../lib/app-mock';
 import { findOrg, flattenOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
+import { themeSwitchHtml } from '../../lib/theme';
 
 type Props = {
   title?: string;
@@ -61,6 +62,7 @@ export default function ContextRailsShell(props: Props) {
         <span>
           Solid island · {navOpen() ? 'map open' : 'rails idle'} · {active().label}
         </span>
+        <div innerHTML={themeSwitchHtml()} />
         <nav class="variant-switch" aria-label="Transition style">
           <span class="variant-switch-name">Transition style</span>
           <div class="variant-switch-track" role="radiogroup">
@@ -144,6 +146,12 @@ export default function ContextRailsShell(props: Props) {
             </div>
           </Show>
           <Show when={!overload()}>
+            <button
+              type="button"
+              class="cr-rail cr-rail-corner"
+              aria-label="Open ecosystem navigation"
+              onClick={() => reveal(true)}
+            />
             <button
               type="button"
               class="cr-rail cr-rail-top"

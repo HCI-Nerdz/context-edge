@@ -9,6 +9,7 @@ import {
 } from '../../lib/map-vt';
 import { appMockHtml, nodeSkin } from '../../lib/app-mock';
 import { findOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
+import { themeSwitchHtml } from '../../lib/theme';
 
 type Props = {
   title?: string;
@@ -54,6 +55,7 @@ export default function ContextRailsShell({
           React island · suite shell · {navOpen ? 'map open' : 'rails idle'} ·{' '}
           {active.label}
         </span>
+        <div dangerouslySetInnerHTML={{ __html: themeSwitchHtml() }} />
         <nav className="variant-switch" aria-label="Transition style">
           <span className="variant-switch-name">Transition style</span>
           <div className="variant-switch-track" role="radiogroup">
@@ -100,6 +102,12 @@ export default function ContextRailsShell({
         </div>
 
         <div className="cr-sheet" data-skin={nodeSkin(active.id)}>
+          <button
+            type="button"
+            className="cr-rail cr-rail-corner"
+            aria-label="Open ecosystem navigation"
+            onClick={() => reveal(true)}
+          />
           <button
             type="button"
             className="cr-rail cr-rail-top"

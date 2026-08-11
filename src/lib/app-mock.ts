@@ -67,7 +67,6 @@ function mockBody(skin: AppSkin, node: OrgNode, logo: string): string {
           <div class="cr-mock-search-box"><i></i><span>northwind-prod kubernetes quota</span></div>
           <ol class="cr-mock-results">
             <li><em>Compute Engine documentation</em><small>https://cloud.example/compute</small><b>VM families, quotas, and committed use for ${node.label}.</b></li>
-            <li><em>Workspace admin help</em><small>https://workspace.example/admin</small><b>Directory and policy without overloading the header.</b></li>
             <li><em>${node.label} status</em><small>https://status.example</small><b>All systems nominal · last incident 14 days ago.</b></li>
           </ol>
         </div>`;
@@ -91,7 +90,6 @@ function mockBody(skin: AppSkin, node: OrgNode, logo: string): string {
               ${inboxRow('Priya S.', 'Cloud quota', 'GKE project northwind-prod is near the CPU cap.')}
               ${inboxRow('Calendar', 'Hold: design critique', 'Tue 2:00–2:45 · Meet link inside')}
               ${inboxRow('Drive', 'Shared with you', 'Context rails — mockups (folder)')}
-              ${inboxRow('Ads', 'Weekly spend', 'Campaign “summer-search” is 8% under pace.')}
             </div>
           </div>
         </div>`;
@@ -122,8 +120,7 @@ function mockBody(skin: AppSkin, node: OrgNode, logo: string): string {
             <h3>${node.label === 'Docs' ? 'Q2 Growth Plan' : node.label}</h3>
             <p class="cr-mock-paper-meta">Shared with 6 people · Heading 1</p>
             <p>Keep the activity plane. Ecosystem travel lives under the page, not in another header strip.</p>
-            <p>Hover either edge of the L. Both present. Click and this sheet leaves so the map can be the street level.</p>
-            <p class="cr-mock-fade">The next paragraph is placeholder copy so the page reads like a document, not a demo card.</p>
+            <p class="cr-mock-fade">Hover either edge of the L. Click and this sheet leaves so the map can be the street level.</p>
           </article>
         </div>`;
     case 'calendar':
@@ -221,6 +218,7 @@ function mockBody(skin: AppSkin, node: OrgNode, logo: string): string {
           <div class="cr-mock-ntp">
             ${logo}
             <p>New tab · ${node.role}</p>
+            <div class="cr-mock-shortcuts" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
           </div>
         </div>`;
     case 'ads':
@@ -229,12 +227,14 @@ function mockBody(skin: AppSkin, node: OrgNode, logo: string): string {
           <header class="cr-mock-top cr-mock-top-light">
             ${logo}<strong>${node.label}</strong>
           </header>
-          <div class="cr-mock-kpis">
-            <div><small>Spend</small><b>$48.2k</b></div>
-            <div><small>Clicks</small><b>126k</b></div>
-            <div><small>Conv.</small><b>3.4%</b></div>
+          <div class="cr-mock-ads-body">
+            <div class="cr-mock-kpis">
+              <div><small>Spend</small><b>$48.2k</b></div>
+              <div><small>Clicks</small><b>126k</b></div>
+              <div><small>Conv.</small><b>3.4%</b></div>
+            </div>
+            <div class="cr-mock-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           </div>
-          <div class="cr-mock-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         </div>`;
     case 'pixel':
       return `

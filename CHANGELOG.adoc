@@ -1,5 +1,17 @@
 = Changelog
 
+== 2026-08-11 — Product mocks fit the 16:10 stage
+
+* Each skin fills the sheet (landscape chrome, no inner scroll of a tall page)
+
+== 2026-08-11 — Map corner hover no longer thrashes
+
+* The L-junction keeps a hit target while the rails expand, so hover does not flicker on/off
+
+== 2026-08-11 — Light/dark for the page and the mocks
+
+* One Appearance control; the real demo page and the in-sheet product mocks share the same theme
+
 == 2026-08-11 — Map stage 16:10, tree stems, VT queue
 
 * Demo stage is 16:10; tree stems stop short of the node; map VT waits its turn instead of skipping

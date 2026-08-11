@@ -85,7 +85,9 @@ Shared contracts: `src/lib/org-tree.ts` + `src/lib/map-vt.ts` (Map Edge), `src/l
 
 Two click models (do not force into one gesture while studying):
 
-* *Map Edge* — edge slides the activity page off (View Transitions) to reveal a wireframe directory already underneath; *Transition style* picks the exit
+* *Map Edge* — edge slides the activity page off (View Transitions) to reveal a wireframe directory already underneath; *Transition style* picks the exit.
++
+This model helps clear up the page contents to perform their primary job: behaving like a UI, and not distracting users and designers with complicated nav menus and top bars.
 * *Modal Edge* — edge is the current node; click slides the sheet to reveal colored ancestor layers
 * *Path Edge* — the edge is a path trace (unique color sequence); paired hover; labels on top; one mark per level, current at top-left
 +

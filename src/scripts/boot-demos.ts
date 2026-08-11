@@ -1,12 +1,18 @@
 import { mountPathWorkshop } from '../components/vanilla/mountPathEdge';
 import { mountVanillaRails } from '../components/vanilla/mount';
 import { mountModalEdge } from '../components/vanilla/mountModalEdge';
+import { bootTheme, syncThemeButtons, themeSwitchHtml } from '../lib/theme';
 
 function bootMap(root: HTMLElement) {
   mountVanillaRails({ root, initialId: 'cloud' });
 }
 
 function boot() {
+  bootTheme();
+  document.querySelectorAll('[data-theme-host]').forEach((el) => {
+    el.innerHTML = themeSwitchHtml();
+  });
+
   const path = document.getElementById('path-edge-root');
   if (path) {
     path.replaceChildren();
@@ -24,6 +30,8 @@ function boot() {
     modal.replaceChildren();
     mountModalEdge({ root: modal, live: modal.dataset.live === '1' });
   }
+
+  syncThemeButtons();
 }
 
 document.addEventListener('astro:page-load', boot);

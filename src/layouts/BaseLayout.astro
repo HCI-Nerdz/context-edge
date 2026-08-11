@@ -19,6 +19,16 @@ const { title, description = 'Context rails demos' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('cr-theme');
+          document.documentElement.dataset.theme = t === 'light' || t === 'dark' ? t : 'dark';
+        } catch (e) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
     <ClientRouter />
     <script src="../scripts/boot-demos.ts"></script>
   </head>
@@ -31,6 +41,7 @@ const { title, description = 'Context rails demos' } = Astro.props;
       <a href={hrefWithBase('')}>Hub</a>
       ·
       <a href="https://github.com/HCI-Nerdz/context-rails">GitHub</a>
+      <span class="about-theme" data-theme-host></span>
     </p>
   </body>
 </html>
