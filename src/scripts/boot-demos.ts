@@ -46,3 +46,6 @@ function boot() {
 }
 
 document.addEventListener('astro:page-load', boot);
+document.addEventListener('astro:after-swap', () => {
+  window.scrollTo(0, 0);
+});

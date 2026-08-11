@@ -211,11 +211,9 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const monoTop = `color-mix(in srgb, ${current.color} 18%, hsl(0 0% 42%))`;
     const monoLeft = `color-mix(in srgb, ${current.color} 14%, hsl(0 0% 28%))`;
     return `
-      <article class="pe-cell" id="${kind}">
+      <article class="pe-cell ${live ? 'pe-cell-live' : 'pe-cell-rest'}" id="${kind}">
         <p class="pe-cell-label">${label}</p>
-        <div class="pe-blend-slot">
-          ${!live ? blendButtons(blend, subtle ? 'subtle' : 'color') : ''}
-        </div>
+        ${live ? '' : `<div class="pe-blend-slot">${blendButtons(blend, subtle ? 'subtle' : 'color')}</div>`}
         <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
           data-stage="${kind}" data-live="${live ? '1' : '0'}"
           style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${current.color};--mono-top:${monoTop};--mono-left:${monoLeft}">
@@ -276,7 +274,12 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         and dock-zooms the focused hop. Subtle stays monochrome until hover reveals color.
       </p>
       <div class="pe-quad">
-        ${STAGES.map((s) => stageHtml(s.id, s.label, s.subtle, s.live, list, current)).join('')}
+        <div class="pe-row pe-row-rest">
+          ${STAGES.filter((s) => !s.live).map((s) => stageHtml(s.id, s.label, s.subtle, s.live, list, current)).join('')}
+        </div>
+        <div class="pe-row pe-row-live">
+          ${STAGES.filter((s) => s.live).map((s) => stageHtml(s.id, s.label, s.subtle, s.live, list, current)).join('')}
+        </div>
       </div>
     `;
 

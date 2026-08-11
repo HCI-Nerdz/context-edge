@@ -31,22 +31,42 @@
 
 .pe-quad {
   display: grid;
-  gap: 1rem;
+  gap: 2.25rem 1rem;
+}
+
+.pe-row {
+  display: grid;
+  gap: 0.4rem 1rem;
 }
 
 @media (min-width: 52rem) {
-  .pe-quad {
+  .pe-row {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .pe-row-rest {
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .pe-row-rest .pe-cell {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+  }
+
+  .pe-row-live {
+    grid-template-rows: auto 1fr;
+  }
+
+  .pe-row-live .pe-cell {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 2;
   }
 }
 
-.pe-cell {
-  display: grid;
-  grid-template-rows: auto minmax(4.4rem, auto) 1fr;
-}
-
 .pe-cell-label {
-  margin: 0 0 0.35rem;
+  margin: 0;
   font-family: var(--font-display);
   font-size: 0.82rem;
   font-weight: 700;
@@ -56,8 +76,7 @@
 }
 
 .pe-blend-slot {
-  min-height: 4.4rem;
-  margin-bottom: 0.45rem;
+  margin: 0;
 }
 
 .mode-btns {
