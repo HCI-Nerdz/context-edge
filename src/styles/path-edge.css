@@ -12,23 +12,42 @@
   width: 9rem;
 }
 
+.pe-toolbar select {
+  font: inherit;
+  color: var(--ink);
+  background: #1a1f23;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.4rem;
+}
+
 .pe-caption {
   margin: -0.35rem 0 1rem;
   font-size: 0.88rem;
   color: var(--muted);
-  max-width: 42rem;
+  max-width: 48rem;
   line-height: 1.45;
 }
 
-.pe-duo {
+.pe-quad {
   display: grid;
   gap: 1rem;
 }
 
 @media (min-width: 52rem) {
-  .pe-duo {
+  .pe-quad {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.pe-cell-label {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .pe-stage {
@@ -39,13 +58,14 @@
   --rail-left: var(--idle);
   --top-length: 72%;
   --left-length: 72%;
+  --blend: color;
   position: relative;
-  min-height: 26rem;
+  min-height: 24rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
   background:
-    radial-gradient(80% 70% at 100% 0%, rgba(161, 66, 244, 0.12), transparent 50%),
+    radial-gradient(80% 70% at 100% 0%, color-mix(in srgb, var(--page, #a142f4) 18%, transparent), transparent 50%),
     #101418;
 }
 
@@ -66,6 +86,11 @@
   cursor: pointer;
   background: transparent;
   transition: width 0.22s ease, height 0.22s ease;
+}
+
+.pe-corner-color {
+  position: absolute;
+  inset: 0;
 }
 
 .pe-corner-top,
@@ -117,26 +142,22 @@
   overflow: hidden;
 }
 
-.pe-left-end {
-  justify-content: flex-end;
-}
-
 .pe-stack-top {
   display: flex;
   flex-direction: row;
-  flex: 0 0 var(--top-length);
-  max-width: 100%;
-  min-width: 0;
+  flex: 0 0 auto;
+  max-width: var(--top-length);
   height: 100%;
+  min-width: 0;
 }
 
 .pe-stack-left {
   display: flex;
   flex-direction: column;
-  flex: 0 0 var(--left-length);
-  max-height: 100%;
-  min-height: 0;
+  flex: 0 0 auto;
+  max-height: var(--left-length);
   width: 100%;
+  min-height: 0;
 }
 
 .pe-slack {
@@ -157,7 +178,10 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  transition: flex-grow 0.18s ease;
+}
+
+.pe-seg-color {
+  display: none;
 }
 
 .pe-seg:focus-visible {
@@ -166,28 +190,16 @@
   z-index: 1;
 }
 
-.pe-seg-top {
-  display: grid;
-  place-items: center;
-}
-
+.pe-seg-top,
 .pe-seg-left {
   display: grid;
   place-items: center;
 }
 
-.pe-seg-left.is-here {
-  min-height: 1.15rem;
-}
-
-.pe-stage.is-expanded .pe-seg-left.is-here {
-  min-height: 2.6rem;
-}
-
 .pe-label,
 .pe-mark {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   opacity: 0;
   pointer-events: none;
 }
@@ -213,65 +225,62 @@
   margin: calc(var(--idle) + 0.85rem) 1rem 1rem calc(var(--idle) + 0.85rem);
 }
 
-/* Tint: keep --seg for design systems; rest = depth fade; expand = mono + mouse hole. */
-.pe-stage.is-tint .pe-corner-top {
-  background: linear-gradient(
-    to bottom right,
-    color-mix(in srgb, var(--top-seg) 38%, #2c3236) calc(50% + 1px),
-    transparent calc(50% + 1px)
-  );
-}
-
-.pe-stage.is-tint .pe-corner-left {
-  background: linear-gradient(
-    to bottom right,
-    transparent calc(50% - 1px),
-    color-mix(in srgb, var(--left-seg) 38%, #2c3236) calc(50% - 1px)
-  );
-}
-
+/*
+ * Tint: idle = monochrome (page-color greys). Hover keeps icons + mono.
+ * Color is a blended overlay, masked to the pointer — not a content swap.
+ */
 .pe-stage.is-tint .pe-seg {
-  background: color-mix(in srgb, var(--seg) calc(var(--depth-op) * 55%), #2c3236);
+  background: var(--mono);
 }
 
-.pe-stage.is-tint.is-expanded .pe-seg {
-  background: color-mix(in srgb, var(--seg) calc(var(--depth-op) * 70%), #2c3236);
-}
-
-.pe-stage.is-tint.is-expanded .pe-seg::after,
-.pe-stage.is-tint.is-expanded .pe-corner::before {
-  content: '';
+.pe-stage.is-tint .pe-seg-color {
+  display: block;
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: #3a4044;
+  background: var(--seg);
+  mix-blend-mode: var(--blend, color);
+  opacity: 0;
+}
+
+.pe-stage.is-tint.is-expanded .pe-seg-color {
+  opacity: 1;
   -webkit-mask-image: radial-gradient(
-    7.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
-    transparent 0%,
-    transparent 16%,
-    #000 78%
+    6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
+    #000 0%,
+    #000 22%,
+    transparent 78%
   );
   mask-image: radial-gradient(
-    7.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
-    transparent 0%,
-    transparent 16%,
-    #000 78%
+    6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
+    #000 0%,
+    #000 22%,
+    transparent 78%
   );
 }
 
-.pe-stage.is-tint.is-expanded .pe-corner-top {
-  background: linear-gradient(
-    to bottom right,
-    color-mix(in srgb, var(--top-seg) 55%, #2c3236) calc(50% + 1px),
-    transparent calc(50% + 1px)
-  );
+.pe-stage.is-tint .pe-corner {
+  background: var(--mono-page);
 }
 
-.pe-stage.is-tint.is-expanded .pe-corner-left {
-  background: linear-gradient(
-    to bottom right,
-    transparent calc(50% - 1px),
-    color-mix(in srgb, var(--left-seg) 55%, #2c3236) calc(50% - 1px)
+.pe-stage.is-tint .pe-corner-color {
+  opacity: 0;
+  mix-blend-mode: var(--blend, color);
+}
+
+.pe-stage.is-tint.is-expanded .pe-corner-color {
+  opacity: 1;
+  -webkit-mask-image: radial-gradient(
+    6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
+    #000 0%,
+    #000 22%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
+    #000 0%,
+    #000 22%,
+    transparent 78%
   );
 }

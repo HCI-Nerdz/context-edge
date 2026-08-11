@@ -1,0 +1,6 @@
+= 2026-08-10 — Overflow-only compression and 2×2 Path workshop
+
+* Color / Tint on row one; Live / Live Tint on row two. Mode toggle removed.
+* Length ceiling: conventional size until overflow; reserved end-zone for the rest.
+* Left pack origin (top or bottom of the edge); sequence always root→leaf, bottom to top.
+* Tint idle is monochrome; hover reveals color only (blend-mode selector), not contents.

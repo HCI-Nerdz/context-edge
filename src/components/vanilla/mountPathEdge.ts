@@ -1,76 +1,134 @@
 import {
+  BLEND_MODES,
   demoPath,
-  depthOpacity,
+  depthShade,
+  layoutRail,
   pathThrough,
-  segmentWeights,
+  type BlendMode,
   type PathNode,
 } from '../../lib/path-edge';
 
-export type PathMode = 'rest' | 'tint' | 'live' | 'tint-live';
-
-export type PathWorkshopOptions = {
-  root: HTMLElement;
-  mode?: PathMode;
-};
-
 type Pack = 'start' | 'end';
 
+type StageKind = 'color' | 'tint' | 'live' | 'tint-live';
+
+const STAGES: { id: StageKind; tint: boolean; live: boolean; label: string }[] = [
+  { id: 'color', tint: false, live: false, label: 'Color' },
+  { id: 'tint', tint: true, live: false, label: 'Tint' },
+  { id: 'live', tint: false, live: true, label: 'Live' },
+  { id: 'tint-live', tint: true, live: true, label: 'Live Tint' },
+];
+
 /**
- * Path Edge workshop: shared top/left length, two left packs,
- * weights persist on expand, optional live dock + tint hint.
+ * One workshop: 2×2 Color/Tint × Rest/Live, shared length + left-pack origin.
  */
-export function mountPathWorkshop(opts: PathWorkshopOptions) {
+export function mountPathWorkshop(opts: { root: HTMLElement }) {
   const all = demoPath;
-  const mode: PathMode = opts.mode ?? 'rest';
   let currentId = all[all.length - 1]!.id;
   let topLength = 72;
   let leftLength = 72;
-  let expandedA = false;
-  let expandedB = false;
+  let leftPack: Pack = 'start';
+  let blend: BlendMode = 'color';
   let focusFromRoot: number | null = null;
-  let hint = { x: 0.15, y: 0.15 };
+  const expanded = new Set<StageKind>();
+  let observer: ResizeObserver | null = null;
 
   const root = opts.root;
-  const live = mode === 'live' || mode === 'tint-live';
-  const tint = mode === 'tint' || mode === 'tint-live';
 
   function nodes(): PathNode[] {
     return pathThrough(currentId, all);
   }
 
-  function applyWeights() {
+  function remPx(n: number): number {
+    return n * parseFloat(getComputedStyle(document.documentElement).fontSize || '16');
+  }
+
+  function applyLayout() {
     const list = nodes();
     root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
-      const weights = segmentWeights(list.length, live ? focusFromRoot : null, live);
-      stage.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-        const i = Number(el.dataset.fromRoot);
-        const w = weights[i] ?? 1;
-        el.style.flexGrow = String(w);
-        el.style.flexShrink = '1';
-        el.style.flexBasis = '0';
+      const live = stage.dataset.live === '1';
+      const topRail = stage.querySelector('.pe-top') as HTMLElement;
+      const leftRail = stage.querySelector('.pe-left') as HTMLElement;
+      const topStack = stage.querySelector('.pe-stack-top') as HTMLElement;
+      const leftStack = stage.querySelector('.pe-stack-left') as HTMLElement;
+      if (!topRail || !leftRail || !topStack || !leftStack) return;
+
+      const topBudget = topRail.clientWidth * (topLength / 100);
+      const leftBudget = leftRail.clientHeight * (leftLength / 100);
+      const topSizes = layoutRail({
+        count: list.length,
+        budget: topBudget,
+        conventional: remPx(7.1),
+        focusFromRoot: live ? focusFromRoot : null,
+        live,
+      });
+      const leftSizes = layoutRail({
+        count: list.length,
+        budget: leftBudget,
+        conventional: remPx(4.2),
+        focusFromRoot: live ? focusFromRoot : null,
+        live,
+      });
+
+      topStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
+        const px = topSizes[Number(el.dataset.fromRoot)] ?? 0;
+        el.style.flex = `0 0 ${px}px`;
+      });
+      leftStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
+        const px = leftSizes[Number(el.dataset.fromRoot)] ?? 0;
+        el.style.flex = `0 0 ${px}px`;
       });
     });
   }
 
-  function setExpanded(which: 'a' | 'b', on: boolean) {
-    if (which === 'a') expandedA = on;
-    else expandedB = on;
-    const stage = root.querySelector(`[data-stage="${which}"]`);
-    stage?.classList.toggle('is-expanded', on);
-    if (!on && !expandedA && !expandedB && !live) {
+  function applyPack() {
+    root.querySelectorAll<HTMLElement>('.pe-left').forEach((left) => {
+      left.dataset.pack = leftPack;
+      const stack = left.querySelector('.pe-stack-left');
+      const slack = left.querySelector('.pe-slack');
+      if (!stack || !slack) return;
+      if (leftPack === 'start') left.append(stack, slack);
+      else left.append(slack, stack);
+    });
+    applyLayout();
+  }
+
+  function applyBlend() {
+    root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+      stage.style.setProperty('--blend', blend);
+    });
+  }
+
+  function setExpanded(id: StageKind, on: boolean) {
+    if (on) expanded.add(id);
+    else expanded.delete(id);
+    root.querySelector(`[data-stage="${id}"]`)?.classList.toggle('is-expanded', on);
+    if (!on && expanded.size === 0) {
       focusFromRoot = null;
-      applyWeights();
+      applyLayout();
     }
   }
 
-  function bindStage(stage: HTMLElement, which: 'a' | 'b') {
+  function paintHint(stage: HTMLElement, e: PointerEvent) {
     const rails = stage.querySelector('[data-rails]') as HTMLElement;
-    rails.addEventListener('pointerenter', () => setExpanded(which, true));
+    rails.querySelectorAll<HTMLElement>('.pe-seg, .pe-corner').forEach((el) => {
+      const sr = el.getBoundingClientRect();
+      el.style.setProperty('--local-x', `${e.clientX - sr.left}px`);
+      el.style.setProperty('--local-y', `${e.clientY - sr.top}px`);
+    });
+  }
+
+  function bindStage(stage: HTMLElement, kind: StageKind, live: boolean, tint: boolean) {
+    const rails = stage.querySelector('[data-rails]') as HTMLElement;
+    rails.addEventListener('pointerenter', (e) => {
+      setExpanded(kind, true);
+      if (tint) paintHint(stage, e as PointerEvent);
+    });
     rails.addEventListener('pointerleave', () => {
-      setExpanded(which, false);
+      setExpanded(kind, false);
       if (!live) {
         focusFromRoot = null;
-        applyWeights();
+        applyLayout();
       }
     });
     rails.addEventListener('pointermove', (e) => {
@@ -79,72 +137,74 @@ export function mountPathWorkshop(opts: PathWorkshopOptions) {
         const next = Number(t.dataset.fromRoot);
         if (next !== focusFromRoot) {
           focusFromRoot = next;
-          applyWeights();
+          applyLayout();
         }
       }
-      if (tint) {
-        const r = rails.getBoundingClientRect();
-        hint = {
-          x: (e.clientX - r.left) / Math.max(r.width, 1),
-          y: (e.clientY - r.top) / Math.max(r.height, 1),
-        };
-        stage.style.setProperty('--hint-x', String(hint.x));
-        stage.style.setProperty('--hint-y', String(hint.y));
-        rails.querySelectorAll<HTMLElement>('.pe-seg, .pe-corner').forEach((el) => {
-          const sr = el.getBoundingClientRect();
-          el.style.setProperty('--local-x', `${e.clientX - sr.left}px`);
-          el.style.setProperty('--local-y', `${e.clientY - sr.top}px`);
-        });
-      }
+      if (tint) paintHint(stage, e);
     });
   }
 
-  function segs(list: PathNode[], axis: 'top' | 'left'): string {
+  function segs(list: PathNode[], axis: 'top' | 'left', page: string): string {
     return [...list]
       .reverse()
       .map((n) => {
         const fromRoot = list.indexOf(n);
         const here = fromRoot === list.length - 1;
-        const op = depthOpacity(fromRoot, list.length);
+        const shade = depthShade(fromRoot, list.length);
+        const mono = `color-mix(in srgb, ${page} 14%, hsl(0 0% ${Math.round(18 + shade * 42)}%))`;
         return `
           <button type="button" class="pe-seg pe-seg-${axis} ${here ? 'is-here' : 'is-ancestor'}"
             data-goto="${n.id}" data-from-root="${fromRoot}"
-            style="--seg:${n.color};--depth-op:${op}"
+            style="--seg:${n.color};--mono:${mono}"
             title="${n.label} · ${n.role}">
+            <span class="pe-seg-color" aria-hidden="true"></span>
             ${axis === 'top' ? `<span class="pe-label">${n.label}</span>` : `<span class="pe-mark" aria-hidden="true">${n.mark}</span>`}
           </button>`;
       })
       .join('');
   }
 
-  function stageHtml(which: 'a' | 'b', leftPack: Pack, list: PathNode[], current: PathNode): string {
-    const last = list[list.length - 1]!;
+  function stageHtml(
+    kind: StageKind,
+    label: string,
+    tint: boolean,
+    live: boolean,
+    list: PathNode[],
+    current: PathNode,
+  ): string {
     return `
-      <div class="pe-stage ${tint ? 'is-tint' : ''} ${live ? 'is-live' : ''}" data-stage="${which}"
-        style="--top-length:${topLength}%;--left-length:${leftLength}%;--hint-x:0.15;--hint-y:0.15">
-        <div class="pe-rails" data-rails>
-          <button type="button" class="pe-corner" data-goto="${current.id}" title="${current.label}"
-            style="--top-seg:${last.color};--left-seg:${last.color}">
-            <span class="pe-corner-top"></span><span class="pe-corner-left"></span>
-          </button>
-          <div class="pe-top" role="toolbar" aria-label="Top path">
-            <div class="pe-stack pe-stack-top">${segs(list, 'top')}</div>
-            <div class="pe-slack" aria-hidden="true"></div>
+      <article class="pe-cell" id="${kind}">
+        <p class="pe-cell-label">${label}</p>
+        <div class="pe-stage ${tint ? 'is-tint' : ''} ${live ? 'is-live' : ''}"
+          data-stage="${kind}" data-live="${live ? '1' : '0'}"
+          style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${current.color}">
+          <div class="pe-rails" data-rails>
+            <button type="button" class="pe-corner" data-goto="${current.id}" title="${current.label}"
+              style="--top-seg:${current.color};--left-seg:${current.color};--mono-page:color-mix(in srgb, ${current.color} 16%, #3a4044)">
+              <span class="pe-corner-color">
+                <span class="pe-corner-top"></span><span class="pe-corner-left"></span>
+              </span>
+            </button>
+            <div class="pe-top" role="toolbar" aria-label="${label} top path">
+              <div class="pe-stack pe-stack-top">${segs(list, 'top', current.color)}</div>
+              <div class="pe-slack" aria-hidden="true"></div>
+            </div>
+            <div class="pe-left" data-pack="${leftPack}" role="toolbar" aria-label="${label} left path">
+              <div class="pe-stack pe-stack-left">${segs(list, 'left', current.color)}</div>
+              <div class="pe-slack" aria-hidden="true"></div>
+            </div>
           </div>
-          <div class="pe-left pe-left-${leftPack}" role="toolbar" aria-label="Left path ${leftPack}">
-            <div class="pe-stack pe-stack-left">${segs(list, 'left')}</div>
-            <div class="pe-slack" aria-hidden="true"></div>
+          <div class="cr-content pe-content">
+            <h2>${current.label}</h2>
+            <p class="meta">${current.role}</p>
+            <p>${current.blurb}</p>
           </div>
         </div>
-        <div class="cr-content pe-content">
-          <h2>${current.label}</h2>
-          <p class="meta">${which === 'a' ? 'Left packed from the top' : 'Left packed from the bottom'} · ${current.role}</p>
-          <p>${current.blurb}</p>
-        </div>
-      </div>`;
+      </article>`;
   }
 
   function render() {
+    observer?.disconnect();
     const list = nodes();
     const current = list[list.length - 1]!;
     root.innerHTML = `
@@ -157,16 +217,38 @@ export function mountPathWorkshop(opts: PathWorkshopOptions) {
           <input type="range" min="28" max="100" value="${leftLength}" data-left-length />
           <span data-left-read>${leftLength}%</span>
         </label>
+        <label>Left pack
+          <select data-pack>
+            <option value="start"${leftPack === 'start' ? ' selected' : ''}>Top of left edge</option>
+            <option value="end"${leftPack === 'end' ? ' selected' : ''}>Bottom of left edge</option>
+          </select>
+        </label>
+        <label>Blend
+          <select data-blend>
+            ${BLEND_MODES.map((m) => `<option value="${m}"${m === blend ? ' selected' : ''}>${m}</option>`).join('')}
+          </select>
+        </label>
       </div>
-      <p class="pe-caption">Same left-length on both stages. Expand keeps rootward compression — it does not equalize the rail.</p>
-      <div class="pe-duo">
-        ${stageHtml('a', 'start', list, current)}
-        ${stageHtml('b', 'end', list, current)}
+      <p class="pe-caption">
+        Conventional size until the length budget fills. Overflow hops share a reserved
+        end-zone (log compression). Left sequence is always root→leaf, bottom to top —
+        the pack only chooses whether that run sits at the top or the bottom of the edge.
+        Tint stays monochrome until hover; the pointer reveals color only.
+      </p>
+      <div class="pe-quad">
+        ${STAGES.map((s) => stageHtml(s.id, s.label, s.tint, s.live, list, current)).join('')}
       </div>
     `;
 
-    root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
-      bindStage(stage, stage.dataset.stage as 'a' | 'b');
+    applyPack();
+    applyBlend();
+
+    STAGES.forEach((s) => {
+      const stage = root.querySelector(`[data-stage="${s.id}"]`) as HTMLElement | null;
+      if (stage) {
+        if (expanded.has(s.id)) stage.classList.add('is-expanded');
+        bindStage(stage, s.id, s.live, s.tint);
+      }
     });
 
     root.querySelectorAll('[data-goto]').forEach((el) => {
@@ -186,6 +268,7 @@ export function mountPathWorkshop(opts: PathWorkshopOptions) {
       root.querySelectorAll<HTMLElement>('[data-stage]').forEach((s) => {
         s.style.setProperty('--top-length', `${topLength}%`);
       });
+      applyLayout();
     });
     leftR.addEventListener('input', () => {
       leftLength = Number(leftR.value);
@@ -193,9 +276,21 @@ export function mountPathWorkshop(opts: PathWorkshopOptions) {
       root.querySelectorAll<HTMLElement>('[data-stage]').forEach((s) => {
         s.style.setProperty('--left-length', `${leftLength}%`);
       });
+      applyLayout();
     });
 
-    applyWeights();
+    root.querySelector('[data-pack]')!.addEventListener('change', (e) => {
+      leftPack = (e.target as HTMLSelectElement).value as Pack;
+      applyPack();
+    });
+    root.querySelector('[data-blend]')!.addEventListener('change', (e) => {
+      blend = (e.target as HTMLSelectElement).value as BlendMode;
+      applyBlend();
+    });
+
+    observer = new ResizeObserver(() => applyLayout());
+    root.querySelectorAll('.pe-top, .pe-left').forEach((el) => observer!.observe(el));
+    applyLayout();
   }
 
   render();

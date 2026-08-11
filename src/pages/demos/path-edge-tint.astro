@@ -1,33 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import PathMode from '../../components/PathMode.astro';
 import { hrefWithBase } from '../../lib/base';
-import '../../styles/path-edge.css';
+
+return Astro.redirect(hrefWithBase('demos/path-edge/#tint'));
 ---
-
-<BaseLayout
-  title="Path Edge · Tint"
-  description="Design-system colors kept, intensity dropped; mouse reveals a color hint on a quieter rail."
->
-  <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
-    <p class="eyebrow">Demo · Variant C · Path Edge</p>
-    <h1>Path Edge · Tint</h1>
-    <p class="lede">
-      Root is the most transparent hop; the current node is the most opaque. Expand
-      becomes a monochrome rail. The pointer punches a hole in that gray so the stored
-      design-system colors show as a hint underneath — still de-intensified.
-    </p>
-    <VariantSwitch current="path" />
-    <PathMode current="tint" />
-    <div id="path-edge-root"></div>
-  </main>
-</BaseLayout>
-
-<script>
-  import { mountPathWorkshop } from '../../components/vanilla/mountPathEdge';
-
-  const root = document.getElementById('path-edge-root');
-  if (root) mountPathWorkshop({ root, mode: 'tint' });
-</script>

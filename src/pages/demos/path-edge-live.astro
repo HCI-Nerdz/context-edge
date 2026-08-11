@@ -1,33 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import PathMode from '../../components/PathMode.astro';
 import { hrefWithBase } from '../../lib/base';
-import '../../styles/path-edge.css';
+
+return Astro.redirect(hrefWithBase('demos/path-edge/#live'));
 ---
-
-<BaseLayout
-  title="Path Edge · Live"
-  description="Constant dock reaction along the path rails — focused hop grows, neighbors shrink."
->
-  <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
-    <p class="eyebrow">Demo · Variant C · Path Edge</p>
-    <h1>Path Edge · Live</h1>
-    <p class="lede">
-      Same length model as Rest, but the rail keeps reacting while the pointer travels —
-      macOS-dock style amplify on the focused hop. Use this to judge whether constant
-      motion helps or just fidgets.
-    </p>
-    <VariantSwitch current="path" />
-    <PathMode current="live" />
-    <div id="path-edge-root"></div>
-  </main>
-</BaseLayout>
-
-<script>
-  import { mountPathWorkshop } from '../../components/vanilla/mountPathEdge';
-
-  const root = document.getElementById('path-edge-root');
-  if (root) mountPathWorkshop({ root, mode: 'live' });
-</script>

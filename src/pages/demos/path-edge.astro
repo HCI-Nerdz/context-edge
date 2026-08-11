@@ -1,26 +1,25 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
-import PathMode from '../../components/PathMode.astro';
 import { hrefWithBase } from '../../lib/base';
 import '../../styles/path-edge.css';
 ---
 
 <BaseLayout
-  title="Path Edge · Rest"
-  description="Path trace with top/left length, dual left packs, compression that survives expand."
+  title="Path Edge"
+  description="Path trace workshop: Color / Tint on row one, Live / Live Tint on row two."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
     <p class="eyebrow">Demo · Variant C · Path Edge</p>
-    <h1>Path Edge · Rest</h1>
+    <h1>Path Edge</h1>
     <p class="lede">
-      Length is a budget, not a reset. Rootward hops stay shorter when the rail is full.
-      Expand only thickens the rails — it does not equalize segments. Two left packs
-      share the same left-length control. Dock amplify lives in Live, not here.
+      Row one is Color then Tint. Row two is Live then Live Tint. Length is a ceiling:
+      hops that fit keep a conventional size; only the ones that would run off share a
+      reserved end-zone. Left pack sits at the top or bottom of the edge; the sequence
+      is root→leaf, bottom to top, either way.
     </p>
     <VariantSwitch current="path" />
-    <PathMode current="rest" />
     <div id="path-edge-root"></div>
   </main>
 </BaseLayout>
@@ -29,5 +28,5 @@ import '../../styles/path-edge.css';
   import { mountPathWorkshop } from '../../components/vanilla/mountPathEdge';
 
   const root = document.getElementById('path-edge-root');
-  if (root) mountPathWorkshop({ root, mode: 'rest' });
+  if (root) mountPathWorkshop({ root });
 </script>
