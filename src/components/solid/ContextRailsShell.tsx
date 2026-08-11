@@ -8,7 +8,7 @@ import {
 } from '../../lib/map-vt';
 import { appMockHtml, nodeSkin } from '../../lib/app-mock';
 import { findOrg, flattenOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
-import { themeSwitchHtml } from '../../lib/theme';
+import { readMockTheme, themeSwitchHtml } from '../../lib/theme';
 
 type Props = {
   title?: string;
@@ -62,7 +62,7 @@ export default function ContextRailsShell(props: Props) {
         <span>
           Solid island · {navOpen() ? 'map open' : 'rails idle'} · {active().label}
         </span>
-        <div innerHTML={themeSwitchHtml()} />
+        <div innerHTML={themeSwitchHtml('mock')} />
         <nav class="variant-switch" aria-label="Transition style">
           <span class="variant-switch-name">Transition style</span>
           <div class="variant-switch-track" role="radiogroup">
@@ -109,7 +109,7 @@ export default function ContextRailsShell(props: Props) {
           />
         </div>
 
-        <div class="cr-sheet" data-skin={nodeSkin(active().id)}>
+        <div class="cr-sheet" data-theme={readMockTheme()} data-skin={nodeSkin(active().id)}>
           <Show when={overload()}>
             <div
               style={{

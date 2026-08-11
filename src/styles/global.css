@@ -51,6 +51,38 @@ html[data-theme='light'] {
   --mock-compose-ink: #001d35;
 }
 
+.cr-sheet[data-theme='dark'] {
+  --mock-bg: #202124;
+  --mock-surface: #292a2d;
+  --mock-ink: #e8eaed;
+  --mock-muted: #9aa0a6;
+  --mock-line: #3c4043;
+  --mock-find: #3c4043;
+  --mock-link: #8ab4f8;
+  --mock-url: #81c995;
+  --mock-brand: #8ab4f8;
+  --mock-select: #3c4d6b;
+  --mock-select-ink: #e8eaed;
+  --mock-compose: #174ea6;
+  --mock-compose-ink: #d2e3fc;
+}
+
+.cr-sheet[data-theme='light'] {
+  --mock-bg: #f6f8fc;
+  --mock-surface: #ffffff;
+  --mock-ink: #202124;
+  --mock-muted: #5f6368;
+  --mock-line: #dadce0;
+  --mock-find: #f1f3f4;
+  --mock-link: #1a0dab;
+  --mock-url: #006621;
+  --mock-brand: #1a73e8;
+  --mock-select: #d3e3fd;
+  --mock-select-ink: #041e49;
+  --mock-compose: #c2e7ff;
+  --mock-compose-ink: #001d35;
+}
+
 * {
   box-sizing: border-box;
 }

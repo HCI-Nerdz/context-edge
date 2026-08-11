@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-11 — Mock Appearance is independent of the page
+
+* Island Light/Dark only flips the product sheet; it follows the page until you override it
+
 == 2026-08-11 — Mock selected chips keep contrast in dark mode
 
 * Cloud/Inbox “on” labels no longer use a light-mode chip under dark ink

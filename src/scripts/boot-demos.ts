@@ -1,7 +1,7 @@
 import { mountPathWorkshop } from '../components/vanilla/mountPathEdge';
 import { mountVanillaRails } from '../components/vanilla/mount';
 import { mountModalEdge } from '../components/vanilla/mountModalEdge';
-import { bootTheme, syncThemeButtons, themeSwitchHtml } from '../lib/theme';
+import { bootTheme, syncMockThemeButtons, syncThemeButtons, themeSwitchHtml } from '../lib/theme';
 
 function bootMap(root: HTMLElement) {
   mountVanillaRails({ root, initialId: 'cloud' });
@@ -32,6 +32,7 @@ function boot() {
   }
 
   syncThemeButtons();
+  syncMockThemeButtons();
 }
 
 document.addEventListener('astro:page-load', boot);

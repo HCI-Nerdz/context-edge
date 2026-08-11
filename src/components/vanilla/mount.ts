@@ -7,7 +7,7 @@ import {
 } from '../../lib/map-vt';
 import { appMockHtml, nodeSkin } from '../../lib/app-mock';
 import { findOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
-import { themeSwitchHtml } from '../../lib/theme';
+import { applyMockTheme, readMockTheme, themeSwitchHtml } from '../../lib/theme';
 
 export type MountOptions = {
   root: HTMLElement;
@@ -68,7 +68,7 @@ export function mountVanillaRails(opts: MountOptions) {
     root.innerHTML = `
       <div class="cr-toolbar">
         <span>Vanilla island · ${navOpen ? 'map open' : 'rails idle'} · ${active.label}</span>
-        ${themeSwitchHtml()}
+        ${themeSwitchHtml('mock')}
         <nav class="variant-switch" aria-label="Transition style">
           <span class="variant-switch-name">Transition style</span>
           <div class="variant-switch-track" role="radiogroup" aria-label="Transition style">
@@ -98,7 +98,7 @@ export function mountVanillaRails(opts: MountOptions) {
           <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
           <div class="cr-tree">${orgTreeHtml(activeId)}</div>
         </div>
-        <div class="cr-sheet" data-skin="${nodeSkin(active.id)}">
+        <div class="cr-sheet" data-theme="${readMockTheme()}" data-skin="${nodeSkin(active.id)}">
           <button type="button" class="cr-rail cr-rail-corner" data-open aria-label="Open ecosystem navigation"></button>
           <button type="button" class="cr-rail cr-rail-top" data-open aria-label="Open ecosystem navigation">
             <span class="cr-rail-label">Ecosystem</span>
@@ -139,6 +139,7 @@ export function mountVanillaRails(opts: MountOptions) {
         });
       });
     });
+    applyMockTheme(readMockTheme());
   }
 
   render();
