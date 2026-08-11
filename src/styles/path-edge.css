@@ -158,6 +158,17 @@
   background: transparent;
 }
 
+/*
+ * Map rails are one button (display:grid). Path rails are hop stacks.
+ * Without this, every hop lands in the same grid cell and the labels smash.
+ */
+.pe-stage .pe-top.cr-rail,
+.pe-stage .pe-left.cr-rail {
+  display: flex;
+  place-items: unset;
+  overflow: hidden;
+}
+
 .pe-corner {
   isolation: isolate;
 }
@@ -239,6 +250,7 @@
 
 .pe-seg {
   position: relative;
+  flex: 0 0 auto;
   border: 0;
   margin: 0;
   padding: 0;
@@ -286,6 +298,9 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pe-mark {
@@ -357,7 +372,7 @@
 
 .pe-stage.is-tint {
   --miter-a: var(--mono-top);
-  --miter-b: var(--mono-left);
+  --miter-b: var(--mono-top);
 }
 
 .pe-stage.is-tint .pe-corner-color {
