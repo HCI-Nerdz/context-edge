@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import version from '../../version.json';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Context rails · HCI Nerdz"
+  description="Astro island demos for edge-summoned ecosystem navigation — Solid, React, Svelte, vanilla."
+>
+  <main class="shell">
+    <p class="eyebrow">HCI Nerdz · MVP</p>
+    <h1>Context rails</h1>
+    <p class="lede">
+      Thin top and left edges summon ecosystem navigation. Hover expands the rail; click opens a
+      wireframe platform map. Each subplatform keeps a stable color overlay — streets under
+      skyscrapers, not tabs painted on the roof.
+    </p>
+    <p class="meta-row">
+      <a href="https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/">Essay</a>
+      <a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html">Docs</a>
+      <a href="https://hci-nerdz.github.io/demos/context-rails/">Site desk</a>
+      <span>v{version.version}</span>
+    </p>
+
+    <div class="demo-grid">
+      <a class="demo-card" href={`${base}demos/solid-cloud/`}>
+        <strong>Solid · cloud</strong>
+        <span>Console parody with overload toggle and signal-driven rails.</span>
+      </a>
+      <a class="demo-card" href={`${base}demos/react-suite/`}>
+        <strong>React · suite</strong>
+        <span>Microsoft-suite-ish shell with duo-tone overlays (Next-portable).</span>
+      </a>
+      <a class="demo-card" href={`${base}demos/svelte-community/`}>
+        <strong>Svelte · community</strong>
+        <span>Reddit/SO-ish spaces with softer transitions.</span>
+      </a>
+      <a class="demo-card" href={`${base}demos/vanilla-mature/`}>
+        <strong>Vanilla · mature</strong>
+        <span>Color-only edges — presence without labels.</span>
+      </a>
+    </div>
+
+    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:0 0 0.5rem">
+      Framework impedance (short)
+    </h2>
+    <ul style="color:var(--muted);line-height:1.55;max-width:42rem;padding-left:1.2rem">
+      <li>
+        <strong style="color:var(--ink)">Solid / SolidStart</strong> — shines for long-lived shell
+        state; drop the Solid island into a SolidStart layout (no SolidStart app required here).
+      </li>
+      <li>
+        <strong style="color:var(--ink)">React / Next.js</strong> — same shell as a
+        <code>"use client"</code> layout wrapper; keep overlay identity in client state.
+      </li>
+      <li>
+        <strong style="color:var(--ink)">Svelte / SvelteKit</strong> — strong for edge motion; Kit
+        layouts mirror the substrate slot.
+      </li>
+      <li>
+        <strong style="color:var(--ink)">Astro islands</strong> — ideal for multi-framework demos;
+        production SPAs should own rails inside their shell.
+      </li>
+    </ul>
+  </main>
+</BaseLayout>

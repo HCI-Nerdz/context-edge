@@ -1,0 +1,178 @@
+ifndef::env-github[:icons: font]
+:toc: preamble
+:toclevels: 2
+:sectanchors:
+
+ifdef::env-github[]
+++++
+<a id="readme-top"></a>
+<div align="center">
+<a href="https://github.com/HCI-Nerdz/context-rails/graphs/contributors"><img src="https://img.shields.io/github/contributors/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Contributors"></a>
+<a href="https://github.com/HCI-Nerdz/context-rails/network/members"><img src="https://img.shields.io/github/forks/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Forks"></a>
+<a href="https://github.com/HCI-Nerdz/context-rails/stargazers"><img src="https://img.shields.io/github/stars/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Stars"></a>
+<a href="https://github.com/HCI-Nerdz/context-rails/issues"><img src="https://img.shields.io/github/issues/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Issues"></a>
+<a href="https://github.com/HCI-Nerdz/context-rails/blob/main/LICENSE"><img src="https://img.shields.io/github/license/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="License"></a>
+<br />
+<h3 align="center">context-rails</h3>
+<p align="center">
+Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.<br />
+<a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html"><strong>Explore the docs »</strong></a><br /><br />
+<a href="https://hci-nerdz.github.io/context-rails/">View Demo</a>
+&middot;
+<a href="https://github.com/HCI-Nerdz/context-rails/issues">Report Bug</a>
+&middot;
+<a href="https://github.com/HCI-Nerdz/context-rails/issues">Request Feature</a>
+</p>
+</div>
+++++
+endif::[]
+
+ifndef::env-github[]
+image:https://img.shields.io/github/contributors/HCI-Nerdz/context-rails.svg?style=for-the-badge[Contributors,link=https://github.com/HCI-Nerdz/context-rails/graphs/contributors]
+image:https://img.shields.io/github/forks/HCI-Nerdz/context-rails.svg?style=for-the-badge[Forks,link=https://github.com/HCI-Nerdz/context-rails/network/members]
+image:https://img.shields.io/github/stars/HCI-Nerdz/context-rails.svg?style=for-the-badge[Stars,link=https://github.com/HCI-Nerdz/context-rails/stargazers]
+image:https://img.shields.io/github/issues/HCI-Nerdz/context-rails.svg?style=for-the-badge[Issues,link=https://github.com/HCI-Nerdz/context-rails/issues]
+image:https://img.shields.io/github/license/HCI-Nerdz/context-rails.svg?style=for-the-badge[License,link=https://github.com/HCI-Nerdz/context-rails/blob/main/LICENSE]
+
+= context-rails
+
+Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.
+
+link:https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html[Explore the docs] ·
+link:https://hci-nerdz.github.io/context-rails/[View Demo] ·
+link:https://github.com/HCI-Nerdz/context-rails/issues[Report Bug] ·
+link:https://github.com/HCI-Nerdz/context-rails/issues[Request Feature]
+endif::[]
+
+== About The Project
+
+Cloud consoles and suite entrypoints often *overload* the entrypoint header with subsection platforms.
+*Context rails* put ecosystem nav on the top and/or left edges: hover expands the rail; click opens a wireframe platform map; each subplatform keeps a stable color overlay.
+
+Streets under skyscrapers — not streets painted on the roof.
+
+Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
+
+* Essay: link:https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/[When platforms overload the entrypoint]
+* Org site desk: link:https://hci-nerdz.github.io/demos/context-rails/[vanilla desk]
+
+=== Demos
+
+[cols="1,2"]
+|===
+| Route | Island / aesthetic
+
+| `/demos/solid-cloud/`
+| Solid — cloud-console parody + overload toggle
+
+| `/demos/react-suite/`
+| React — suite shell, duo-tone overlays (Next-portable)
+
+| `/demos/svelte-community/`
+| Svelte — community/spaces chrome
+
+| `/demos/vanilla-mature/`
+| Vanilla — color-only mature rails
+|===
+
+Shared contract: `src/lib/platforms.ts`.
+
+ifdef::env-github[]
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+endif::[]
+
+== Built With
+
+* Runtime / UI
+** link:https://astro.build/[image:https://img.shields.io/badge/Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white[Astro]]
+** link:https://www.solidjs.com/[image:https://img.shields.io/badge/Solid-2C4F7C?style=for-the-badge&logo=solid&logoColor=white[Solid]]
+** link:https://react.dev/[image:https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB[React]]
+** link:https://svelte.dev/[image:https://img.shields.io/badge/Svelte-FF3E00?style=for-the-badge&logo=svelte&logoColor=white[Svelte]]
+** link:https://pnpm.io/[image:https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white[pnpm]]
+
+ifdef::env-github[]
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+endif::[]
+
+== Getting Started
+
+=== Prerequisites
+
+* Node 22+
+* pnpm 10+
+
+=== Install & run
+
+[source,bash]
+----
+pnpm install
+pnpm dev
+----
+
+Build for GitHub Pages (`base: /context-rails/`):
+
+[source,bash]
+----
+pnpm build
+----
+
+About / version stamp: `version.json` (also shown in the demo footer).
+
+ifdef::env-github[]
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+endif::[]
+
+== Framework impedance
+
+Context rails are long-lived *shell chrome* (hover width, open overlay, platform identity).
+
+[cols="1,2"]
+|===
+| Host | Notes
+
+| Solid + SolidStart
+| *Shines.* Reuse `src/components/solid/ContextRailsShell.tsx` in a SolidStart root/layout. This repo does not ship a SolidStart app — SolidStart is the natural production host, not a demo requirement.
+
+| React + Next.js
+| *Valuable.* Port `src/components/react/ContextRailsShell.tsx` as a `"use client"` layout wrapper. Keep live overlay identity in client state across the RSC boundary.
+
+| Svelte + SvelteKit
+| *Strong for motion.* Kit layout slots mirror the substrate idea.
+
+| Astro islands
+| *Excellent for demos.* If each platform is already a heavy SPA, put rails inside that SPA shell.
+
+| Vue / Nuxt
+| Fine; not prioritized once Solid + React + Svelte exist.
+
+| Mobile-first
+| Edge hover is a poor default — out of scope for this MVP.
+|===
+
+Full write-up: link:https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html[Context rails docs].
+
+ifdef::env-github[]
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+endif::[]
+
+== License
+
+Distributed under the MIT License. See `LICENSE`.
+
+== Contact
+
+HCI Nerdz — link:https://github.com/HCI-Nerdz[github.com/HCI-Nerdz]
+
+ifdef::env-github[]
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
+endif::[]

@@ -1,0 +1,6 @@
+= 2026-08-10 — Initial Astro islands MVP
+
+* Astro 5 + Solid / React / Svelte / vanilla demos for context rails
+* Shared `platforms` contract and overlay tokens
+* GitHub Pages deploy at `/context-rails/`
+* Links to HCI Nerdz essay, docs, and site desk

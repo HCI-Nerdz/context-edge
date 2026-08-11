@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Vanilla mature · Context rails"
+  description="Vanilla island — color-only edge rails without labels."
+>
+  <main class="shell">
+    <p><a class="back" href={base}>← Hub</a></p>
+    <p class="eyebrow">Demo · Vanilla</p>
+    <h1>Mature color-only rails</h1>
+    <p class="lede">
+      The bar’s presence and color suggest the affordance. Click still opens the wireframe map.
+    </p>
+    <div id="vanilla-root"></div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { mountVanillaRails } from '../../components/vanilla/mount';
+
+  const root = document.getElementById('vanilla-root');
+  if (root) {
+    mountVanillaRails({ root, initialId: 'admin' });
+  }
+</script>
