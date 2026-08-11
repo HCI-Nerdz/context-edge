@@ -87,7 +87,7 @@ Two click models (do not force into one gesture while studying):
 
 * *Map Edge* — edge opens a wireframe / directory of destinations
 * *Modal Edge* — edge is the current node; click slides the sheet to reveal colored ancestor layers
-* *Path Edge* — rail is the breadcrumb (unique color sequence); paired hover; labels on top; one mark per level, current at top-left
+* *Path Edge* — the edge is a path trace (unique color sequence); paired hover; labels on top; one mark per level, current at top-left
 +
 Also called Nav Edge / Context Edge in conversation.
 
