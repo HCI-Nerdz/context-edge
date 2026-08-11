@@ -1,0 +1,28 @@
+---
+import { hrefWithBase } from '../lib/base';
+
+interface Props {
+  id: 'map' | 'modal' | 'path';
+  label: string;
+  href: string;
+  blurb: string;
+}
+
+const { id, label, href, blurb } = Astro.props;
+---
+
+<a class="variant-tile" href={hrefWithBase(href)}>
+  <span class:list={['variant-preview', 'is-lg', `variant-preview-${id}`]} aria-hidden="true">
+    {
+      id === 'modal' && (
+        <span class="variant-modal-mock">
+          <i />
+          <i />
+          <i />
+        </span>
+      )
+    }
+  </span>
+  <strong>{label}</strong>
+  <span>{blurb}</span>
+</a>

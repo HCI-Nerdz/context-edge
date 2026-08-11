@@ -1,18 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
+import FrameworkMark from '../../components/FrameworkMark.astro';
 import ContextRailsShell from '../../components/solid/ContextRailsShell';
 import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
-  title="Solid cloud · Context rails"
-  description="Solid island demo — cloud-console parody rescued by context rails."
+  title="Solid cloud · Edge Bar"
+  description="Solid island demo — cloud-console parody rescued by an Edge Bar."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
     <p class="eyebrow">Demo · Solid</p>
-    <h1>Cloud console → rails</h1>
+    <div class="page-kicker">
+      <FrameworkMark id="solid" />
+      <h1>Cloud console → rails</h1>
+    </div>
     <p class="lede">
       Fine-grained signals drive hover/open/platform identity. Toggle header overload to feel the
       anti-pattern.

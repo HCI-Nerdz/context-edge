@@ -2,7 +2,7 @@
 
 ## What this is
 
-MVP demos for **Nav Edge** / context rails:
+MVP demos for **Edge Bar** (repo slug `context-rails`):
 
 - **Variant A — Map Edge:** thin top/left edges → click slides the activity page off (View Transitions) to reveal a scrollable Alphabet/Google product tree underneath. Map VT is scoped to `.cr-stage` (`src/lib/map-vt.ts`). *Transition style* on the island. Footer *Appearance* is the real page (`html[data-theme]`). Island *Appearance* only themes `.cr-sheet` mocks — follows the page until overridden (`src/lib/theme.ts`)
 - **Variant B — Modal Edge:** edge = current node; View Transitions slide sheet to reveal colored ancestry layers (`/demos/modal-edge/`)
@@ -13,7 +13,7 @@ MVP demos for **Nav Edge** / context rails:
 - Docs: https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html
 - Essay: https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/
 - Site desk (vanilla Map Edge): https://hci-nerdz.github.io/demos/context-rails/
-- Live MVP: https://hci-nerdz.github.io/context-rails/
+- Live MVP / variant index: https://hci-nerdz.github.io/context-rails/ (visual Map / Modal / Path tiles, then island cards)
 - Modal Edge: https://hci-nerdz.github.io/context-rails/demos/modal-edge/
 
 ## Stack

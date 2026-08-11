@@ -13,7 +13,7 @@ ifdef::env-github[]
 <a href="https://github.com/HCI-Nerdz/context-rails/issues"><img src="https://img.shields.io/github/issues/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Issues"></a>
 <a href="https://github.com/HCI-Nerdz/context-rails/blob/main/LICENSE"><img src="https://img.shields.io/github/license/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="License"></a>
 <br />
-<h3 align="center">context-rails</h3>
+<h3 align="center">Edge Bar</h3>
 <p align="center">
 Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.<br />
 <a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html"><strong>Explore the docs »</strong></a><br /><br />
@@ -34,7 +34,7 @@ image:https://img.shields.io/github/stars/HCI-Nerdz/context-rails.svg?style=for-
 image:https://img.shields.io/github/issues/HCI-Nerdz/context-rails.svg?style=for-the-badge[Issues,link=https://github.com/HCI-Nerdz/context-rails/issues]
 image:https://img.shields.io/github/license/HCI-Nerdz/context-rails.svg?style=for-the-badge[License,link=https://github.com/HCI-Nerdz/context-rails/blob/main/LICENSE]
 
-= context-rails
+= Edge Bar
 
 Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.
 
@@ -47,7 +47,7 @@ endif::[]
 == About The Project
 
 Cloud consoles and suite entrypoints often *overload* the entrypoint header with subsection platforms.
-*Context rails* put ecosystem nav on the top and/or left edges: hover expands the rail; click opens a wireframe platform map; each subplatform keeps a stable color overlay.
+*Edge Bar* (repo / Pages slug: `context-rails`) puts ecosystem nav on the top and/or left edges: hover expands the rail; click opens a wireframe platform map; each subplatform keeps a stable color overlay.
 
 Streets under skyscrapers — not streets painted on the roof.
 
@@ -91,7 +91,7 @@ This model helps clear up the page contents to perform their primary job: behavi
 * *Modal Edge* — edge is the current node; click slides the sheet to reveal colored ancestor layers
 * *Path Edge* — the edge is a path trace (unique color sequence); paired hover; labels on top; one mark per level, current at top-left
 +
-Also called Nav Edge / Context Edge in conversation.
+Also called context rails in older docs.
 
 ifdef::env-github[]
 ++++

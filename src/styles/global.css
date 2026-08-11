@@ -175,6 +175,134 @@ h1 {
   text-decoration: none;
 }
 
+.hub-h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 1.6rem 0 0.55rem;
+}
+
+.hub-note,
+.hub-list {
+  color: var(--muted);
+  max-width: 42rem;
+  line-height: 1.55;
+}
+
+.hub-list {
+  padding-left: 1.2rem;
+}
+
+.hub-list strong {
+  color: var(--ink);
+}
+
+.fw-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.fw-mark svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  display: block;
+}
+
+.fw-react {
+  color: #61dafb;
+}
+
+.fw-svelte {
+  color: #ff3e00;
+}
+
+.fw-solid {
+  --fw-a: #76b3e1;
+  --fw-b: #518ac8;
+  --fw-c: #4377bb;
+}
+
+html[data-theme='light'] .fw-solid {
+  --fw-a: #76b3e1;
+  --fw-b: #4377bb;
+  --fw-c: #315d94;
+}
+
+.fw-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.page-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 0.45rem;
+}
+
+.page-kicker h1 {
+  margin: 0;
+}
+
+.edge-matrix-wrap {
+  overflow-x: auto;
+  margin: 0.75rem 0 1.75rem;
+}
+
+.edge-matrix {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+}
+
+.edge-matrix th,
+.edge-matrix td {
+  border: 1px solid var(--line);
+  padding: 0.55rem 0.6rem;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.edge-matrix thead th {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.fw-head {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.matrix-stack {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.matrix-cell {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+}
+
+.matrix-cell .variant-preview {
+  width: 5.4rem;
+  height: 2.1rem;
+}
+
+.matrix-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .demo-grid {
   display: grid;
   gap: 0.85rem;
@@ -182,10 +310,44 @@ h1 {
   margin: 1.5rem 0 2rem;
 }
 
+.variant-gallery {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  margin: 1.35rem 0 0.5rem;
+}
+
+.variant-tile {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.55rem 0.55rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--wash);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.variant-tile:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  color: inherit;
+}
+
+.variant-tile strong {
+  font-family: var(--font-display);
+}
+
+.variant-tile > span:last-child {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .demo-card {
   display: grid;
   gap: 0.35rem;
-  padding: 1rem 1.05rem;
+  padding: 0.55rem 0.55rem 0.9rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   background: var(--wash);
@@ -289,6 +451,12 @@ h1 {
   overflow: hidden;
   background: #0d1214;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.variant-preview.is-lg {
+  aspect-ratio: 16 / 10;
+  height: auto;
+  border-radius: 0.35rem;
 }
 
 .variant-preview-map {
@@ -436,25 +604,33 @@ button.variant-switch-item.is-current:hover {
 }
 
 .cr-stage:has(.cr-rail:hover) .cr-rail-top,
-.cr-stage:has(.cr-rail:focus-visible) .cr-rail-top {
+.cr-stage:has(.cr-rail:focus-visible) .cr-rail-top,
+.me-viewport:has(.cr-rail:hover) .cr-rail-top,
+.me-viewport:has(.cr-rail:focus-visible) .cr-rail-top {
   height: var(--rail-hover);
   left: var(--rail-hover);
 }
 
 .cr-stage:has(.cr-rail:hover) .cr-rail-left,
-.cr-stage:has(.cr-rail:focus-visible) .cr-rail-left {
+.cr-stage:has(.cr-rail:focus-visible) .cr-rail-left,
+.me-viewport:has(.cr-rail:hover) .cr-rail-left,
+.me-viewport:has(.cr-rail:focus-visible) .cr-rail-left {
   width: var(--rail-hover);
   top: var(--rail-hover);
 }
 
 .cr-stage:has(.cr-rail:hover) .cr-sheet::before,
-.cr-stage:has(.cr-rail:focus-visible) .cr-sheet::before {
+.cr-stage:has(.cr-rail:focus-visible) .cr-sheet::before,
+.me-viewport:has(.cr-rail:hover) .me-sheet::before,
+.me-viewport:has(.cr-rail:focus-visible) .me-sheet::before {
   width: var(--rail-hover);
   height: var(--rail-hover);
 }
 
 .cr-stage:has(.cr-rail:hover) .cr-rail-corner,
-.cr-stage:has(.cr-rail:focus-visible) .cr-rail-corner {
+.cr-stage:has(.cr-rail:focus-visible) .cr-rail-corner,
+.me-viewport:has(.cr-rail:hover) .cr-rail-corner,
+.me-viewport:has(.cr-rail:focus-visible) .cr-rail-corner {
   width: calc(var(--rail-hover) + 2px);
   height: calc(var(--rail-hover) + 2px);
 }
@@ -526,7 +702,8 @@ button.variant-switch-item.is-current:hover {
   view-transition-name: none;
 }
 
-.cr-sheet::before {
+.cr-sheet::before,
+.me-sheet::before {
   content: '';
   position: absolute;
   top: 0;

@@ -1,22 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import VariantTile from '../components/VariantTile.astro';
+import FrameworkMark from '../components/FrameworkMark.astro';
 import { hrefWithBase } from '../lib/base';
 import version from '../../version.json';
 ---
 
 <BaseLayout
-  title="Nav Edge · HCI Nerdz"
-  description="Two Nav Edge variants: Map Edge (wireframe directory) and Modal Edge (View Transitions ancestry stack)."
+  title="Edge Bar · HCI Nerdz"
+  description="Edge Bar — Map, Modal, and Path edges. Ecosystem nav on the L, not in the header."
 >
   <main class="shell">
     <p class="eyebrow">HCI Nerdz · MVP</p>
-    <h1>Nav Edge</h1>
+    <h1>Edge Bar</h1>
     <p class="lede">
-      Ecosystem navigation lives on the edge — not stuffed into the content header. Two variants
-      help compare the idea: a <strong>Map Edge</strong> that summons a wireframe directory, a
-      <strong>Modal Edge</strong> that slides the current sheet to reveal colored ancestor layers
-      (windows on windows), and a <strong>Path Edge</strong> whose L-edge is a path trace — unique
-      colors for the hops you took. Published docs still use “context rails” for the map-shaped claim.
+      Ecosystem navigation lives on the edge — not stuffed into the content header. Three variants:
+      a <strong>Map Edge</strong> that summons a directory already underneath the page, a
+      <strong>Modal Edge</strong> that slides this sheet back over colored ancestor layers, and a
+      <strong>Path Edge</strong> whose L is the hops you took. Docs still live under the
+      context-rails slug.
     </p>
     <p class="meta-row">
       <a href="https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/">Essay</a>
@@ -25,88 +27,128 @@ import version from '../../version.json';
       <span>v{version.version}</span>
     </p>
 
-    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:1.5rem 0 0.65rem">
-      Variant A · Map Edge
-    </h2>
-    <p style="color:var(--muted);max-width:42rem;line-height:1.55;margin:0 0 0.85rem">
-      Click the edge → the activity page slides off (View Transitions) and a scrollable
-      Alphabet/Google product tree is already underneath. Pick a node to enter that building.
-      This model helps clear up the page contents to perform their primary job: behaving like a
-      UI, and not distracting users and designers with complicated nav menus and top bars.
+    <nav class="variant-gallery" aria-label="Edge Bar variants">
+      <VariantTile
+        id="map"
+        label="Map Edge"
+        href="demos/vanilla-mature/"
+        blurb="The page slides off. The tree is already underneath."
+      />
+      <VariantTile
+        id="modal"
+        label="Modal Edge"
+        href="demos/modal-edge/"
+        blurb="This sheet slides back. Ancestors stay as layers."
+      />
+      <VariantTile
+        id="path"
+        label="Path Edge"
+        href="demos/path-edge/"
+        blurb="The L-edge is the hops you took — unique colors."
+      />
+    </nav>
+
+    <h2 class="hub-h2">Variants × islands</h2>
+    <p class="hub-note">
+      Solid, React, and Svelte ship Map Edge today. Modal and Path are vanilla-first — empty cells
+      are not a different product, just not an island yet.
     </p>
-    <div class="demo-grid">
-      <a class="demo-card" href={hrefWithBase('demos/solid-cloud/')}>
-        <strong>Solid · cloud</strong>
-        <span>Console parody with overload toggle and signal-driven rails.</span>
-      </a>
-      <a class="demo-card" href={hrefWithBase('demos/react-suite/')}>
-        <strong>React · suite</strong>
-        <span>Microsoft-suite-ish shell with duo-tone overlays (Next-portable).</span>
-      </a>
-      <a class="demo-card" href={hrefWithBase('demos/svelte-community/')}>
-        <strong>Svelte · community</strong>
-        <span>Reddit/SO-ish spaces with softer transitions.</span>
-      </a>
-      <a class="demo-card" href={hrefWithBase('demos/vanilla-mature/')}>
-        <strong>Vanilla</strong>
-        <span>Hover expands the L-edge; click slides this page off the map underneath.</span>
-      </a>
+    <div class="edge-matrix-wrap">
+      <table class="edge-matrix">
+        <thead>
+          <tr>
+            <th scope="col">Variant</th>
+            <th scope="col">
+              <span class="fw-head"><FrameworkMark id="vanilla" />Vanilla</span>
+            </th>
+            <th scope="col">
+              <span class="fw-head"><FrameworkMark id="solid" />Solid</span>
+            </th>
+            <th scope="col">
+              <span class="fw-head"><FrameworkMark id="react" />React</span>
+            </th>
+            <th scope="col">
+              <span class="fw-head"><FrameworkMark id="svelte" />Svelte</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Map Edge</th>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/vanilla-mature/')}>
+                <span class="variant-preview variant-preview-map" aria-hidden="true"></span>
+                Vanilla
+              </a>
+            </td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/solid-cloud/')}>
+                <span class="variant-preview variant-preview-map" aria-hidden="true"></span>
+                Cloud
+              </a>
+            </td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/react-suite/')}>
+                <span class="variant-preview variant-preview-map" aria-hidden="true"></span>
+                Suite
+              </a>
+            </td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/svelte-community/')}>
+                <span class="variant-preview variant-preview-map" aria-hidden="true"></span>
+                Community
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Modal Edge</th>
+            <td>
+              <div class="matrix-stack">
+                <a class="matrix-cell" href={hrefWithBase('demos/modal-edge/')}>
+                  <span class="variant-preview variant-preview-modal" aria-hidden="true">
+                    <span class="variant-modal-mock"><i></i><i></i><i></i></span>
+                  </span>
+                  Rest
+                </a>
+                <a class="matrix-cell" href={hrefWithBase('demos/modal-edge-live/')}>
+                  <span class="variant-preview variant-preview-modal" aria-hidden="true">
+                    <span class="variant-modal-mock"><i></i><i></i><i></i></span>
+                  </span>
+                  Live
+                </a>
+              </div>
+            </td>
+            <td class="matrix-empty" colspan="3">Vanilla-first</td>
+          </tr>
+          <tr>
+            <th scope="row">Path Edge</th>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/path-edge/')}>
+                <span class="variant-preview variant-preview-path" aria-hidden="true"></span>
+                Workshop
+              </a>
+            </td>
+            <td class="matrix-empty" colspan="3">Vanilla-first</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:0.5rem 0 0.65rem">
-      Variant B · Modal Edge
-    </h2>
-    <p style="color:var(--muted);max-width:42rem;line-height:1.55;margin:0 0 0.85rem">
-      The edge <em>is</em> the current node. Click → View Transitions slide the sheet down and
-      right; ancestor contexts remain as colored layers underneath. Click a layer to jump to that
-      node. Also called Context Edge / Nav Edge in conversation.
-    </p>
-    <div class="demo-grid">
-      <a class="demo-card" href={hrefWithBase('demos/modal-edge/')}>
-        <strong>Modal Edge · Rest</strong>
-        <span>Ancestry layers with slide-to-reveal (View Transitions API).</span>
-      </a>
-      <a class="demo-card" href={hrefWithBase('demos/modal-edge-live/')}>
-        <strong>Modal Edge · Live</strong>
-        <span>Pointer near the edge peeks the sheet.</span>
-      </a>
-    </div>
-
-    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:0.5rem 0 0.65rem">
-      Variant C · Path Edge
-    </h2>
-    <p style="color:var(--muted);max-width:42rem;line-height:1.55;margin:0 0 0.85rem">
-      The L-edge is a path trace: unique colors for the hops from root to here. Hover either
-      edge and both present. Labels only on the top. One workshop: Color / Subtle, then Live /
-      Live Subtle.
-    </p>
-    <div class="demo-grid">
-      <a class="demo-card" href={hrefWithBase('demos/path-edge/')}>
-        <strong>Path Edge</strong>
-        <span>Color, Tint, Live, Live Tint — overflow-only compression, left pack origin.</span>
-      </a>
-    </div>
-
-    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:0 0 0.5rem">
-      Framework impedance (short)
-    </h2>
-    <ul style="color:var(--muted);line-height:1.55;max-width:42rem;padding-left:1.2rem">
+    <h2 class="hub-h2">Framework impedance (short)</h2>
+    <ul class="hub-list">
       <li>
-        <strong style="color:var(--ink)">Solid / SolidStart</strong> — shines for long-lived shell
-        state; drop the Solid island into a SolidStart layout (no SolidStart app required here).
+        <strong>Solid / SolidStart</strong> — long-lived shell state; drop the Solid island into a
+        SolidStart layout.
       </li>
       <li>
-        <strong style="color:var(--ink)">React / Next.js</strong> — same shell as a
-        <code>"use client"</code> layout wrapper; keep overlay identity in client state. Modal Edge
-        pairs well with the View Transitions API in supporting browsers.
+        <strong>React / Next.js</strong> — same shell as a <code>"use client"</code> layout wrapper.
       </li>
       <li>
-        <strong style="color:var(--ink)">Svelte / SvelteKit</strong> — strong for edge motion; Kit
-        layouts mirror the substrate slot.
+        <strong>Svelte / SvelteKit</strong> — strong for edge motion; Kit layouts mirror the substrate.
       </li>
       <li>
-        <strong style="color:var(--ink)">Astro islands</strong> — ideal for multi-framework demos;
-        production SPAs should own rails inside their shell.
+        <strong>Astro islands</strong> — this demo desk. Production SPAs should own the bar inside
+        their shell.
       </li>
     </ul>
   </main>

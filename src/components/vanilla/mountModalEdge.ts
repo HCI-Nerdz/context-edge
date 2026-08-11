@@ -9,7 +9,7 @@ export type ModalEdgeOptions = {
 };
 
 /**
- * Modal Edge / Nav Edge variant B:
+ * Modal Edge / Edge Bar variant B:
  * Edge color = current node. Click slides the current sheet down+right
  * (View Transitions when available) to reveal ancestor layers behind it.
  */
@@ -47,7 +47,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
           ${revealed ? 'layers revealed' : 'sheet closed'} · ${current.label}
         </span>
         <button type="button" class="me-hint-btn" data-toggle>
-          ${revealed ? 'Close stack' : 'Open Nav Edge'}
+          ${revealed ? 'Close stack' : 'Open Edge Bar'}
         </button>
       </div>
       <div
@@ -122,7 +122,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       const vp = root.querySelector('.me-viewport');
       const btn = root.querySelector('.me-hint-btn');
       vp?.classList.toggle('is-revealed', revealed);
-      if (btn) btn.textContent = revealed ? 'Close stack' : 'Open Nav Edge';
+      if (btn) btn.textContent = revealed ? 'Close stack' : 'Open Edge Bar';
       const stack = root.querySelector('.me-stack');
       stack?.setAttribute('aria-hidden', revealed ? 'false' : 'true');
     }

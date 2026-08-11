@@ -1,6 +1,7 @@
 ---
 import VariantSwitch from './VariantSwitch.astro';
 import ModalMode from './ModalMode.astro';
+import FrameworkMark from './FrameworkMark.astro';
 import { hrefWithBase } from '../lib/base';
 
 interface Props {
@@ -17,7 +18,10 @@ const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
 <div class="demo-head" transition:name="demo-head">
   <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
   <p class="eyebrow">Demo · Variant {letter}</p>
-  <h1>{title}</h1>
+  <div class="page-kicker">
+    <FrameworkMark id="vanilla" />
+    <h1>{title}</h1>
+  </div>
   <p class="lede">{lede}</p>
   <div class="demo-switches">
     <VariantSwitch current={variant} />

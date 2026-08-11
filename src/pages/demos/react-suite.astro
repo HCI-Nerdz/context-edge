@@ -1,18 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
+import FrameworkMark from '../../components/FrameworkMark.astro';
 import ContextRailsShell from '../../components/react/ContextRailsShell';
 import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
-  title="React suite · Context rails"
+  title="React suite · Edge Bar"
   description="React island demo — suite shell with duo-tone platform overlays."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
     <p class="eyebrow">Demo · React</p>
-    <h1>Suite shell</h1>
+    <div class="page-kicker">
+      <FrameworkMark id="react" />
+      <h1>Suite shell</h1>
+    </div>
     <p class="lede">
       Portable toward Next.js App Router as a client layout wrapper around page content.
     </p>

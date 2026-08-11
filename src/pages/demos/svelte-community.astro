@@ -1,18 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
+import FrameworkMark from '../../components/FrameworkMark.astro';
 import ContextRailsShell from '../../components/svelte/ContextRailsShell.svelte';
 import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
-  title="Svelte community · Context rails"
+  title="Svelte community · Edge Bar"
   description="Svelte island demo — community/spaces ecosystem with softer chrome."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
     <p class="eyebrow">Demo · Svelte</p>
-    <h1>Community spaces</h1>
+    <div class="page-kicker">
+      <FrameworkMark id="svelte" />
+      <h1>Community spaces</h1>
+    </div>
     <p class="lede">
       Subsection and role navigation as substrate — not ephemeral header pills on the feed.
     </p>
