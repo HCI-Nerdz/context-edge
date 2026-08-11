@@ -24,7 +24,7 @@ Astro 5 islands — Solid (`src/components/solid`), React (`src/components/react
 
 - SolidStart: reuse Solid shell in a root layout; no SolidStart app in this repo.
 - Next.js: port React shell as a `"use client"` layout wrapper; Modal Edge can use `document.startViewTransition`.
-- See README *Framework impedance*.
+- See README *Framework impedance match*.
 
 ## Machine facts
 

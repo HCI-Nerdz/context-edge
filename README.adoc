@@ -144,7 +144,7 @@ ifdef::env-github[]
 ++++
 endif::[]
 
-== Framework impedance
+== Framework impedance match
 
 Context rails are long-lived *shell chrome* (hover width, open overlay, platform identity).
 
