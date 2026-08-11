@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-11 — Mock selected chips keep contrast in dark mode
+
+* Cloud/Inbox “on” labels no longer use a light-mode chip under dark ink
+
 == 2026-08-11 — Product mocks fit the 16:10 stage
 
 * Each skin fills the sheet (landscape chrome, no inner scroll of a tall page)

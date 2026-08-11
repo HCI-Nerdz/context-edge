@@ -17,6 +17,11 @@ html[data-theme='dark'] {
   --mock-find: #3c4043;
   --mock-link: #8ab4f8;
   --mock-url: #81c995;
+  --mock-brand: #8ab4f8;
+  --mock-select: #3c4d6b;
+  --mock-select-ink: #e8eaed;
+  --mock-compose: #174ea6;
+  --mock-compose-ink: #d2e3fc;
   --font-display: "Segoe UI", "IBM Plex Sans", system-ui, sans-serif;
   --font-body: "Segoe UI", "IBM Plex Sans", system-ui, sans-serif;
 }
@@ -39,6 +44,11 @@ html[data-theme='light'] {
   --mock-find: #f1f3f4;
   --mock-link: #1a0dab;
   --mock-url: #006621;
+  --mock-brand: #1a73e8;
+  --mock-select: #d3e3fd;
+  --mock-select-ink: #041e49;
+  --mock-compose: #c2e7ff;
+  --mock-compose-ink: #001d35;
 }
 
 * {
@@ -592,7 +602,7 @@ button.variant-switch-item.is-current:hover {
 }
 
 .cr-mock-top-cloud {
-  color: #1a73e8;
+  color: var(--mock-brand);
 }
 
 .cr-mock-top-droid {
@@ -725,8 +735,8 @@ button.variant-switch-item.is-current:hover {
   margin: 0 0.35rem 0.55rem;
   padding: 0.45rem 0.7rem;
   border-radius: 999px;
-  background: #c2e7ff;
-  color: #001d35;
+  background: var(--mock-compose);
+  color: var(--mock-compose-ink);
   font-weight: 600;
 }
 
@@ -737,7 +747,8 @@ button.variant-switch-item.is-current:hover {
 
 .cr-mock-mail-split aside .is-on,
 .cr-mock-cloud-body aside .is-on {
-  background: #d3e3fd;
+  background: var(--mock-select);
+  color: var(--mock-select-ink);
   font-weight: 600;
 }
 
@@ -899,8 +910,8 @@ button.variant-switch-item.is-current:hover {
 }
 
 .cr-mock-day.is-on {
-  background: #1a73e8;
-  color: #fff;
+  background: var(--mock-brand);
+  color: var(--mock-bg);
   border-radius: 50%;
 }
 
@@ -1211,8 +1222,8 @@ button.variant-switch-item.is-current:hover {
   margin-top: 0.5rem;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  background: #8ab4f8;
-  color: #062e6f;
+  background: var(--mock-brand);
+  color: var(--mock-bg);
   font-size: 0.8rem;
 }
 
