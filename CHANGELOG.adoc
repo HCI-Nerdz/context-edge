@@ -1,5 +1,28 @@
 = Changelog
 
+== 2026-08-11 — Map activity is a product mock
+
+* The page above the tree is a product-skin mock (inbox, console, search, YouTube, …), not demo-card copy
+
+== 2026-08-10 — Map reveals an org tree
+
+* Clicking the Map rails uncovers a scrollable Alphabet/Google product tree (nodes + marks)
+* Demo hierarchy only — not an official org chart
+
+== 2026-08-10 — Map hover curve; drop Map Live
+
+* Rest rails use the original `0.22s ease` expand (`0.35rem` → `2.75rem`) on edges and corner
+* Removed Map Live (proximity thickness). Live stays on Modal and Path
+* Map lede states the streets/buildings idea without a slogan
+
+== 2026-08-10 — Map Edge view-transition reveal
+
+* link:changelog-details/2026-08-10%20-%20map-vt-reveal.adoc[Details]
+
+== 2026-08-10 — Map L-join uses one expand curve
+
+* Corner and rails share `0.22s ease` on size and offset so the join does not gap
+
 == 2026-08-10 — Subtle, Live dock, variant thumbs, page VT
 
 * link:changelog-details/2026-08-10%20-%20subtle-live-vt.adoc[Details]

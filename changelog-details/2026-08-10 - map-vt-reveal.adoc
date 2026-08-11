@@ -1,0 +1,6 @@
+= 2026-08-10 — Map Edge view-transition reveal
+
+* Clicking a rail slides the activity page off (View Transitions) to show a full map page already underneath
+* *Transition style* segmented control: Slide off, Right, Down, Fade, Scale, Wipe
+* Vanilla plus Solid/React/Svelte map islands share the same stack
+* Version 0.7.0

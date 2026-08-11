@@ -1,7 +1,7 @@
 {
   "name": "@hci-nerdz/context-rails",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "packageManager": "pnpm@10.28.2",
   "description": "Context rails — edge-summoned ecosystem navigation (Astro islands: Solid, React, Svelte, vanilla)",

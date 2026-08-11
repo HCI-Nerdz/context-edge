@@ -4,7 +4,7 @@
 
 MVP demos for **Nav Edge** / context rails:
 
-- **Variant A — Map Edge:** thin top/left edges → wireframe ecosystem map (Solid/React/Svelte/vanilla)
+- **Variant A — Map Edge:** thin top/left edges → click slides the activity page off (View Transitions) to reveal a scrollable Alphabet/Google product tree underneath. *Transition style* switcher on the island (Solid/React/Svelte/vanilla)
 - **Variant B — Modal Edge:** edge = current node; View Transitions slide sheet to reveal colored ancestry layers (`/demos/modal-edge/`)
 - **Variant C — Path Edge:** breadcrumb as color series; paired hover; current-first left marks (`/demos/path-edge/`)
 
@@ -18,7 +18,7 @@ MVP demos for **Nav Edge** / context rails:
 
 ## Stack
 
-Astro 5 islands — Solid (`src/components/solid`), React (`src/components/react`), Svelte (`src/components/svelte`), vanilla mount. Shared contracts: `src/lib/platforms.ts`, `src/lib/nav-stack.ts`.
+Astro 5 islands — Solid (`src/components/solid`), React (`src/components/react`), Svelte (`src/components/svelte`), vanilla mount. Shared contracts: `src/lib/org-tree.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge).
 
 ## Framework hosts
 
