@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Throggle from '../../components/Throggle.astro';
-
-const base = import.meta.env.BASE_URL;
+import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
@@ -10,7 +9,7 @@ const base = import.meta.env.BASE_URL;
   description="Variant B: View Transitions slide the current sheet to reveal colored ancestor layers."
 >
   <main class="shell">
-    <p><a class="back" href={base}>← Hub</a></p>
+    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
     <p class="eyebrow">Demo · Variant B · Modal Edge</p>
     <h1>Modal Edge (stack reveal)</h1>
     <p class="lede">

@@ -1,15 +1,16 @@
 ---
+import { hrefWithBase } from '../lib/base';
+
 interface Props {
   current: 'map' | 'modal' | 'path';
 }
 
 const { current } = Astro.props;
-const base = import.meta.env.BASE_URL;
 
 const items = [
-  { id: 'map' as const, label: 'Map', href: `${base}demos/vanilla-mature/` },
-  { id: 'modal' as const, label: 'Modal', href: `${base}demos/modal-edge/` },
-  { id: 'path' as const, label: 'Path', href: `${base}demos/path-edge/` },
+  { id: 'map' as const, label: 'Map', href: hrefWithBase('demos/vanilla-mature/') },
+  { id: 'modal' as const, label: 'Modal', href: hrefWithBase('demos/modal-edge/') },
+  { id: 'path' as const, label: 'Path', href: hrefWithBase('demos/path-edge/') },
 ];
 ---
 
@@ -17,17 +18,16 @@ const items = [
   <span class="throggle-name">Throggle</span>
   <div class="throggle-track" role="list">
     {
-      items.map((item) =>
-        item.id === current ? (
-          <span class="throggle-item is-current" role="listitem" aria-current="page">
-            {item.label}
-          </span>
-        ) : (
-          <a class="throggle-item" role="listitem" href={item.href}>
-            {item.label}
-          </a>
-        ),
-      )
+      items.map((item) => (
+        <a
+          class:list={['throggle-item', { 'is-current': item.id === current }]}
+          role="listitem"
+          href={item.href}
+          aria-current={item.id === current ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))
     }
   </div>
 </nav>

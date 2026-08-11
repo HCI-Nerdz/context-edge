@@ -158,7 +158,12 @@ a.throggle-item:hover {
 .throggle-item.is-current {
   color: var(--bg);
   background: var(--accent);
-  cursor: default;
+}
+
+a.throggle-item.is-current:hover {
+  color: var(--bg);
+  background: var(--accent);
+  filter: brightness(1.08);
 }
 
 .about {

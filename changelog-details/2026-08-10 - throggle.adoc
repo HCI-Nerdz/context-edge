@@ -1,4 +1,5 @@
 = 2026-08-10 — Variant throggle
 
 * Three-way Map / Modal / Path control on demo pages
-* Current variant is selected and not a link (`aria-current`)
+* Current variant stays selected (`aria-current`) and remains a link
+* Join throggle / hub hrefs with `hrefWithBase` so Pages `base` does not 404

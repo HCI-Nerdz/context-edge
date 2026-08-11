@@ -2,8 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Throggle from '../../components/Throggle.astro';
 import ContextRailsShell from '../../components/solid/ContextRailsShell';
-
-const base = import.meta.env.BASE_URL;
+import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
@@ -11,7 +10,7 @@ const base = import.meta.env.BASE_URL;
   description="Solid island demo — cloud-console parody rescued by context rails."
 >
   <main class="shell">
-    <p><a class="back" href={base}>← Hub</a></p>
+    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
     <p class="eyebrow">Demo · Solid</p>
     <h1>Cloud console → rails</h1>
     <p class="lede">

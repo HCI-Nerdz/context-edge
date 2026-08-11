@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { hrefWithBase } from '../lib/base';
 import version from '../../version.json';
-
-const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
@@ -34,19 +33,19 @@ const base = import.meta.env.BASE_URL;
       colors identify which building you are in.
     </p>
     <div class="demo-grid">
-      <a class="demo-card" href={`${base}demos/solid-cloud/`}>
+      <a class="demo-card" href={hrefWithBase('demos/solid-cloud/')}>
         <strong>Solid · cloud</strong>
         <span>Console parody with overload toggle and signal-driven rails.</span>
       </a>
-      <a class="demo-card" href={`${base}demos/react-suite/`}>
+      <a class="demo-card" href={hrefWithBase('demos/react-suite/')}>
         <strong>React · suite</strong>
         <span>Microsoft-suite-ish shell with duo-tone overlays (Next-portable).</span>
       </a>
-      <a class="demo-card" href={`${base}demos/svelte-community/`}>
+      <a class="demo-card" href={hrefWithBase('demos/svelte-community/')}>
         <strong>Svelte · community</strong>
         <span>Reddit/SO-ish spaces with softer transitions.</span>
       </a>
-      <a class="demo-card" href={`${base}demos/vanilla-mature/`}>
+      <a class="demo-card" href={hrefWithBase('demos/vanilla-mature/')}>
         <strong>Vanilla · mature</strong>
         <span>Color-only edges — presence without labels.</span>
       </a>
@@ -61,7 +60,7 @@ const base = import.meta.env.BASE_URL;
       node. Also called Context Edge / Nav Edge in conversation.
     </p>
     <div class="demo-grid">
-      <a class="demo-card" href={`${base}demos/modal-edge/`}>
+      <a class="demo-card" href={hrefWithBase('demos/modal-edge/')}>
         <strong>Modal Edge · VT stack</strong>
         <span>Ancestry layers with slide-to-reveal (View Transitions API).</span>
       </a>
@@ -76,7 +75,7 @@ const base = import.meta.env.BASE_URL;
       compress, then unfold on scroll.
     </p>
     <div class="demo-grid">
-      <a class="demo-card" href={`${base}demos/path-edge/`}>
+      <a class="demo-card" href={hrefWithBase('demos/path-edge/')}>
         <strong>Path Edge · breadcrumb colors</strong>
         <span>Stacked path identity — not an icon toolbar.</span>
       </a>
