@@ -2,9 +2,8 @@ import {
   BLEND_MODES,
   demoPath,
   depthShade,
-  layoutLiveRail,
-  layoutRail,
   pathThrough,
+  sizePathStacks,
   type BlendMode,
   type PathNode,
 } from '../../lib/path-edge';
@@ -50,41 +49,16 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     return pathThrough(currentId, all);
   }
 
-  function remPx(n: number): number {
-    return n * parseFloat(getComputedStyle(document.documentElement).fontSize || '16');
-  }
-
   function applyLayout() {
     const list = nodes();
     root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
-      const live = stage.dataset.live === '1';
-      const topRail = stage.querySelector('.pe-top') as HTMLElement;
-      const leftRail = stage.querySelector('.pe-left') as HTMLElement;
-      const topStack = stage.querySelector('.pe-stack-top') as HTMLElement;
-      const leftStack = stage.querySelector('.pe-stack-left') as HTMLElement;
-      if (!topRail || !leftRail || !topStack || !leftStack) return;
-
-      const topBudget = topRail.clientWidth * (topLength / 100);
-      const leftBudget = leftRail.clientHeight * (leftLength / 100);
-      const layout = live ? layoutLiveRail : layoutRail;
-      const topSizes = layout({
+      sizePathStacks({
+        stage,
         count: list.length,
-        budget: topBudget,
-        conventional: remPx(7.1),
-        focusFromRoot: live ? focusFromRoot : null,
-      });
-      const leftSizes = layout({
-        count: list.length,
-        budget: leftBudget,
-        conventional: remPx(4.2),
-        focusFromRoot: live ? focusFromRoot : null,
-      });
-
-      topStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-        el.style.flex = `0 0 ${topSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
-      });
-      leftStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-        el.style.flex = `0 0 ${leftSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
+        live: stage.dataset.live === '1',
+        focusFromRoot,
+        topLength,
+        leftLength,
       });
     });
   }
@@ -302,7 +276,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           data-stage="${kind}" data-live="${live ? '1' : '0'}"
           style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${current.color};--mono-top:${monoTop};--mono-left:${monoLeft}">
           <div class="pe-rails" data-rails>
-            <button type="button" class="pe-corner" data-goto="${current.id}" title="${current.label}"
+            <button type="button" class="pe-corner cr-rail cr-rail-corner" data-goto="${current.id}" title="${current.label}"
               style="--top-seg:${current.color};--left-seg:${current.color}">
               <span class="pe-corner-miter" aria-hidden="true">
                 <span class="pe-miter-top"></span><span class="pe-miter-left"></span>
@@ -311,11 +285,11 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
                 <span class="pe-miter-top"></span><span class="pe-miter-left"></span>
               </span>
             </button>
-            <div class="pe-top" role="toolbar" aria-label="${label} top path">
+            <div class="pe-top cr-rail cr-rail-top" role="toolbar" aria-label="${label} top path">
               <div class="pe-stack pe-stack-top">${segs(list, 'top', current.color)}</div>
               <div class="pe-slack" aria-hidden="true"></div>
             </div>
-            <div class="pe-left" data-pack="${leftPack}" role="toolbar" aria-label="${label} left path">
+            <div class="pe-left cr-rail cr-rail-left" data-pack="${leftPack}" role="toolbar" aria-label="${label} left path">
               <div class="pe-stack pe-stack-left">${segs(list, 'left', current.color)}</div>
               <div class="pe-slack" aria-hidden="true"></div>
             </div>

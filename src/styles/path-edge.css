@@ -137,9 +137,9 @@
 }
 
 .pe-stage {
-  --idle: 0.42rem;
-  --hover-top: 2.6rem;
-  --hover-left: 3.4rem;
+  --rail-idle: 0.35rem;
+  --rail-hover: 2.75rem;
+  --idle: var(--rail-idle);
   --top-length: 72%;
   --left-length: 72%;
   --blend: color;
@@ -153,39 +153,13 @@
     #101418;
 }
 
-/* Specified values must change (idle → hover), or width/left never interpolate. */
-.pe-stage.is-open .pe-corner,
-.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-corner {
-  width: calc(var(--hover-left) + 2px);
-  height: calc(var(--hover-top) + 2px);
-}
-
-.pe-stage.is-open .pe-top,
-.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-top {
-  height: var(--hover-top);
-  left: calc(var(--hover-left) - 1px);
-}
-
-.pe-stage.is-open .pe-left,
-.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-left {
-  width: var(--hover-left);
-  top: calc(var(--hover-top) - 1px);
+/* Paint only — L geometry lives on .cr-rail* in global.css (same as Map / Modal). */
+.pe-stage .cr-rail {
+  background: transparent;
 }
 
 .pe-corner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  width: calc(var(--idle) + 2px);
-  height: calc(var(--idle) + 2px);
-  padding: 0;
-  border: 0;
-  cursor: pointer;
-  background: transparent;
   isolation: isolate;
-  pointer-events: auto;
-  transition: width 0.22s ease, height 0.22s ease;
 }
 
 .pe-corner-miter,
@@ -227,27 +201,15 @@
 }
 
 .pe-top {
-  position: absolute;
-  top: 0;
-  left: calc(var(--idle) - 1px);
-  right: 0;
-  height: var(--idle);
   display: flex;
   flex-direction: row;
   z-index: 4;
-  transition: height 0.22s ease, left 0.22s ease;
 }
 
 .pe-left {
-  position: absolute;
-  top: calc(var(--idle) - 1px);
-  left: 0;
-  bottom: 0;
-  width: var(--idle);
   display: flex;
   flex-direction: column;
   z-index: 4;
-  transition: width 0.22s ease, top 0.22s ease;
   overflow: hidden;
 }
 
@@ -333,13 +295,13 @@
 
 .pe-stage.is-open .pe-label,
 .pe-stage.is-open .pe-mark,
-.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-label,
-.pe-stage:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-mark {
+.pe-stage:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-label,
+.pe-stage:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-mark {
   opacity: 1;
 }
 
 .pe-content {
-  margin: calc(var(--idle) + 0.85rem) 1rem 1rem calc(var(--idle) + 0.85rem);
+  margin: calc(var(--rail-idle) + 0.85rem) 1rem 1rem calc(var(--rail-idle) + 0.85rem);
 }
 
 .pe-stage.is-chroma .pe-seg {
@@ -369,8 +331,8 @@
 
 .pe-stage.is-tint.is-open .pe-seg-color,
 .pe-stage.is-tint.is-open .pe-corner-color,
-.pe-stage.is-tint:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-seg-color,
-.pe-stage.is-tint:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover, .pe-seg:focus-visible) .pe-corner-color {
+.pe-stage.is-tint:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-seg-color,
+.pe-stage.is-tint:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-corner-color {
   opacity: 1;
   -webkit-mask-image: radial-gradient(
     6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
@@ -405,7 +367,7 @@
 
 .pe-stage.is-tint.is-open .pe-corner-color,
 .pe-stage.is-tint.is-blend-preview .pe-corner-color,
-.pe-stage.is-tint:has(.pe-corner:hover, .pe-top:hover, .pe-left:hover) .pe-corner-color {
+.pe-stage.is-tint:has(.cr-rail:hover) .pe-corner-color {
   mix-blend-mode: var(--blend, color);
 }
 

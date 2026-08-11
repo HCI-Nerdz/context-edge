@@ -161,8 +161,19 @@ h1 {
 }
 
 .demo-switches {
-  height: 7.35rem;
+  min-height: 10.5rem;
   margin-bottom: 0.35rem;
+}
+
+.fw-switch-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.fw-switch-item .fw-mark svg {
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 .demo-switches .variant-switch {
@@ -603,18 +614,16 @@ button.variant-switch-item.is-current:hover {
   outline-offset: 2px;
 }
 
-.cr-stage:has(.cr-rail:hover) .cr-rail-top,
-.cr-stage:has(.cr-rail:focus-visible) .cr-rail-top,
-.me-viewport:has(.cr-rail:hover) .cr-rail-top,
-.me-viewport:has(.cr-rail:focus-visible) .cr-rail-top {
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-top,
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-top,
+.pe-stage.is-open .cr-rail-top {
   height: var(--rail-hover);
   left: var(--rail-hover);
 }
 
-.cr-stage:has(.cr-rail:hover) .cr-rail-left,
-.cr-stage:has(.cr-rail:focus-visible) .cr-rail-left,
-.me-viewport:has(.cr-rail:hover) .cr-rail-left,
-.me-viewport:has(.cr-rail:focus-visible) .cr-rail-left {
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-left,
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-left,
+.pe-stage.is-open .cr-rail-left {
   width: var(--rail-hover);
   top: var(--rail-hover);
 }
@@ -627,10 +636,9 @@ button.variant-switch-item.is-current:hover {
   height: var(--rail-hover);
 }
 
-.cr-stage:has(.cr-rail:hover) .cr-rail-corner,
-.cr-stage:has(.cr-rail:focus-visible) .cr-rail-corner,
-.me-viewport:has(.cr-rail:hover) .cr-rail-corner,
-.me-viewport:has(.cr-rail:focus-visible) .cr-rail-corner {
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-corner,
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-corner,
+.pe-stage.is-open .cr-rail-corner {
   width: calc(var(--rail-hover) + 2px);
   height: calc(var(--rail-hover) + 2px);
 }
@@ -751,8 +759,9 @@ button.variant-switch-item.is-current:hover {
   pointer-events: none;
 }
 
-.cr-stage:has(.cr-rail:hover) .cr-rail-label,
-.cr-stage:has(.cr-rail:focus-visible) .cr-rail-label {
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-label,
+:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-label,
+.pe-stage.is-open .cr-rail-label {
   opacity: 1;
 }
 

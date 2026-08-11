@@ -77,11 +77,17 @@ Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 | `/demos/modal-edge/`
 | Vanilla — *Modal Edge* · View Transitions ancestry stack (Variant B)
 
+| `/demos/solid-modal/`, `/demos/react-modal/`, `/demos/svelte-modal/`
+| Solid / React / Svelte — same Modal Edge, same L-join
+
 | `/demos/path-edge/`
-| Vanilla — *Path Edge* · breadcrumb color series (Variant C)
+| Vanilla — *Path Edge* workshop (Variant C)
+
+| `/demos/solid-path/`, `/demos/react-path/`, `/demos/svelte-path/`
+| Solid / React / Svelte — Path Edge island
 |===
 
-Shared contracts: `src/lib/org-tree.ts` + `src/lib/map-vt.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge).
+Shared contracts: `src/lib/org-tree.ts` + `src/lib/map-vt.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge), `src/lib/path-edge.ts` (Path Edge). The L-join (`.cr-rail*`) is one CSS rule set for every variant.
 
 Two click models (do not force into one gesture while studying):
 

@@ -50,8 +50,8 @@ import version from '../../version.json';
 
     <h2 class="hub-h2">Variants × islands</h2>
     <p class="hub-note">
-      Solid, React, and Svelte ship Map Edge today. Modal and Path are vanilla-first — empty cells
-      are not a different product, just not an island yet.
+      Every variant uses the same L-join. Solid, React, Svelte, and vanilla each host Map, Modal,
+      and Path.
     </p>
     <div class="edge-matrix-wrap">
       <table class="edge-matrix">
@@ -118,7 +118,30 @@ import version from '../../version.json';
                 </a>
               </div>
             </td>
-            <td class="matrix-empty" colspan="3">Vanilla-first</td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/solid-modal/')}>
+                <span class="variant-preview variant-preview-modal" aria-hidden="true">
+                  <span class="variant-modal-mock"><i></i><i></i><i></i></span>
+                </span>
+                Solid
+              </a>
+            </td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/react-modal/')}>
+                <span class="variant-preview variant-preview-modal" aria-hidden="true">
+                  <span class="variant-modal-mock"><i></i><i></i><i></i></span>
+                </span>
+                React
+              </a>
+            </td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/svelte-modal/')}>
+                <span class="variant-preview variant-preview-modal" aria-hidden="true">
+                  <span class="variant-modal-mock"><i></i><i></i><i></i></span>
+                </span>
+                Svelte
+              </a>
+            </td>
           </tr>
           <tr>
             <th scope="row">Path Edge</th>
@@ -128,7 +151,24 @@ import version from '../../version.json';
                 Workshop
               </a>
             </td>
-            <td class="matrix-empty" colspan="3">Vanilla-first</td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/solid-path/')}>
+                <span class="variant-preview variant-preview-path" aria-hidden="true"></span>
+                Solid
+              </a>
+            </td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/react-path/')}>
+                <span class="variant-preview variant-preview-path" aria-hidden="true"></span>
+                React
+              </a>
+            </td>
+            <td>
+              <a class="matrix-cell" href={hrefWithBase('demos/svelte-path/')}>
+                <span class="variant-preview variant-preview-path" aria-hidden="true"></span>
+                Svelte
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>

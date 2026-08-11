@@ -3,28 +3,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ContextRailsShell from '../../components/svelte/ContextRailsShell.svelte';
+import PathEdgeShell from '../../components/svelte/PathEdgeShell.svelte';
 import { hrefWithBase } from '../../lib/base';
+import '../../styles/path-edge.css';
 ---
 
 <BaseLayout
-  title="Svelte community · Edge Bar"
-  description="Svelte island demo — community/spaces ecosystem with softer chrome."
+  title="Svelte Path Edge · Edge Bar"
+  description="Svelte island — Path Edge breadcrumb colors."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Edge Bar</a></p>
-    <p class="eyebrow">Demo · Svelte</p>
+    <p class="eyebrow">Demo · Svelte · Variant C</p>
     <div class="page-kicker">
       <FrameworkMark id="svelte" />
-      <h1>Community spaces</h1>
+      <h1>Path Edge</h1>
     </div>
     <p class="lede">
-      Subsection and role navigation as substrate — not ephemeral header pills on the feed.
+      Same L-join as Map and Modal. The rails are the hops you took — unique colors, current at the corner.
     </p>
     <div class="demo-switches">
-      <VariantSwitch current="map" framework="svelte" />
-      <FrameworkSwitch current="svelte" variant="map" />
+      <VariantSwitch current="path" framework="svelte" />
+      <FrameworkSwitch current="svelte" variant="path" />
     </div>
-    <ContextRailsShell client:load initialId="docs" />
+    <PathEdgeShell client:load island="Svelte" />
   </main>
 </BaseLayout>

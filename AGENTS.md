@@ -5,8 +5,9 @@
 MVP demos for **Edge Bar** (repo slug `context-rails`):
 
 - **Variant A — Map Edge:** thin top/left edges → click slides the activity page off (View Transitions) to reveal a scrollable Alphabet/Google product tree underneath. Map VT is scoped to `.cr-stage` (`src/lib/map-vt.ts`). *Transition style* on the island. Footer *Appearance* is the real page (`html[data-theme]`). Island *Appearance* only themes `.cr-sheet` mocks — follows the page until overridden (`src/lib/theme.ts`)
-- **Variant B — Modal Edge:** edge = current node; View Transitions slide sheet to reveal colored ancestry layers (`/demos/modal-edge/`)
-- **Variant C — Path Edge:** breadcrumb as color series; paired hover; current-first left marks (`/demos/path-edge/`)
+- **Variant B — Modal Edge:** edge = current node; View Transitions slide sheet to reveal colored ancestry layers (`/demos/modal-edge/`, plus Solid/React/Svelte islands)
+- **Variant C — Path Edge:** breadcrumb as color series; paired hover; current-first left marks (`/demos/path-edge/` workshop, plus Solid/React/Svelte islands)
+- **L-join:** one geometry — `.cr-rail` / `.cr-rail-corner` / `.cr-rail-top` / `.cr-rail-left` in `global.css`. Path paints segments on top; it does not invent its own idle/hover sizes.
 
 ## Links
 
@@ -18,7 +19,7 @@ MVP demos for **Edge Bar** (repo slug `context-rails`):
 
 ## Stack
 
-Astro 5 islands — Solid (`src/components/solid`), React (`src/components/react`), Svelte (`src/components/svelte`), vanilla mount. Shared contracts: `src/lib/org-tree.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge).
+Astro 5 islands — Solid (`src/components/solid`), React (`src/components/react`), Svelte (`src/components/svelte`), vanilla mount. Shared contracts: `src/lib/org-tree.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge), `src/lib/path-edge.ts` (Path Edge). Routes: `src/lib/demo-routes.ts`.
 
 ## Framework hosts
 

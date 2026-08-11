@@ -1,5 +1,6 @@
 ---
 import VariantSwitch from './VariantSwitch.astro';
+import FrameworkSwitch from './FrameworkSwitch.astro';
 import ModalMode from './ModalMode.astro';
 import FrameworkMark from './FrameworkMark.astro';
 import { hrefWithBase } from '../lib/base';
@@ -24,7 +25,8 @@ const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
   </div>
   <p class="lede">{lede}</p>
   <div class="demo-switches">
-    <VariantSwitch current={variant} />
+    <VariantSwitch current={variant} framework="vanilla" />
+    <FrameworkSwitch current="vanilla" variant={variant} />
     {variant === 'modal' && mode && <ModalMode current={mode} />}
   </div>
 </div>

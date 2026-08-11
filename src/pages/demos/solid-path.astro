@@ -3,29 +3,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ContextRailsShell from '../../components/solid/ContextRailsShell';
+import PathEdgeShell from '../../components/solid/PathEdgeShell';
 import { hrefWithBase } from '../../lib/base';
+import '../../styles/path-edge.css';
 ---
 
 <BaseLayout
-  title="Solid cloud · Edge Bar"
-  description="Solid island demo — cloud-console parody rescued by an Edge Bar."
+  title="Solid Path Edge · Edge Bar"
+  description="Solid island — Path Edge breadcrumb colors."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Edge Bar</a></p>
-    <p class="eyebrow">Demo · Solid</p>
+    <p class="eyebrow">Demo · Solid · Variant C</p>
     <div class="page-kicker">
       <FrameworkMark id="solid" />
-      <h1>Cloud console → rails</h1>
+      <h1>Path Edge</h1>
     </div>
     <p class="lede">
-      Fine-grained signals drive hover/open/platform identity. Toggle header overload to feel the
-      anti-pattern.
+      Same L-join as Map and Modal. The rails are the hops you took — unique colors, current at the corner.
     </p>
     <div class="demo-switches">
-      <VariantSwitch current="map" framework="solid" />
-      <FrameworkSwitch current="solid" variant="map" />
+      <VariantSwitch current="path" framework="solid" />
+      <FrameworkSwitch current="solid" variant="path" />
     </div>
-    <ContextRailsShell client:load showOverloadToggle={true} initialId="cloud" />
+    <PathEdgeShell client:load island="Solid" />
   </main>
 </BaseLayout>

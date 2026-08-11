@@ -1,0 +1,31 @@
+---
+import FrameworkMark from './FrameworkMark.astro';
+import { hrefWithBase } from '../lib/base';
+import { frameworks, variantRoutes, type FrameworkId, type VariantId } from '../lib/demo-routes';
+
+interface Props {
+  current: FrameworkId;
+  variant: VariantId;
+}
+
+const { current, variant } = Astro.props;
+---
+
+<nav class="variant-switch" aria-label="Framework">
+  <span class="variant-switch-name">Island</span>
+  <div class="variant-switch-track" role="list">
+    {
+      frameworks.map((fw) => (
+        <a
+          class:list={['variant-switch-item', 'fw-switch-item', { 'is-current': fw.id === current }]}
+          role="listitem"
+          href={hrefWithBase(variantRoutes[fw.id][variant])}
+          aria-current={fw.id === current ? 'page' : undefined}
+        >
+          <FrameworkMark id={fw.id} />
+          {fw.label}
+        </a>
+      ))
+    }
+  </div>
+</nav>

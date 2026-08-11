@@ -1,16 +1,18 @@
 ---
 import { hrefWithBase } from '../lib/base';
+import { variantRoutes, type FrameworkId, type VariantId } from '../lib/demo-routes';
 
 interface Props {
-  current: 'map' | 'modal' | 'path';
+  current: VariantId;
+  framework?: FrameworkId;
 }
 
-const { current } = Astro.props;
+const { current, framework = 'vanilla' } = Astro.props;
 
 const items = [
-  { id: 'map' as const, label: 'Map', href: hrefWithBase('demos/vanilla-mature/') },
-  { id: 'modal' as const, label: 'Modal', href: hrefWithBase('demos/modal-edge/') },
-  { id: 'path' as const, label: 'Path', href: hrefWithBase('demos/path-edge/') },
+  { id: 'map' as const, label: 'Map' },
+  { id: 'modal' as const, label: 'Modal' },
+  { id: 'path' as const, label: 'Path' },
 ];
 ---
 
@@ -22,7 +24,7 @@ const items = [
         <a
           class:list={['variant-thumb', { 'is-current': item.id === current }]}
           role="listitem"
-          href={item.href}
+          href={hrefWithBase(variantRoutes[framework][item.id])}
           aria-current={item.id === current ? 'page' : undefined}
         >
           <span class:list={['variant-preview', `variant-preview-${item.id}`]} aria-hidden="true">

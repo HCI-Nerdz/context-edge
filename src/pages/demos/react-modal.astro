@@ -3,28 +3,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ContextRailsShell from '../../components/react/ContextRailsShell';
+import ModalEdgeShell from '../../components/react/ModalEdgeShell';
 import { hrefWithBase } from '../../lib/base';
+import '../../styles/modal-edge.css';
 ---
 
 <BaseLayout
-  title="React suite · Edge Bar"
-  description="React island demo — suite shell with duo-tone platform overlays."
+  title="React Modal Edge · Edge Bar"
+  description="React island — Modal Edge ancestry stack."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Edge Bar</a></p>
-    <p class="eyebrow">Demo · React</p>
+    <p class="eyebrow">Demo · React · Variant B</p>
     <div class="page-kicker">
       <FrameworkMark id="react" />
-      <h1>Suite shell</h1>
+      <h1>Modal Edge</h1>
     </div>
     <p class="lede">
-      Portable toward Next.js App Router as a client layout wrapper around page content.
+      Same L-join as Map. Click slides this sheet back; ancestors stay as colored layers.
     </p>
     <div class="demo-switches">
-      <VariantSwitch current="map" framework="react" />
-      <FrameworkSwitch current="react" variant="map" />
+      <VariantSwitch current="modal" framework="react" />
+      <FrameworkSwitch current="react" variant="modal" />
     </div>
-    <ContextRailsShell client:load initialId="gmail" />
+    <ModalEdgeShell client:load island="React" />
   </main>
 </BaseLayout>

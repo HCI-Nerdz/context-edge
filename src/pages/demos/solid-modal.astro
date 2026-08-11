@@ -3,29 +3,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ContextRailsShell from '../../components/solid/ContextRailsShell';
+import ModalEdgeShell from '../../components/solid/ModalEdgeShell';
 import { hrefWithBase } from '../../lib/base';
+import '../../styles/modal-edge.css';
 ---
 
 <BaseLayout
-  title="Solid cloud · Edge Bar"
-  description="Solid island demo — cloud-console parody rescued by an Edge Bar."
+  title="Solid Modal Edge · Edge Bar"
+  description="Solid island — Modal Edge ancestry stack."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Edge Bar</a></p>
-    <p class="eyebrow">Demo · Solid</p>
+    <p class="eyebrow">Demo · Solid · Variant B</p>
     <div class="page-kicker">
       <FrameworkMark id="solid" />
-      <h1>Cloud console → rails</h1>
+      <h1>Modal Edge</h1>
     </div>
     <p class="lede">
-      Fine-grained signals drive hover/open/platform identity. Toggle header overload to feel the
-      anti-pattern.
+      Same L-join as Map. Click slides this sheet back; ancestors stay as colored layers.
     </p>
     <div class="demo-switches">
-      <VariantSwitch current="map" framework="solid" />
-      <FrameworkSwitch current="solid" variant="map" />
+      <VariantSwitch current="modal" framework="solid" />
+      <FrameworkSwitch current="solid" variant="modal" />
     </div>
-    <ContextRailsShell client:load showOverloadToggle={true} initialId="cloud" />
+    <ModalEdgeShell client:load island="Solid" />
   </main>
 </BaseLayout>

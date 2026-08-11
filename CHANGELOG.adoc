@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-08-11 — One L-join; Modal and Path islands
+
+* Map, Modal, and Path share `.cr-rail*` geometry (same idle/hover, same corner hit)
+* Solid, React, and Svelte host Modal Edge and Path Edge; the hub matrix is full
+* Variant switch stays on the current island; Island switch moves framework
+
 == 2026-08-11 — Path corner stays joined; nav says Edge Bar
 
 * Path rails animate idle→hover as real width/left (not snapped custom props), so the L-join stays under the pointer

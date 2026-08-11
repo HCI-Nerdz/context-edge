@@ -170,3 +170,77 @@ export const BLEND_MODES = [
 ] as const;
 
 export type BlendMode = (typeof BLEND_MODES)[number];
+
+export function pathStageVars(current: PathNode) {
+  return {
+    page: current.color,
+    monoTop: `color-mix(in srgb, ${current.color} 18%, hsl(0 0% 42%))`,
+    monoLeft: `color-mix(in srgb, ${current.color} 14%, hsl(0 0% 28%))`,
+  };
+}
+
+export function pathSegMono(current: PathNode, fromRoot: number, count: number) {
+  const shade = depthShade(fromRoot, count);
+  return `color-mix(in srgb, ${current.color} 14%, hsl(0 0% ${Math.round(18 + shade * 42)}%))`;
+}
+
+export function namePathHops(stage: HTMLElement, sid: string) {
+  const corner = stage.querySelector('.pe-corner') as HTMLElement | null;
+  if (corner) corner.style.viewTransitionName = `pe-${sid}-corner`;
+  stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
+    const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';
+    el.style.viewTransitionName = `pe-${sid}-${axis}-${el.dataset.goto}`;
+  });
+}
+
+export function markPathLeaves(stage: HTMLElement, nextId: string, all: PathNode[] = demoPath) {
+  const keep = new Set(pathThrough(nextId, all).map((n) => n.id));
+  stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
+    const id = el.dataset.goto ?? '';
+    const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';
+    el.style.viewTransitionClass = keep.has(id) ? 'pe-keep' : `pe-leaf pe-leaf-${axis}`;
+  });
+}
+
+export function remPx(n: number): number {
+  return n * parseFloat(getComputedStyle(document.documentElement).fontSize || '16');
+}
+
+/** Size path stacks from the shared L geometry (same idle/hover as Map / Modal). */
+export function sizePathStacks(opts: {
+  stage: HTMLElement;
+  count: number;
+  live: boolean;
+  focusFromRoot: number | null;
+  topLength?: number;
+  leftLength?: number;
+}) {
+  const topRail = opts.stage.querySelector('.pe-top') as HTMLElement | null;
+  const leftRail = opts.stage.querySelector('.pe-left') as HTMLElement | null;
+  const topStack = opts.stage.querySelector('.pe-stack-top') as HTMLElement | null;
+  const leftStack = opts.stage.querySelector('.pe-stack-left') as HTMLElement | null;
+  if (!topRail || !leftRail || !topStack || !leftStack) return;
+
+  const topPct = opts.topLength ?? 72;
+  const leftPct = opts.leftLength ?? 72;
+  const layout = opts.live ? layoutLiveRail : layoutRail;
+  const topSizes = layout({
+    count: opts.count,
+    budget: topRail.clientWidth * (topPct / 100),
+    conventional: remPx(7.1),
+    focusFromRoot: opts.live ? opts.focusFromRoot : null,
+  });
+  const leftSizes = layout({
+    count: opts.count,
+    budget: leftRail.clientHeight * (leftPct / 100),
+    conventional: remPx(4.2),
+    focusFromRoot: opts.live ? opts.focusFromRoot : null,
+  });
+
+  topStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
+    el.style.flex = `0 0 ${topSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
+  });
+  leftStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
+    el.style.flex = `0 0 ${leftSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
+  });
+}
