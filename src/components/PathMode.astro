@@ -2,7 +2,7 @@
 import { hrefWithBase } from '../lib/base';
 
 interface Props {
-  current: 'rest' | 'tint' | 'live';
+  current: 'rest' | 'tint' | 'live' | 'tint-live';
 }
 
 const { current } = Astro.props;
@@ -10,6 +10,7 @@ const items = [
   { id: 'rest' as const, label: 'Rest', href: hrefWithBase('demos/path-edge/') },
   { id: 'tint' as const, label: 'Tint', href: hrefWithBase('demos/path-edge-tint/') },
   { id: 'live' as const, label: 'Live', href: hrefWithBase('demos/path-edge-live/') },
+  { id: 'tint-live' as const, label: 'Tint · Live', href: hrefWithBase('demos/path-edge-tint-live/') },
 ];
 ---
 

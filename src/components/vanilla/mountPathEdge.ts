@@ -6,7 +6,7 @@ import {
   type PathNode,
 } from '../../lib/path-edge';
 
-export type PathMode = 'rest' | 'live' | 'tint';
+export type PathMode = 'rest' | 'tint' | 'live' | 'tint-live';
 
 export type PathWorkshopOptions = {
   root: HTMLElement;
@@ -31,8 +31,8 @@ export function mountPathWorkshop(opts: PathWorkshopOptions) {
   let hint = { x: 0.15, y: 0.15 };
 
   const root = opts.root;
-  const live = mode === 'live';
-  const tint = mode === 'tint';
+  const live = mode === 'live' || mode === 'tint-live';
+  const tint = mode === 'tint' || mode === 'tint-live';
 
   function nodes(): PathNode[] {
     return pathThrough(currentId, all);
@@ -75,9 +75,9 @@ export function mountPathWorkshop(opts: PathWorkshopOptions) {
     });
     rails.addEventListener('pointermove', (e) => {
       const t = (e.target as HTMLElement).closest('[data-from-root]') as HTMLElement | null;
-      if (t) {
+      if (live && t) {
         const next = Number(t.dataset.fromRoot);
-        if (next !== focusFromRoot && (live || expandedA || expandedB)) {
+        if (next !== focusFromRoot) {
           focusFromRoot = next;
           applyWeights();
         }
@@ -90,6 +90,11 @@ export function mountPathWorkshop(opts: PathWorkshopOptions) {
         };
         stage.style.setProperty('--hint-x', String(hint.x));
         stage.style.setProperty('--hint-y', String(hint.y));
+        rails.querySelectorAll<HTMLElement>('.pe-seg, .pe-corner').forEach((el) => {
+          const sr = el.getBoundingClientRect();
+          el.style.setProperty('--local-x', `${e.clientX - sr.left}px`);
+          el.style.setProperty('--local-y', `${e.clientY - sr.top}px`);
+        });
       }
     });
   }
