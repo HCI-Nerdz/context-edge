@@ -4,6 +4,8 @@ export type ModalEdgeOptions = {
   root: HTMLElement;
   nodes?: NavNode[];
   initialId?: string;
+  /** Pointer near the edges peeks the sheet without a click. */
+  live?: boolean;
 };
 
 /**
@@ -16,6 +18,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
   let currentId = opts.initialId ?? nodes[nodes.length - 1]!.id;
   let revealed = false;
   const root = opts.root;
+  const live = opts.live === true;
 
   function stack(): NavNode[] {
     return stackThrough(currentId, nodes);
@@ -129,7 +132,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       });
     });
 
-    const sheet = root.querySelector('.me-sheet');
+    const sheet = root.querySelector('.me-sheet') as HTMLElement | null;
     if (sheet && revealed) {
       sheet.addEventListener('click', (e) => {
         if ((e.target as HTMLElement).closest('[data-toggle]')) return;
@@ -137,6 +140,21 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
           revealed = false;
           render();
         });
+      });
+    }
+
+    if (live && sheet && !revealed) {
+      const vp = root.querySelector('.me-viewport') as HTMLElement;
+      const peek = (e: PointerEvent) => {
+        const r = vp.getBoundingClientRect();
+        const top = Math.max(0, 1 - (e.clientY - r.top) / 72);
+        const left = Math.max(0, 1 - (e.clientX - r.left) / 72);
+        const t = Math.max(top, left);
+        sheet.style.transform = `translate(${18 * t}%, ${22 * t}%) scale(${1 - 0.08 * t})`;
+      };
+      vp.addEventListener('pointermove', peek);
+      vp.addEventListener('pointerleave', () => {
+        sheet.style.transform = '';
       });
     }
   }

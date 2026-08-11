@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
+import MapMode from '../../components/MapMode.astro';
 import { hrefWithBase } from '../../lib/base';
 ---
 
@@ -16,6 +17,7 @@ import { hrefWithBase } from '../../lib/base';
       The bar’s presence and color suggest the affordance. Click still opens the wireframe map.
     </p>
     <VariantSwitch current="map" />
+    <MapMode current="rest" />
     <div id="vanilla-root"></div>
   </main>
 </BaseLayout>

@@ -1,0 +1,251 @@
+.pe-toolbar {
+  flex-wrap: wrap;
+}
+
+.pe-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pe-toolbar input[type='range'] {
+  width: 9rem;
+}
+
+.pe-caption {
+  margin: -0.35rem 0 1rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  max-width: 42rem;
+  line-height: 1.45;
+}
+
+.pe-duo {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 52rem) {
+  .pe-duo {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pe-stage {
+  --idle: 0.42rem;
+  --hover-top: 2.6rem;
+  --hover-left: 3.4rem;
+  --rail-top: var(--idle);
+  --rail-left: var(--idle);
+  --top-length: 72%;
+  --left-length: 72%;
+  position: relative;
+  min-height: 26rem;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  overflow: hidden;
+  background:
+    radial-gradient(80% 70% at 100% 0%, rgba(161, 66, 244, 0.12), transparent 50%),
+    #101418;
+}
+
+.pe-stage.is-expanded {
+  --rail-top: var(--hover-top);
+  --rail-left: var(--hover-left);
+}
+
+.pe-corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: var(--rail-left);
+  height: var(--rail-top);
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  transition: width 0.22s ease, height 0.22s ease;
+}
+
+.pe-corner-top,
+.pe-corner-left {
+  position: absolute;
+  inset: 0;
+}
+
+.pe-corner-top {
+  background: var(--top-seg);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.pe-corner-left {
+  background: var(--left-seg);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.pe-corner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    transparent calc(50% - 0.6px),
+    rgba(0, 0, 0, 0.35) 50%,
+    transparent calc(50% + 0.6px)
+  );
+}
+
+.pe-top {
+  position: absolute;
+  top: 0;
+  left: var(--rail-left);
+  right: 0;
+  height: var(--rail-top);
+  display: flex;
+  flex-direction: row;
+  z-index: 4;
+  transition: height 0.22s ease, left 0.22s ease;
+}
+
+.pe-left {
+  position: absolute;
+  top: var(--rail-top);
+  left: 0;
+  bottom: 0;
+  width: var(--rail-left);
+  display: flex;
+  flex-direction: column;
+  z-index: 4;
+  transition: width 0.22s ease, top 0.22s ease;
+  overflow: hidden;
+}
+
+.pe-left-end {
+  justify-content: flex-end;
+}
+
+.pe-stack-top {
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 var(--top-length);
+  max-width: 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+.pe-stack-left {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 var(--left-length);
+  max-height: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+.pe-slack {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.pe-seg {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+  background: var(--seg);
+  font-family: var(--font-display);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  transition: flex-grow 0.18s ease;
+}
+
+.pe-seg:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.pe-seg-top {
+  display: grid;
+  place-items: center;
+}
+
+.pe-seg-left {
+  display: grid;
+  place-items: center;
+}
+
+.pe-seg-left.is-here {
+  min-height: 1.15rem;
+}
+
+.pe-stage.is-expanded .pe-seg-left.is-here {
+  min-height: 2.6rem;
+}
+
+.pe-label,
+.pe-mark {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pe-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.pe-mark {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.pe-stage.is-expanded .pe-label,
+.pe-stage.is-expanded .pe-mark {
+  opacity: 1;
+}
+
+.pe-content {
+  margin: calc(var(--idle) + 0.85rem) 1rem 1rem calc(var(--idle) + 0.85rem);
+}
+
+/* Tint: keep design-system hues, drop intensity; mouse reveals a color hint. */
+.pe-stage.is-tint .pe-corner-top {
+  background: color-mix(in srgb, var(--top-seg) 38%, #2c3236);
+}
+
+.pe-stage.is-tint .pe-corner-left {
+  background: color-mix(in srgb, var(--left-seg) 38%, #2c3236);
+}
+
+.pe-stage.is-tint .pe-seg {
+  background: color-mix(in srgb, var(--seg) calc(var(--depth-op) * 32%), #2c3236);
+}
+
+.pe-stage.is-tint .pe-rails {
+  isolation: isolate;
+}
+
+.pe-stage.is-tint .pe-rails::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: radial-gradient(
+    8.5rem circle at calc(var(--hint-x) * 100%) calc(var(--hint-y) * 100%),
+    color-mix(in srgb, white 28%, transparent),
+    transparent 72%
+  );
+  mix-blend-mode: soft-light;
+}
+
+.pe-stage.is-tint.is-expanded .pe-seg {
+  background: color-mix(in srgb, var(--seg) calc(var(--depth-op) * 22%), #3a4044);
+}

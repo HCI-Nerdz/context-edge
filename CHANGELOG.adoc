@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-10 — Path length, tint, and live modes
+
+* link:changelog-details/2026-08-10%20-%20path-length-modes.adoc[Details]
+
 == 2026-08-10 — Label the switch Variant
 
 * Visible control name is Variant (Map / Modal / Path), not a joke label

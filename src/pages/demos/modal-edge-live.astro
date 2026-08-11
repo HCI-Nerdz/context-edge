@@ -7,28 +7,26 @@ import '../../styles/modal-edge.css';
 ---
 
 <BaseLayout
-  title="Modal Edge · Nav Edge stack"
-  description="Variant B: View Transitions slide the current sheet to reveal colored ancestor layers."
+  title="Modal Edge · Live"
+  description="Pointer near the edges peeks the modal sheet — constant reaction test."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
     <p class="eyebrow">Demo · Variant B · Modal Edge</p>
-    <h1>Modal Edge (stack reveal)</h1>
+    <h1>Modal Edge · Live</h1>
     <p class="lede">
-      Each page is a modal sheet on the path that produced it. The Nav Edge wears the
-      <em>current</em> node’s color. Click the edge — the sheet slides down and right (View
-      Transitions API) and ancestor layers show through. Click a layer to jump there.
+      Same stack reveal. Moving toward the top or left edge peeks the sheet without a click.
+      Click still locks the full reveal.
     </p>
     <VariantSwitch current="modal" />
-    <ModalMode current="rest" />
+    <ModalMode current="live" />
     <div id="modal-edge-root"></div>
   </main>
 </BaseLayout>
-
 
 <script>
   import { mountModalEdge } from '../../components/vanilla/mountModalEdge';
 
   const root = document.getElementById('modal-edge-root');
-  if (root) mountModalEdge({ root });
+  if (root) mountModalEdge({ root, live: true });
 </script>

@@ -1,0 +1,6 @@
+= 2026-08-10 — Path length, tint, and live modes
+
+* Expand no longer equalizes segment lengths (rootward compression persists)
+* Controls renamed to Top length / Left length; two left packs share left length
+* Path modes: Rest, Tint (opacity-by-depth + mouse color hint), Live (dock amplify)
+* Map / Modal each gain a Live mode for constant pointer reaction

@@ -1,0 +1,32 @@
+---
+import { hrefWithBase } from '../lib/base';
+
+interface Props {
+  current: 'rest' | 'tint' | 'live';
+}
+
+const { current } = Astro.props;
+const items = [
+  { id: 'rest' as const, label: 'Rest', href: hrefWithBase('demos/path-edge/') },
+  { id: 'tint' as const, label: 'Tint', href: hrefWithBase('demos/path-edge-tint/') },
+  { id: 'live' as const, label: 'Live', href: hrefWithBase('demos/path-edge-live/') },
+];
+---
+
+<nav class="variant-switch" aria-label="Path Edge mode">
+  <span class="variant-switch-name">Mode</span>
+  <div class="variant-switch-track" role="list">
+    {
+      items.map((item) => (
+        <a
+          class:list={['variant-switch-item', { 'is-current': item.id === current }]}
+          role="listitem"
+          href={item.href}
+          aria-current={item.id === current ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))
+    }
+  </div>
+</nav>

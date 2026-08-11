@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VariantSwitch from '../../components/VariantSwitch.astro';
+import MapMode from '../../components/MapMode.astro';
+import { hrefWithBase } from '../../lib/base';
+---
+
+<BaseLayout
+  title="Map Edge · Live"
+  description="Map Edge rails thicken with pointer proximity — constant reaction test."
+>
+  <main class="shell">
+    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
+    <p class="eyebrow">Demo · Variant A · Map Edge</p>
+    <h1>Map Edge · Live</h1>
+    <p class="lede">
+      Same mature rails, but thickness follows how close the pointer is to the top or left
+      edge. Compare with Rest to see if constant reaction helps or fidgets.
+    </p>
+    <VariantSwitch current="map" />
+    <MapMode current="live" />
+    <div id="vanilla-root"></div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { mountVanillaRails } from '../../components/vanilla/mount';
+
+  const root = document.getElementById('vanilla-root');
+  if (root) {
+    mountVanillaRails({ root, initialId: 'admin' });
+    const stage = root.querySelector('.cr-stage') as HTMLElement | null;
+    if (stage) {
+      stage.classList.add('is-live');
+      stage.addEventListener('pointermove', (e: PointerEvent) => {
+        const r = stage.getBoundingClientRect();
+        const top = Math.max(0, 1 - (e.clientY - r.top) / 80);
+        const left = Math.max(0, 1 - (e.clientX - r.left) / 80);
+        const t = Math.max(top, left);
+        const idle = 0.35;
+        const hover = 2.75;
+        const v = `${idle + (hover - idle) * t}rem`;
+        stage.style.setProperty('--rail-top', v);
+        stage.style.setProperty('--rail-left', v);
+      });
+      stage.addEventListener('pointerleave', () => {
+        stage.style.removeProperty('--rail-top');
+        stage.style.removeProperty('--rail-left');
+      });
+    }
+  }
+</script>
