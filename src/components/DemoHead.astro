@@ -1,6 +1,5 @@
 ---
 import VariantSwitch from './VariantSwitch.astro';
-import MapMode from './MapMode.astro';
 import ModalMode from './ModalMode.astro';
 import { hrefWithBase } from '../lib/base';
 
@@ -11,7 +10,7 @@ interface Props {
   lede: string;
 }
 
-const { variant, mode = 'rest', title, lede } = Astro.props;
+const { variant, mode, title, lede } = Astro.props;
 const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
 ---
 
@@ -22,7 +21,6 @@ const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
   <p class="lede">{lede}</p>
   <div class="demo-switches">
     <VariantSwitch current={variant} />
-    {variant === 'map' && <MapMode current={mode} />}
-    {variant === 'modal' && <ModalMode current={mode} />}
+    {variant === 'modal' && mode && <ModalMode current={mode} />}
   </div>
 </div>

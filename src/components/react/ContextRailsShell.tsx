@@ -1,110 +1,123 @@
 /** @jsxImportSource react */
-import { useMemo, useState, type CSSProperties } from 'react';
+import { useMemo, useRef, useState, type CSSProperties } from 'react';
+import { flushSync } from 'react-dom';
 import {
-  defaultPlatforms,
-  findPlatform,
-  type Platform,
-} from '../../lib/platforms';
+  defaultMapVtStyle,
+  mapVtStyles,
+  runMapViewTransition,
+  type MapVtStyle,
+} from '../../lib/map-vt';
+import { appMockHtml, nodeSkin } from '../../lib/app-mock';
+import { findOrg, orgIdFromEvent, orgTreeHtml } from '../../lib/org-tree';
 
 type Props = {
   title?: string;
-  platforms?: Platform[];
   initialId?: string;
 };
 
 export default function ContextRailsShell({
-  title,
-  platforms = defaultPlatforms,
-  initialId = 'mail',
+  initialId = 'gmail',
 }: Props) {
   const [activeId, setActiveId] = useState(initialId);
   const [navOpen, setNavOpen] = useState(false);
-  const active = useMemo(
-    () => findPlatform(platforms, activeId),
-    [platforms, activeId],
-  );
+  const [vtStyle, setVtStyle] = useState<MapVtStyle>(defaultMapVtStyle);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const active = useMemo(() => findOrg(activeId), [activeId]);
 
   const stageStyle = {
     '--overlay': active.overlay,
     '--overlay-2': active.overlay2,
   } as CSSProperties;
 
+  function reveal(open: boolean) {
+    const stage = stageRef.current;
+    const go = () => flushSync(() => setNavOpen(open));
+    if (stage) runMapViewTransition(stage, vtStyle, go);
+    else go();
+  }
+
+  function pick(id: string) {
+    const stage = stageRef.current;
+    const go = () =>
+      flushSync(() => {
+        setActiveId(id);
+        setNavOpen(false);
+      });
+    if (stage) runMapViewTransition(stage, vtStyle, go);
+    else go();
+  }
+
   return (
     <div>
       <div className="cr-toolbar">
         <span>
-          React island · suite shell · {navOpen ? 'nav open' : 'rails idle'} ·{' '}
+          React island · suite shell · {navOpen ? 'map open' : 'rails idle'} ·{' '}
           {active.label}
         </span>
+        <nav className="variant-switch" aria-label="Transition style">
+          <span className="variant-switch-name">Transition style</span>
+          <div className="variant-switch-track" role="radiogroup">
+            {mapVtStyles.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                className={`variant-switch-item${s.id === vtStyle ? ' is-current' : ''}`}
+                role="radio"
+                aria-checked={s.id === vtStyle}
+                onClick={() => setVtStyle(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </nav>
       </div>
 
-      <div className="cr-stage suite" style={stageStyle}>
-        <button
-          type="button"
-          className="cr-rail cr-rail-top"
-          aria-label="Open ecosystem navigation"
-          onClick={() => setNavOpen(true)}
-        >
-          <span className="cr-rail-label">Suite map</span>
-        </button>
-        <button
-          type="button"
-          className="cr-rail cr-rail-left"
-          aria-label="Open platform navigation"
-          onClick={() => setNavOpen(true)}
-        >
-          <span className="cr-rail-label">Products</span>
-        </button>
-
-        <div className="cr-content">
-          <h2>{title ?? active.label}</h2>
+      <div
+        ref={stageRef}
+        className={`cr-stage suite${navOpen ? ' is-revealed' : ''}`}
+        data-cr-vt={vtStyle}
+        style={stageStyle}
+      >
+        <div className="cr-map" aria-hidden={navOpen ? 'false' : 'true'}>
+          <div className="cr-map-head">
+            <h2>Suite map</h2>
+            <button type="button" className="close" onClick={() => reveal(false)}>
+              Back
+            </button>
+          </div>
           <p className="meta">
-            Microsoft-suite-ish · duo-tone overlays · {active.role}
+            Alphabet / Google product tree · demo map, not an official org chart
           </p>
-          <p>{active.blurb}</p>
-          <p>
-            Rails stay in the shell. Content keeps a stable wash so you know which
-            product world is active without a screaming header strip.
-          </p>
+          <div
+            className="cr-tree"
+            dangerouslySetInnerHTML={{ __html: orgTreeHtml(activeId) }}
+            onClick={(e) => {
+              const id = orgIdFromEvent(e.target);
+              if (id) pick(id);
+            }}
+          />
         </div>
 
-        {navOpen ? (
-          <div
-            className="cr-overlay"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setNavOpen(false);
-            }}
+        <div className="cr-sheet" data-skin={nodeSkin(active.id)}>
+          <button
+            type="button"
+            className="cr-rail cr-rail-top"
+            aria-label="Open ecosystem navigation"
+            onClick={() => reveal(true)}
           >
-            <div className="cr-panel" role="dialog" aria-modal="true">
-              <header>
-                <h3>Wireframe suite nav</h3>
-                <button
-                  type="button"
-                  className="close"
-                  onClick={() => setNavOpen(false)}
-                >
-                  Close
-                </button>
-              </header>
-              <div className="cr-wire">
-                {platforms.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    className={p.id === activeId ? 'current' : undefined}
-                    onClick={() => {
-                      setActiveId(p.id);
-                      setNavOpen(false);
-                    }}
-                  >
-                    <strong>{p.label}</strong>
-                    <small>{p.role}</small>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : null}
+            <span className="cr-rail-label">Suite map</span>
+          </button>
+          <button
+            type="button"
+            className="cr-rail cr-rail-left"
+            aria-label="Open platform navigation"
+            onClick={() => reveal(true)}
+          >
+            <span className="cr-rail-label">Products</span>
+          </button>
+          <div dangerouslySetInnerHTML={{ __html: appMockHtml(active) }} />
+        </div>
       </div>
     </div>
   );
