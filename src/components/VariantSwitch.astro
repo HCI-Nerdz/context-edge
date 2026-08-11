@@ -14,18 +14,27 @@ const items = [
 ];
 ---
 
-<nav class="variant-switch" aria-label="Variant">
+<nav class="variant-switch variant-switch-previews" aria-label="Variant" transition:name="variant-switch">
   <span class="variant-switch-name">Variant</span>
-  <div class="variant-switch-track" role="list">
+  <div class="variant-switch-track variant-switch-thumbs" role="list">
     {
       items.map((item) => (
         <a
-          class:list={['variant-switch-item', { 'is-current': item.id === current }]}
+          class:list={['variant-thumb', { 'is-current': item.id === current }]}
           role="listitem"
           href={item.href}
           aria-current={item.id === current ? 'page' : undefined}
         >
-          {item.label}
+          <span class:list={['variant-preview', `variant-preview-${item.id}`]} aria-hidden="true">
+            {item.id === 'modal' && (
+              <span class="variant-modal-mock">
+                <i></i>
+                <i></i>
+                <i></i>
+              </span>
+            )}
+          </span>
+          <span class="variant-thumb-label">{item.label}</span>
         </a>
       ))
     }

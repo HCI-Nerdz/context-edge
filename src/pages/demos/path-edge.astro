@@ -1,34 +1,29 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import { hrefWithBase } from '../../lib/base';
+import DemoHead from '../../components/DemoHead.astro';
 import '../../styles/path-edge.css';
 ---
 
 <BaseLayout
   title="Path Edge"
-  description="Path trace workshop: Color / Tint on row one, Live / Live Tint on row two."
+  description="Path trace workshop: Color / Subtle on row one, Live / Live Subtle on row two."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
-    <p class="eyebrow">Demo · Variant C · Path Edge</p>
-    <h1>Path Edge</h1>
-    <p class="lede">
-      Row one is Color then Tint. Row two is Live then Live Tint. Length is a ceiling:
-      hops that fit keep a conventional size; only the ones that would run off share a
-      reserved end-zone. Left pack sits at the top or bottom of the edge; the sequence
-      is root→leaf, bottom to top, either way.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="path" />
-    </div>
-    <div id="path-edge-root"></div>
+    <DemoHead
+      variant="path"
+      title="Path Edge"
+      lede="The L-edge is a path trace. Color and Subtle on row one; Live and Live Subtle on row two."
+    />
+    <div id="path-edge-root" transition:animate="fade"></div>
   </main>
 </BaseLayout>
 
-<script>
+<script data-astro-rerun>
   import { mountPathWorkshop } from '../../components/vanilla/mountPathEdge';
 
   const root = document.getElementById('path-edge-root');
-  if (root) mountPathWorkshop({ root });
+  if (root) {
+    root.replaceChildren();
+    mountPathWorkshop({ root });
+  }
 </script>

@@ -1,0 +1,7 @@
+= 2026-08-10 — Subtle, Live dock, variant thumbs, page VT
+
+* Tint renamed Subtle. Live uses even shares + dock zoom (no log).
+* Variant buttons carry preview thumbs (Modal is a stack mockup).
+* ClientRouter view transitions between variant pages; shared demo head height.
+* Left alignment is an icon mode control. Blend is a wrapping button set above Color and Subtle.
+* Modal reveal toggles the sheet in place so the named view transition can run.

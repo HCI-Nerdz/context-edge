@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-10 — Subtle, Live dock, variant thumbs, page VT
+
+* link:changelog-details/2026-08-10%20-%20subtle-live-vt.adoc[Details]
+
 == 2026-08-10 — Overflow-only compression and 2×2 Path workshop
 
 * link:changelog-details/2026-08-10%20-%20path-workshop-grid.adoc[Details]

@@ -1,8 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import ModalMode from '../../components/ModalMode.astro';
-import { hrefWithBase } from '../../lib/base';
+import DemoHead from '../../components/DemoHead.astro';
 import '../../styles/modal-edge.css';
 ---
 
@@ -11,24 +9,22 @@ import '../../styles/modal-edge.css';
   description="Pointer near the edges peeks the modal sheet — constant reaction test."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
-    <p class="eyebrow">Demo · Variant B · Modal Edge</p>
-    <h1>Modal Edge · Live</h1>
-    <p class="lede">
-      Same stack reveal. Moving toward the top or left edge peeks the sheet without a click.
-      Click still locks the full reveal.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="modal" />
-      <ModalMode current="live" />
-    </div>
-    <div id="modal-edge-root"></div>
+    <DemoHead
+      variant="modal"
+      mode="live"
+      title="Modal Edge"
+      lede="The edge is this sheet. Click to slide it back; ancestor layers stay underneath."
+    />
+    <div id="modal-edge-root" transition:animate="fade"></div>
   </main>
 </BaseLayout>
 
-<script>
+<script data-astro-rerun>
   import { mountModalEdge } from '../../components/vanilla/mountModalEdge';
 
   const root = document.getElementById('modal-edge-root');
-  if (root) mountModalEdge({ root, live: true });
+  if (root) {
+    root.replaceChildren();
+    mountModalEdge({ root, live: true });
+  }
 </script>

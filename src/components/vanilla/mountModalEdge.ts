@@ -111,11 +111,20 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       </div>
     `;
 
+    function applyReveal() {
+      const vp = root.querySelector('.me-viewport');
+      const btn = root.querySelector('.me-hint-btn');
+      vp?.classList.toggle('is-revealed', revealed);
+      if (btn) btn.textContent = revealed ? 'Close stack' : 'Open Nav Edge';
+      const stack = root.querySelector('.me-stack');
+      stack?.setAttribute('aria-hidden', revealed ? 'false' : 'true');
+    }
+
     root.querySelectorAll('[data-toggle]').forEach((el) => {
       el.addEventListener('click', () => {
         runTransition(() => {
           revealed = !revealed;
-          render();
+          applyReveal();
         });
       });
     });
@@ -133,19 +142,21 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
     });
 
     const sheet = root.querySelector('.me-sheet') as HTMLElement | null;
-    if (sheet && revealed) {
+    if (sheet) {
       sheet.addEventListener('click', (e) => {
+        if (!revealed) return;
         if ((e.target as HTMLElement).closest('[data-toggle]')) return;
         runTransition(() => {
           revealed = false;
-          render();
+          applyReveal();
         });
       });
     }
 
-    if (live && sheet && !revealed) {
+    if (live && sheet) {
       const vp = root.querySelector('.me-viewport') as HTMLElement;
       const peek = (e: PointerEvent) => {
+        if (revealed) return;
         const r = vp.getBoundingClientRect();
         const top = Math.max(0, 1 - (e.clientY - r.top) / 72);
         const left = Math.max(0, 1 - (e.clientX - r.left) / 72);
@@ -154,7 +165,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       };
       vp.addEventListener('pointermove', peek);
       vp.addEventListener('pointerleave', () => {
-        sheet.style.transform = '';
+        if (!revealed) sheet.style.transform = '';
       });
     }
   }

@@ -1,34 +1,29 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import MapMode from '../../components/MapMode.astro';
-import { hrefWithBase } from '../../lib/base';
+import DemoHead from '../../components/DemoHead.astro';
 ---
 
 <BaseLayout
-  title="Vanilla mature · Context rails"
-  description="Vanilla island — color-only edge rails without labels."
+  title="Map Edge"
+  description="Map Edge — color-only rails that open a wireframe directory."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
-    <p class="eyebrow">Demo · Vanilla</p>
-    <h1>Mature color-only rails</h1>
-    <p class="lede">
-      The bar’s presence and color suggest the affordance. Click still opens the wireframe map.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="map" />
-      <MapMode current="rest" />
-    </div>
-    <div id="vanilla-root"></div>
+    <DemoHead
+      variant="map"
+      mode="rest"
+      title="Map Edge"
+      lede="Click the L-edge for a wireframe directory. Streets under the activity, not tabs on the roof."
+    />
+    <div id="vanilla-root" transition:animate="fade"></div>
   </main>
 </BaseLayout>
 
-<script>
+<script data-astro-rerun>
   import { mountVanillaRails } from '../../components/vanilla/mount';
 
   const root = document.getElementById('vanilla-root');
   if (root) {
+    root.replaceChildren();
     mountVanillaRails({ root, initialId: 'admin' });
   }
 </script>

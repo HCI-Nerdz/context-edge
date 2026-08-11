@@ -40,14 +40,81 @@
   }
 }
 
+.pe-cell {
+  display: grid;
+  grid-template-rows: auto minmax(4.4rem, auto) 1fr;
+}
+
 .pe-cell-label {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.35rem;
   font-family: var(--font-display);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.pe-blend-slot {
+  min-height: 4.4rem;
+  margin-bottom: 0.45rem;
+}
+
+.mode-btns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mode-btn {
+  font: inherit;
+  font-size: 0.75rem;
+  font-family: var(--font-display);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  padding: 0.22rem 0.45rem;
+  cursor: pointer;
+}
+
+.mode-btn:hover {
+  color: var(--ink);
+}
+
+.mode-btn.is-on {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.pe-align {
+  margin-left: 0.25rem;
+}
+
+.align-ico {
+  display: grid;
+  width: 0.72rem;
+  height: 1.05rem;
+  gap: 1px;
+  padding: 1px;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+}
+
+.align-ico-start {
+  align-content: start;
+}
+
+.align-ico-end {
+  align-content: end;
+}
+
+.align-ico i {
+  display: block;
+  height: 2px;
+  background: currentColor;
 }
 
 .pe-stage {
@@ -88,6 +155,7 @@
   transition: width 0.22s ease, height 0.22s ease;
 }
 
+.pe-corner-miter,
 .pe-corner-color {
   position: absolute;
   inset: 0;
@@ -181,7 +249,13 @@
 }
 
 .pe-seg-color {
-  display: none;
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--seg);
+  mix-blend-mode: var(--blend, normal);
 }
 
 .pe-seg:focus-visible {
@@ -225,8 +299,16 @@
   margin: calc(var(--idle) + 0.85rem) 1rem 1rem calc(var(--idle) + 0.85rem);
 }
 
+.pe-stage.is-chroma .pe-seg {
+  background: #1c2226;
+}
+
+.pe-stage.is-chroma .pe-corner-miter {
+  display: none;
+}
+
 /*
- * Tint: idle = monochrome (page-color greys). Hover keeps icons + mono.
+ * Subtle: idle = monochrome + miter. Hover keeps icons + mono.
  * Color is a blended overlay, masked to the pointer — not a content swap.
  */
 .pe-stage.is-tint .pe-seg {
@@ -234,41 +316,10 @@
 }
 
 .pe-stage.is-tint .pe-seg-color {
-  display: block;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: var(--seg);
-  mix-blend-mode: var(--blend, color);
   opacity: 0;
 }
 
-.pe-stage.is-tint.is-expanded .pe-seg-color {
-  opacity: 1;
-  -webkit-mask-image: radial-gradient(
-    6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
-    #000 0%,
-    #000 22%,
-    transparent 78%
-  );
-  mask-image: radial-gradient(
-    6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
-    #000 0%,
-    #000 22%,
-    transparent 78%
-  );
-}
-
-.pe-stage.is-tint .pe-corner {
-  background: var(--mono-page);
-}
-
-.pe-stage.is-tint .pe-corner-color {
-  opacity: 0;
-  mix-blend-mode: var(--blend, color);
-}
-
+.pe-stage.is-tint.is-expanded .pe-seg-color,
 .pe-stage.is-tint.is-expanded .pe-corner-color {
   opacity: 1;
   -webkit-mask-image: radial-gradient(
@@ -283,4 +334,26 @@
     #000 22%,
     transparent 78%
   );
+}
+
+.pe-stage.is-tint .pe-corner-miter .pe-corner-top {
+  background: linear-gradient(
+    to bottom right,
+    var(--mono-top) 0%,
+    var(--mono-top) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+.pe-stage.is-tint .pe-corner-miter .pe-corner-left {
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 1px),
+    var(--mono-left) calc(50% - 1px)
+  );
+}
+
+.pe-stage.is-tint .pe-corner-color {
+  opacity: 0;
+  mix-blend-mode: var(--blend, color);
 }

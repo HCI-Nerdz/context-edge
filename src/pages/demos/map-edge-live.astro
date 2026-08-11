@@ -1,8 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import MapMode from '../../components/MapMode.astro';
-import { hrefWithBase } from '../../lib/base';
+import DemoHead from '../../components/DemoHead.astro';
 ---
 
 <BaseLayout
@@ -10,26 +8,22 @@ import { hrefWithBase } from '../../lib/base';
   description="Map Edge rails thicken with pointer proximity — constant reaction test."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
-    <p class="eyebrow">Demo · Variant A · Map Edge</p>
-    <h1>Map Edge · Live</h1>
-    <p class="lede">
-      Same mature rails, but thickness follows how close the pointer is to the top or left
-      edge. Compare with Rest to see if constant reaction helps or fidgets.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="map" />
-      <MapMode current="live" />
-    </div>
-    <div id="vanilla-root"></div>
+    <DemoHead
+      variant="map"
+      mode="live"
+      title="Map Edge"
+      lede="Click the L-edge for a wireframe directory. Streets under the activity, not tabs on the roof."
+    />
+    <div id="vanilla-root" transition:animate="fade"></div>
   </main>
 </BaseLayout>
 
-<script>
+<script data-astro-rerun>
   import { mountVanillaRails } from '../../components/vanilla/mount';
 
   const root = document.getElementById('vanilla-root');
   if (root) {
+    root.replaceChildren();
     mountVanillaRails({ root, initialId: 'admin' });
     const stage = root.querySelector('.cr-stage') as HTMLElement | null;
     if (stage) {

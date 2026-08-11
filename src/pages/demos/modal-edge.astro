@@ -1,36 +1,30 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import ModalMode from '../../components/ModalMode.astro';
-import { hrefWithBase } from '../../lib/base';
+import DemoHead from '../../components/DemoHead.astro';
 import '../../styles/modal-edge.css';
 ---
 
 <BaseLayout
-  title="Modal Edge · Nav Edge stack"
+  title="Modal Edge"
   description="Variant B: View Transitions slide the current sheet to reveal colored ancestor layers."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
-    <p class="eyebrow">Demo · Variant B · Modal Edge</p>
-    <h1>Modal Edge (stack reveal)</h1>
-    <p class="lede">
-      Each page is a modal sheet on the path that produced it. The Nav Edge wears the
-      <em>current</em> node’s color. Click the edge — the sheet slides down and right (View
-      Transitions API) and ancestor layers show through. Click a layer to jump there.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="modal" />
-      <ModalMode current="rest" />
-    </div>
-    <div id="modal-edge-root"></div>
+    <DemoHead
+      variant="modal"
+      mode="rest"
+      title="Modal Edge"
+      lede="The edge is this sheet. Click to slide it back; ancestor layers stay underneath."
+    />
+    <div id="modal-edge-root" transition:animate="fade"></div>
   </main>
 </BaseLayout>
 
-
-<script>
+<script data-astro-rerun>
   import { mountModalEdge } from '../../components/vanilla/mountModalEdge';
 
   const root = document.getElementById('modal-edge-root');
-  if (root) mountModalEdge({ root });
+  if (root) {
+    root.replaceChildren();
+    mountModalEdge({ root });
+  }
 </script>

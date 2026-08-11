@@ -91,15 +91,34 @@ function dockSizes(sizes: number[], focus: number): number[] {
 }
 
 /**
- * Leafward hops keep a conventional size. Only hops that would run off the
- * length budget share a reserved end-zone, weighted by log(depth).
+ * Live: equal conventional shares (uniform shrink if the budget is tight),
+ * then dock-zoom the focused hop and shrink the rest. No log compression.
+ */
+export function layoutLiveRail(opts: {
+  count: number;
+  budget: number;
+  conventional: number;
+  focusFromRoot?: number | null;
+}): number[] {
+  const count = Math.max(0, Math.floor(opts.count));
+  const budget = Math.max(0, opts.budget);
+  const conventional = Math.max(1, opts.conventional);
+  if (count === 0) return [];
+  const unit = Math.min(conventional, budget / count);
+  const sizes = Array.from({ length: count }, () => unit);
+  if (opts.focusFromRoot != null) return dockSizes(sizes, opts.focusFromRoot);
+  return sizes;
+}
+
+/**
+ * Rest: leafward hops keep a conventional size. Only hops that would run off
+ * the length budget share a reserved end-zone, weighted by log(depth).
  */
 export function layoutRail(opts: {
   count: number;
   budget: number;
   conventional: number;
   focusFromRoot?: number | null;
-  live?: boolean;
   minSliver?: number;
 }): number[] {
   const count = Math.max(0, Math.floor(opts.count));
@@ -129,9 +148,6 @@ export function layoutRail(opts: {
     }
   }
 
-  if (opts.live && opts.focusFromRoot != null) {
-    return dockSizes(sizes, opts.focusFromRoot);
-  }
   return sizes;
 }
 

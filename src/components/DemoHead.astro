@@ -1,0 +1,28 @@
+---
+import VariantSwitch from './VariantSwitch.astro';
+import MapMode from './MapMode.astro';
+import ModalMode from './ModalMode.astro';
+import { hrefWithBase } from '../lib/base';
+
+interface Props {
+  variant: 'map' | 'modal' | 'path';
+  mode?: 'rest' | 'live';
+  title: string;
+  lede: string;
+}
+
+const { variant, mode = 'rest', title, lede } = Astro.props;
+const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
+---
+
+<div class="demo-head" transition:name="demo-head">
+  <p><a class="back" href={hrefWithBase('')}>← Hub</a></p>
+  <p class="eyebrow">Demo · Variant {letter}</p>
+  <h1>{title}</h1>
+  <p class="lede">{lede}</p>
+  <div class="demo-switches">
+    <VariantSwitch current={variant} />
+    {variant === 'map' && <MapMode current={mode} />}
+    {variant === 'modal' && <ModalMode current={mode} />}
+  </div>
+</div>

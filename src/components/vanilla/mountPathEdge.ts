@@ -2,6 +2,7 @@ import {
   BLEND_MODES,
   demoPath,
   depthShade,
+  layoutLiveRail,
   layoutRail,
   pathThrough,
   type BlendMode,
@@ -10,25 +11,35 @@ import {
 
 type Pack = 'start' | 'end';
 
-type StageKind = 'color' | 'tint' | 'live' | 'tint-live';
+type StageKind = 'color' | 'subtle' | 'live' | 'live-subtle';
 
-const STAGES: { id: StageKind; tint: boolean; live: boolean; label: string }[] = [
-  { id: 'color', tint: false, live: false, label: 'Color' },
-  { id: 'tint', tint: true, live: false, label: 'Tint' },
-  { id: 'live', tint: false, live: true, label: 'Live' },
-  { id: 'tint-live', tint: true, live: true, label: 'Live Tint' },
+const STAGES: { id: StageKind; subtle: boolean; live: boolean; label: string }[] = [
+  { id: 'color', subtle: false, live: false, label: 'Color' },
+  { id: 'subtle', subtle: true, live: false, label: 'Subtle' },
+  { id: 'live', subtle: false, live: true, label: 'Live' },
+  { id: 'live-subtle', subtle: true, live: true, label: 'Live Subtle' },
 ];
 
-/**
- * One workshop: 2×2 Color/Tint × Rest/Live, shared length + left-pack origin.
- */
+function blendButtons(active: BlendMode, which: 'color' | 'subtle'): string {
+  return `
+    <div class="mode-btns" role="group" aria-label="${which} blend" data-blend-for="${which}">
+      ${BLEND_MODES.map(
+        (m) => `
+        <button type="button" class="mode-btn${m === active ? ' is-on' : ''}" data-blend="${m}">
+          ${m}
+        </button>`,
+      ).join('')}
+    </div>`;
+}
+
 export function mountPathWorkshop(opts: { root: HTMLElement }) {
   const all = demoPath;
   let currentId = all[all.length - 1]!.id;
   let topLength = 72;
   let leftLength = 72;
   let leftPack: Pack = 'start';
-  let blend: BlendMode = 'color';
+  let blendColor: BlendMode = 'normal';
+  let blendSubtle: BlendMode = 'color';
   let focusFromRoot: number | null = null;
   const expanded = new Set<StageKind>();
   let observer: ResizeObserver | null = null;
@@ -55,28 +66,25 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
 
       const topBudget = topRail.clientWidth * (topLength / 100);
       const leftBudget = leftRail.clientHeight * (leftLength / 100);
-      const topSizes = layoutRail({
+      const layout = live ? layoutLiveRail : layoutRail;
+      const topSizes = layout({
         count: list.length,
         budget: topBudget,
         conventional: remPx(7.1),
         focusFromRoot: live ? focusFromRoot : null,
-        live,
       });
-      const leftSizes = layoutRail({
+      const leftSizes = layout({
         count: list.length,
         budget: leftBudget,
         conventional: remPx(4.2),
         focusFromRoot: live ? focusFromRoot : null,
-        live,
       });
 
       topStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-        const px = topSizes[Number(el.dataset.fromRoot)] ?? 0;
-        el.style.flex = `0 0 ${px}px`;
+        el.style.flex = `0 0 ${topSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
       });
       leftStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-        const px = leftSizes[Number(el.dataset.fromRoot)] ?? 0;
-        el.style.flex = `0 0 ${px}px`;
+        el.style.flex = `0 0 ${leftSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
       });
     });
   }
@@ -90,12 +98,23 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       if (leftPack === 'start') left.append(stack, slack);
       else left.append(slack, stack);
     });
+    root.querySelectorAll<HTMLButtonElement>('[data-pack]').forEach((btn) => {
+      btn.classList.toggle('is-on', btn.dataset.pack === leftPack);
+    });
     applyLayout();
   }
 
-  function applyBlend() {
+  function applyBlends() {
     root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
-      stage.style.setProperty('--blend', blend);
+      const subtle = stage.classList.contains('is-tint');
+      stage.style.setProperty('--blend', subtle ? blendSubtle : blendColor);
+    });
+    root.querySelectorAll<HTMLElement>('[data-blend-for]').forEach((group) => {
+      const which = group.dataset.blendFor;
+      const active = which === 'subtle' ? blendSubtle : blendColor;
+      group.querySelectorAll<HTMLButtonElement>('[data-blend]').forEach((btn) => {
+        btn.classList.toggle('is-on', btn.dataset.blend === active);
+      });
     });
   }
 
@@ -118,11 +137,11 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
   }
 
-  function bindStage(stage: HTMLElement, kind: StageKind, live: boolean, tint: boolean) {
+  function bindStage(stage: HTMLElement, kind: StageKind, live: boolean, subtle: boolean) {
     const rails = stage.querySelector('[data-rails]') as HTMLElement;
     rails.addEventListener('pointerenter', (e) => {
       setExpanded(kind, true);
-      if (tint) paintHint(stage, e as PointerEvent);
+      if (subtle) paintHint(stage, e as PointerEvent);
     });
     rails.addEventListener('pointerleave', () => {
       setExpanded(kind, false);
@@ -140,7 +159,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           applyLayout();
         }
       }
-      if (tint) paintHint(stage, e);
+      if (subtle) paintHint(stage, e);
     });
   }
 
@@ -167,21 +186,30 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   function stageHtml(
     kind: StageKind,
     label: string,
-    tint: boolean,
+    subtle: boolean,
     live: boolean,
     list: PathNode[],
     current: PathNode,
   ): string {
+    const blend = subtle ? blendSubtle : blendColor;
+    const monoTop = `color-mix(in srgb, ${current.color} 18%, hsl(0 0% 42%))`;
+    const monoLeft = `color-mix(in srgb, ${current.color} 14%, hsl(0 0% 28%))`;
     return `
       <article class="pe-cell" id="${kind}">
         <p class="pe-cell-label">${label}</p>
-        <div class="pe-stage ${tint ? 'is-tint' : ''} ${live ? 'is-live' : ''}"
+        <div class="pe-blend-slot">
+          ${!live ? blendButtons(blend, subtle ? 'subtle' : 'color') : ''}
+        </div>
+        <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
           data-stage="${kind}" data-live="${live ? '1' : '0'}"
-          style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${current.color}">
+          style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${current.color};--mono-top:${monoTop};--mono-left:${monoLeft}">
           <div class="pe-rails" data-rails>
             <button type="button" class="pe-corner" data-goto="${current.id}" title="${current.label}"
-              style="--top-seg:${current.color};--left-seg:${current.color};--mono-page:color-mix(in srgb, ${current.color} 16%, #3a4044)">
-              <span class="pe-corner-color">
+              style="--top-seg:${current.color};--left-seg:${current.color}">
+              <span class="pe-corner-miter" aria-hidden="true">
+                <span class="pe-corner-top"></span><span class="pe-corner-left"></span>
+              </span>
+              <span class="pe-corner-color" aria-hidden="true">
                 <span class="pe-corner-top"></span><span class="pe-corner-left"></span>
               </span>
             </button>
@@ -217,37 +245,33 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           <input type="range" min="28" max="100" value="${leftLength}" data-left-length />
           <span data-left-read>${leftLength}%</span>
         </label>
-        <label>Left pack
-          <select data-pack>
-            <option value="start"${leftPack === 'start' ? ' selected' : ''}>Top of left edge</option>
-            <option value="end"${leftPack === 'end' ? ' selected' : ''}>Bottom of left edge</option>
-          </select>
-        </label>
-        <label>Blend
-          <select data-blend>
-            ${BLEND_MODES.map((m) => `<option value="${m}"${m === blend ? ' selected' : ''}>${m}</option>`).join('')}
-          </select>
-        </label>
+        <div class="mode-btns pe-align" role="group" aria-label="Left alignment">
+          <span class="variant-switch-name">Left alignment</span>
+          <button type="button" class="mode-btn" data-pack="start" title="Top of left edge">
+            <span class="align-ico align-ico-start" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+          <button type="button" class="mode-btn" data-pack="end" title="Bottom of left edge">
+            <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+        </div>
       </div>
       <p class="pe-caption">
-        Conventional size until the length budget fills. Overflow hops share a reserved
-        end-zone (log compression). Left sequence is always root→leaf, bottom to top —
-        the pack only chooses whether that run sits at the top or the bottom of the edge.
-        Tint stays monochrome until hover; the pointer reveals color only.
+        Rest uses log compression only on hops that would run off. Live uses even shares
+        and dock-zooms the focused hop. Subtle stays monochrome until hover reveals color.
       </p>
       <div class="pe-quad">
-        ${STAGES.map((s) => stageHtml(s.id, s.label, s.tint, s.live, list, current)).join('')}
+        ${STAGES.map((s) => stageHtml(s.id, s.label, s.subtle, s.live, list, current)).join('')}
       </div>
     `;
 
     applyPack();
-    applyBlend();
+    applyBlends();
 
     STAGES.forEach((s) => {
       const stage = root.querySelector(`[data-stage="${s.id}"]`) as HTMLElement | null;
       if (stage) {
         if (expanded.has(s.id)) stage.classList.add('is-expanded');
-        bindStage(stage, s.id, s.live, s.tint);
+        bindStage(stage, s.id, s.live, s.subtle);
       }
     });
 
@@ -279,13 +303,22 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       applyLayout();
     });
 
-    root.querySelector('[data-pack]')!.addEventListener('change', (e) => {
-      leftPack = (e.target as HTMLSelectElement).value as Pack;
-      applyPack();
+    root.querySelectorAll<HTMLButtonElement>('[data-pack]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        leftPack = btn.dataset.pack as Pack;
+        applyPack();
+      });
     });
-    root.querySelector('[data-blend]')!.addEventListener('change', (e) => {
-      blend = (e.target as HTMLSelectElement).value as BlendMode;
-      applyBlend();
+
+    root.querySelectorAll<HTMLElement>('[data-blend-for]').forEach((group) => {
+      group.querySelectorAll<HTMLButtonElement>('[data-blend]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.blend as BlendMode;
+          if (group.dataset.blendFor === 'subtle') blendSubtle = mode;
+          else blendColor = mode;
+          applyBlends();
+        });
+      });
     });
 
     observer = new ResizeObserver(() => applyLayout());
