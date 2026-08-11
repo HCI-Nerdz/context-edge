@@ -93,10 +93,10 @@ export default function ContextRailsShell(props: Props) {
       >
         <div class="cr-map" aria-hidden={navOpen() ? 'false' : 'true'}>
           <div class="cr-map-head">
-            <h2>Ecosystem map</h2>
             <button type="button" class="close" onClick={() => reveal(false)}>
               Back
             </button>
+            <h2>Ecosystem map</h2>
           </div>
           <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
           <div

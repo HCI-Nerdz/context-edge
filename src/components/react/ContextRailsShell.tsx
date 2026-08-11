@@ -83,10 +83,10 @@ export default function ContextRailsShell({
       >
         <div className="cr-map" aria-hidden={navOpen ? 'false' : 'true'}>
           <div className="cr-map-head">
-            <h2>Suite map</h2>
             <button type="button" className="close" onClick={() => reveal(false)}>
               Back
             </button>
+            <h2>Suite map</h2>
           </div>
           <p className="meta">
             Alphabet / Google product tree · demo map, not an official org chart

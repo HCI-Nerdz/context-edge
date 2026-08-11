@@ -92,8 +92,8 @@ export function mountVanillaRails(opts: MountOptions) {
       >
         <div class="cr-map" aria-hidden="${navOpen ? 'false' : 'true'}">
           <div class="cr-map-head">
-            <h2>Ecosystem map</h2>
             <button type="button" class="close" data-close>Back</button>
+            <h2>Ecosystem map</h2>
           </div>
           <p class="meta">Alphabet / Google product tree · demo map, not an official org chart</p>
           <div class="cr-tree">${orgTreeHtml(activeId)}</div>
