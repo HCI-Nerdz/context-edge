@@ -171,6 +171,7 @@
   border: 0;
   cursor: pointer;
   background: transparent;
+  isolation: isolate;
   transition: width 0.22s ease, height 0.22s ease;
 }
 
@@ -178,29 +179,27 @@
 .pe-corner-color {
   position: absolute;
   inset: 0;
+  pointer-events: none;
 }
 
-.pe-corner-top,
-.pe-corner-left {
-  position: absolute;
-  inset: 0;
-}
-
-/* Overlap the box diagonal by 1px so a non-square corner does not flash a hairline. */
-.pe-corner-top {
+/* One fill along the box diagonal — no two-triangle hairline. */
+.pe-corner-miter {
   background: linear-gradient(
     to bottom right,
-    var(--top-seg) 0%,
-    var(--top-seg) calc(50% + 1px),
-    transparent calc(50% + 1px)
+    var(--miter-a) 0,
+    var(--miter-a) calc(50% - 0.5px),
+    var(--miter-b) calc(50% + 0.5px),
+    var(--miter-b) 100%
   );
 }
 
-.pe-corner-left {
+.pe-corner-color {
   background: linear-gradient(
     to bottom right,
-    transparent calc(50% - 1px),
-    var(--left-seg) calc(50% - 1px)
+    var(--top-seg) 0,
+    var(--top-seg) calc(50% - 0.5px),
+    var(--left-seg) calc(50% + 0.5px),
+    var(--left-seg) 100%
   );
 }
 
@@ -322,7 +321,12 @@
   background: #1c2226;
 }
 
-.pe-stage.is-chroma .pe-corner-miter {
+.pe-stage.is-chroma {
+  --miter-a: var(--top-seg);
+  --miter-b: var(--left-seg);
+}
+
+.pe-stage.is-chroma .pe-corner-color {
   display: none;
 }
 
@@ -362,24 +366,56 @@
   mask-image: none;
 }
 
-.pe-stage.is-tint .pe-corner-miter .pe-corner-top {
-  background: linear-gradient(
-    to bottom right,
-    var(--mono-top) 0%,
-    var(--mono-top) calc(50% + 1px),
-    transparent calc(50% + 1px)
-  );
-}
-
-.pe-stage.is-tint .pe-corner-miter .pe-corner-left {
-  background: linear-gradient(
-    to bottom right,
-    transparent calc(50% - 1px),
-    var(--mono-left) calc(50% - 1px)
-  );
+.pe-stage.is-tint {
+  --miter-a: var(--mono-top);
+  --miter-b: var(--mono-left);
 }
 
 .pe-stage.is-tint .pe-corner-color {
   opacity: 0;
+  mix-blend-mode: normal;
+}
+
+.pe-stage.is-tint.is-expanded .pe-corner-color,
+.pe-stage.is-tint.is-blend-preview .pe-corner-color {
   mix-blend-mode: var(--blend, color);
+}
+
+/* Path hop click: leafier segs stack and fade; keepers slide into place. */
+::view-transition-group(.pe-keep) {
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 6;
+}
+
+::view-transition-group(.pe-leaf) {
+  animation-duration: 0.4s;
+  z-index: 3;
+}
+
+::view-transition-old(.pe-leaf-top) {
+  animation: pe-leaf-top 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-old(.pe-leaf-left) {
+  animation: pe-leaf-left 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-new(.pe-leaf) {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes pe-leaf-top {
+  to {
+    opacity: 0;
+    transform: translateX(42%) scale(0.38);
+  }
+}
+
+@keyframes pe-leaf-left {
+  to {
+    opacity: 0;
+    transform: translateY(42%) scale(0.38);
+  }
 }

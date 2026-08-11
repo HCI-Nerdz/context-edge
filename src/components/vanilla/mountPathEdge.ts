@@ -153,6 +153,90 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
   }
 
+  function runPathVt(update: () => void) {
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => { finished: Promise<void> };
+    };
+    if (typeof doc.startViewTransition !== 'function') {
+      update();
+      return;
+    }
+    doc.documentElement.classList.add('pe-path-vt');
+    const t = doc.startViewTransition(update);
+    void t.finished.finally(() => doc.documentElement.classList.remove('pe-path-vt'));
+  }
+
+  function nameHops() {
+    root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+      const sid = stage.dataset.stage ?? '';
+      const corner = stage.querySelector('.pe-corner') as HTMLElement | null;
+      if (corner) corner.style.viewTransitionName = `pe-${sid}-corner`;
+      const copy = stage.querySelector('.pe-content') as HTMLElement | null;
+      if (copy) copy.style.viewTransitionName = `pe-${sid}-copy`;
+      stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
+        const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';
+        el.style.viewTransitionName = `pe-${sid}-${axis}-${el.dataset.goto}`;
+      });
+    });
+  }
+
+  function markLeaves(nextId: string) {
+    const keep = new Set(pathThrough(nextId, all).map((n) => n.id));
+    root.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
+      const id = el.dataset.goto ?? '';
+      const leaf = !keep.has(id);
+      const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';
+      el.style.viewTransitionClass = leaf
+        ? `pe-leaf pe-leaf-${axis}`
+        : 'pe-keep';
+    });
+  }
+
+  function applyPath(nextId: string) {
+    currentId = nextId;
+    const list = nodes();
+    const current = list[list.length - 1]!;
+    const keep = new Set(list.map((n) => n.id));
+    const monoTop = `color-mix(in srgb, ${current.color} 18%, hsl(0 0% 42%))`;
+    const monoLeft = `color-mix(in srgb, ${current.color} 14%, hsl(0 0% 28%))`;
+
+    root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+      stage.style.setProperty('--page', current.color);
+      stage.style.setProperty('--mono-top', monoTop);
+      stage.style.setProperty('--mono-left', monoLeft);
+      const corner = stage.querySelector('.pe-corner') as HTMLElement | null;
+      if (corner) {
+        corner.dataset.goto = current.id;
+        corner.title = current.label;
+        corner.style.setProperty('--top-seg', current.color);
+        corner.style.setProperty('--left-seg', current.color);
+      }
+      const h2 = stage.querySelector('.pe-content h2');
+      const meta = stage.querySelector('.pe-content .meta');
+      const blurb = stage.querySelector('.pe-content p:last-of-type');
+      if (h2) h2.textContent = current.label;
+      if (meta) meta.textContent = current.role;
+      if (blurb) blurb.textContent = current.blurb;
+
+      stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
+        const id = el.dataset.goto ?? '';
+        if (!keep.has(id)) {
+          el.remove();
+          return;
+        }
+        const fromRoot = list.findIndex((n) => n.id === id);
+        el.dataset.fromRoot = String(fromRoot);
+        el.classList.toggle('is-here', id === current.id);
+        const shade = depthShade(fromRoot, list.length);
+        el.style.setProperty(
+          '--mono',
+          `color-mix(in srgb, ${current.color} 14%, hsl(0 0% ${Math.round(18 + shade * 42)}%))`,
+        );
+      });
+    });
+    applyLayout();
+  }
+
   function bindStage(stage: HTMLElement, kind: StageKind, live: boolean, subtle: boolean) {
     const rails = stage.querySelector('[data-rails]') as HTMLElement;
     rails.addEventListener('pointerenter', (e) => {
@@ -220,12 +304,8 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           <div class="pe-rails" data-rails>
             <button type="button" class="pe-corner" data-goto="${current.id}" title="${current.label}"
               style="--top-seg:${current.color};--left-seg:${current.color}">
-              <span class="pe-corner-miter" aria-hidden="true">
-                <span class="pe-corner-top"></span><span class="pe-corner-left"></span>
-              </span>
-              <span class="pe-corner-color" aria-hidden="true">
-                <span class="pe-corner-top"></span><span class="pe-corner-left"></span>
-              </span>
+              <span class="pe-corner-miter" aria-hidden="true"></span>
+              <span class="pe-corner-color" aria-hidden="true"></span>
             </button>
             <div class="pe-top" role="toolbar" aria-label="${label} top path">
               <div class="pe-stack pe-stack-top">${segs(list, 'top', current.color)}</div>
@@ -297,9 +377,10 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     root.querySelectorAll('[data-goto]').forEach((el) => {
       el.addEventListener('click', () => {
         const id = (el as HTMLElement).dataset.goto;
-        if (!id) return;
-        currentId = id;
-        render();
+        if (!id || id === currentId) return;
+        nameHops();
+        markLeaves(id);
+        runPathVt(() => applyPath(id));
       });
     });
 
