@@ -63,6 +63,22 @@ h1 {
   line-height: 1.55;
 }
 
+/* Keep Variant / Mode from jumping when page copy is shorter or longer. */
+.lede:has(+ .variant-switch),
+.lede:has(+ .demo-switches) {
+  height: 5lh;
+  overflow: auto;
+}
+
+.demo-switches {
+  min-height: 5.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.demo-switches .variant-switch {
+  margin-bottom: 0.55rem;
+}
+
 .back {
   font-family: var(--font-display);
   font-weight: 600;
