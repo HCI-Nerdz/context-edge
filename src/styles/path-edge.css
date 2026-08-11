@@ -74,26 +74,21 @@
   inset: 0;
 }
 
+/* Overlap the box diagonal by 1px so a non-square corner does not flash a hairline. */
 .pe-corner-top {
-  background: var(--top-seg);
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  background: linear-gradient(
+    to bottom right,
+    var(--top-seg) 0%,
+    var(--top-seg) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
 }
 
 .pe-corner-left {
-  background: var(--left-seg);
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
-}
-
-.pe-corner::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
   background: linear-gradient(
-    135deg,
-    transparent calc(50% - 0.6px),
-    rgba(0, 0, 0, 0.35) 50%,
-    transparent calc(50% + 0.6px)
+    to bottom right,
+    transparent calc(50% - 1px),
+    var(--left-seg) calc(50% - 1px)
   );
 }
 
@@ -220,11 +215,19 @@
 
 /* Tint: keep --seg for design systems; rest = depth fade; expand = mono + mouse hole. */
 .pe-stage.is-tint .pe-corner-top {
-  background: color-mix(in srgb, var(--top-seg) 38%, #2c3236);
+  background: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--top-seg) 38%, #2c3236) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
 }
 
 .pe-stage.is-tint .pe-corner-left {
-  background: color-mix(in srgb, var(--left-seg) 38%, #2c3236);
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 1px),
+    color-mix(in srgb, var(--left-seg) 38%, #2c3236) calc(50% - 1px)
+  );
 }
 
 .pe-stage.is-tint .pe-seg {
@@ -257,7 +260,18 @@
   );
 }
 
-.pe-stage.is-tint.is-expanded .pe-corner-top,
+.pe-stage.is-tint.is-expanded .pe-corner-top {
+  background: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--top-seg) 55%, #2c3236) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
 .pe-stage.is-tint.is-expanded .pe-corner-left {
-  background: color-mix(in srgb, var(--top-seg) 55%, #2c3236);
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 1px),
+    color-mix(in srgb, var(--left-seg) 55%, #2c3236) calc(50% - 1px)
+  );
 }

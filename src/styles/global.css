@@ -227,14 +227,7 @@ a.variant-switch-item.is-current:hover {
   width: var(--rail-left);
   height: var(--rail-top);
   pointer-events: none;
-  background:
-    linear-gradient(
-      135deg,
-      transparent calc(50% - 0.6px),
-      rgba(0, 0, 0, 0.35) 50%,
-      transparent calc(50% + 0.6px)
-    ),
-    hsl(var(--overlay) / 0.92);
+  background: hsl(var(--overlay) / 0.92);
   transition: width 0.22s ease, height 0.22s ease, background 0.3s ease;
 }
 
