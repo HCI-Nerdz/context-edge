@@ -312,6 +312,18 @@ a.variant-switch-item.is-current:hover {
   color: var(--muted);
 }
 
+@property --rail-top {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0.35rem;
+}
+
+@property --rail-left {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0.35rem;
+}
+
 /* Shared stage chrome used by islands via class names */
 .cr-stage {
   --overlay: 210 55% 42%;
@@ -328,6 +340,13 @@ a.variant-switch-item.is-current:hover {
   background:
     radial-gradient(120% 90% at 10% 0%, hsl(var(--overlay) / 0.35), transparent 55%),
     linear-gradient(145deg, hsl(var(--overlay) / 0.22), hsl(var(--overlay-2) / 0.35) 55%, rgba(0, 0, 0, 0.35));
+  transition:
+    --rail-top 0.22s ease,
+    --rail-left 0.22s ease,
+    background 0.45s ease;
+}
+
+.cr-stage.is-live {
   transition: background 0.45s ease;
 }
 
@@ -340,7 +359,7 @@ a.variant-switch-item.is-current:hover {
   cursor: pointer;
   color: #f4f7f6;
   background: hsl(var(--overlay) / 0.92);
-  transition: width 0.22s ease, height 0.22s ease, background 0.3s ease;
+  transition: background 0.3s ease;
   display: grid;
   place-items: center;
 }
@@ -366,7 +385,7 @@ a.variant-switch-item.is-current:hover {
   height: var(--rail-top);
   pointer-events: none;
   background: hsl(var(--overlay) / 0.92);
-  transition: width 0.22s ease, height 0.22s ease, background 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .cr-rail-top {
