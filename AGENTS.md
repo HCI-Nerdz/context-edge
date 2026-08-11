@@ -6,6 +6,7 @@ MVP demos for **Nav Edge** / context rails:
 
 - **Variant A — Map Edge:** thin top/left edges → wireframe ecosystem map (Solid/React/Svelte/vanilla)
 - **Variant B — Modal Edge:** edge = current node; View Transitions slide sheet to reveal colored ancestry layers (`/demos/modal-edge/`)
+- **Variant C — Path Edge:** breadcrumb as color series; paired hover; current-first left marks (`/demos/path-edge/`)
 
 ## Links
 

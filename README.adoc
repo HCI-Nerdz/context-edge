@@ -76,6 +76,9 @@ Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 
 | `/demos/modal-edge/`
 | Vanilla — *Modal Edge* · View Transitions ancestry stack (Variant B)
+
+| `/demos/path-edge/`
+| Vanilla — *Path Edge* · breadcrumb color series (Variant C)
 |===
 
 Shared contracts: `src/lib/platforms.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge).
@@ -84,6 +87,7 @@ Two click models (do not force into one gesture while studying):
 
 * *Map Edge* — edge opens a wireframe / directory of destinations
 * *Modal Edge* — edge is the current node; click slides the sheet to reveal colored ancestor layers
+* *Path Edge* — rail is the breadcrumb (unique color sequence); paired hover; labels on top; one mark per level, current at top-left
 +
 Also called Nav Edge / Context Edge in conversation.
 

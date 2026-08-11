@@ -1,0 +1,5 @@
+= 2026-08-10 — Path Edge breadcrumb colors
+
+* `/demos/path-edge/` — paired hover, top labels, current-first left marks, compress ceiling + scroll unfold
+* Hub lists Variant C
+* Version 0.3.0

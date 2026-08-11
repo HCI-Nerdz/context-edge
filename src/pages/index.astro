@@ -14,9 +14,10 @@ const base = import.meta.env.BASE_URL;
     <h1>Nav Edge</h1>
     <p class="lede">
       Ecosystem navigation lives on the edge — not stuffed into the content header. Two variants
-      help compare the idea: a <strong>Map Edge</strong> that summons a wireframe directory, and a
+      help compare the idea: a <strong>Map Edge</strong> that summons a wireframe directory, a
       <strong>Modal Edge</strong> that slides the current sheet to reveal colored ancestor layers
-      (windows on windows). Published docs still use “context rails” for the map-shaped claim.
+      (windows on windows), and a <strong>Path Edge</strong> whose rails <em>are</em> the breadcrumb
+      as a series of colors. Published docs still use “context rails” for the map-shaped claim.
     </p>
     <p class="meta-row">
       <a href="https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/">Essay</a>
@@ -63,6 +64,21 @@ const base = import.meta.env.BASE_URL;
       <a class="demo-card" href={`${base}demos/modal-edge/`}>
         <strong>Modal Edge · VT stack</strong>
         <span>Ancestry layers with slide-to-reveal (View Transitions API).</span>
+      </a>
+    </div>
+
+    <h2 style="font-family:var(--font-display);font-size:1.15rem;margin:0.5rem 0 0.65rem">
+      Variant C · Path Edge
+    </h2>
+    <p style="color:var(--muted);max-width:42rem;line-height:1.55;margin:0 0 0.85rem">
+      The L-rail is the path: unique colors for the exact nodes from root to here. Hover either
+      edge and both present. Labels only on the top. Left: current mark at the top-left; ancestors
+      compress, then unfold on scroll.
+    </p>
+    <div class="demo-grid">
+      <a class="demo-card" href={`${base}demos/path-edge/`}>
+        <strong>Path Edge · breadcrumb colors</strong>
+        <span>Stacked path identity — not an icon toolbar.</span>
       </a>
     </div>
 

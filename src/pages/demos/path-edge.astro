@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Path Edge · breadcrumb colors"
+  description="Variant C: stacked path colors on the L-rail; hover expands both edges; labels on top only."
+>
+  <main class="shell">
+    <p><a class="back" href={base}>← Hub</a></p>
+    <p class="eyebrow">Demo · Variant C · Path Edge</p>
+    <h1>Path Edge (breadcrumb colors)</h1>
+    <p class="lede">
+      The rail is the path: a series of unique colors for the exact nodes from root to here.
+      Hover either edge and <em>both</em> present — same nav type. Text only on the top edge.
+      Left edge: current level top-most, one mark per level, ancestors compress then unfold on
+      scroll.
+    </p>
+    <p class="meta-row">
+      <a href={`${base}demos/vanilla-mature/`}>A · Map Edge</a>
+      <a href={`${base}demos/modal-edge/`}>B · Modal Edge</a>
+    </p>
+    <div id="path-edge-root"></div>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .pe-toolbar label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pe-toolbar input[type='range'] {
+    width: 9rem;
+  }
+
+  .pe-stage {
+    --idle: 0.42rem;
+    --hover-top: 2.6rem;
+    --hover-left: 3.1rem;
+    position: relative;
+    min-height: 28rem;
+    border: 1px solid var(--line);
+    border-radius: 0.45rem;
+    overflow: hidden;
+    background:
+      radial-gradient(80% 70% at 100% 0%, rgba(161, 66, 244, 0.12), transparent 50%),
+      #101418;
+  }
+
+  .pe-top {
+    position: absolute;
+    top: 0;
+    left: var(--idle);
+    right: 0;
+    height: var(--idle);
+    display: flex;
+    z-index: 4;
+    transition: height 0.22s ease;
+  }
+
+  .pe-left {
+    position: absolute;
+    top: var(--idle);
+    left: 0;
+    bottom: 0;
+    width: var(--idle);
+    z-index: 4;
+    transition: width 0.22s ease;
+    overflow: hidden;
+  }
+
+  .pe-stage.is-expanded .pe-top {
+    height: var(--hover-top);
+  }
+
+  .pe-stage.is-expanded .pe-left {
+    width: var(--hover-left);
+  }
+
+  .pe-left-scroll {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .pe-seg {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    color: #fff;
+    background: var(--seg);
+    font-family: var(--font-display);
+  }
+
+  .pe-seg:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    z-index: 1;
+  }
+
+  .pe-seg-top {
+    flex: 1 1 0;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+  }
+
+  .pe-label {
+    opacity: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transition: opacity 0.18s ease;
+  }
+
+  .pe-stage.is-expanded .pe-label {
+    opacity: 1;
+  }
+
+  .pe-seg-left {
+    display: grid;
+    place-items: center;
+    flex: 1 1 0;
+    min-height: 1.6rem;
+  }
+
+  .pe-seg-left.is-here {
+    flex: 0 0 auto;
+    min-height: 2.75rem;
+  }
+
+  .pe-seg-left.is-ancestor {
+    flex: 1 1 0;
+    max-height: calc((100% - var(--ceiling)) / 4);
+  }
+
+  .pe-stage.is-expanded .pe-seg-left.is-ancestor {
+    max-height: none;
+    min-height: 2.4rem;
+  }
+
+  .pe-mark {
+    opacity: 0;
+    font-size: 1.05rem;
+    line-height: 1;
+  }
+
+  .pe-stage.is-expanded .pe-mark {
+    opacity: 1;
+  }
+
+  .pe-content {
+    margin: calc(var(--idle) + 0.85rem) 1rem 1rem calc(var(--idle) + 0.85rem);
+  }
+</style>
+
+<script>
+  import { mountPathEdge } from '../../components/vanilla/mountPathEdge';
+
+  const root = document.getElementById('path-edge-root');
+  if (root) mountPathEdge({ root });
+</script>
