@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-08-11 — Path hops stay in a row
+
+* Path top/left keep `display: flex` so hops do not stack in Map’s grid cell
+* Corner miter uses one current-hop color (no fake two-tone diagonal)
+* Path preview tiles paint the corner once; the left hops start below it
+
 == 2026-08-11 — One L-join; Modal and Path islands
 
 * Map, Modal, and Path share `.cr-rail*` geometry (same idle/hover, same corner hit)
