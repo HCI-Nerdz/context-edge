@@ -118,6 +118,22 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
   }
 
+  function previewBlend(which: 'color' | 'subtle', mode: BlendMode | null) {
+    const ids: StageKind[] = which === 'subtle' ? ['subtle', 'live-subtle'] : ['color', 'live'];
+    ids.forEach((id) => {
+      const stage = root.querySelector(`[data-stage="${id}"]`) as HTMLElement | null;
+      if (!stage) return;
+      if (mode) {
+        stage.style.setProperty('--blend', mode);
+        stage.classList.add('is-expanded', 'is-blend-preview');
+      } else {
+        stage.style.setProperty('--blend', which === 'subtle' ? blendSubtle : blendColor);
+        stage.classList.remove('is-blend-preview');
+        if (!expanded.has(id)) stage.classList.remove('is-expanded');
+      }
+    });
+  }
+
   function setExpanded(id: StageKind, on: boolean) {
     if (on) expanded.add(id);
     else expanded.delete(id);
@@ -311,10 +327,15 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
 
     root.querySelectorAll<HTMLElement>('[data-blend-for]').forEach((group) => {
+      const which = group.dataset.blendFor === 'subtle' ? 'subtle' : 'color';
+      group.addEventListener('pointerleave', () => previewBlend(which, null));
       group.querySelectorAll<HTMLButtonElement>('[data-blend]').forEach((btn) => {
+        btn.addEventListener('pointerenter', () => {
+          previewBlend(which, btn.dataset.blend as BlendMode);
+        });
         btn.addEventListener('click', () => {
           const mode = btn.dataset.blend as BlendMode;
-          if (group.dataset.blendFor === 'subtle') blendSubtle = mode;
+          if (which === 'subtle') blendSubtle = mode;
           else blendColor = mode;
           applyBlends();
         });

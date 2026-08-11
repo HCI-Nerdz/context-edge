@@ -336,6 +336,13 @@
   );
 }
 
+.pe-stage.is-blend-preview.is-tint .pe-seg-color,
+.pe-stage.is-blend-preview.is-tint .pe-corner-color {
+  opacity: 1;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
 .pe-stage.is-tint .pe-corner-miter .pe-corner-top {
   background: linear-gradient(
     to bottom right,
