@@ -482,21 +482,35 @@ html[data-theme='light'] .fw-solid {
 }
 
 .variant-preview-path {
+  --pv-rail: 22%;
   background:
-    linear-gradient(90deg, #4285f4 0 20%, #ea4335 20% 40%, #fbbc04 40% 60%, #34a853 60% 80%, #a142f4 80%),
+    linear-gradient(#4285f4, #4285f4) 0 0 / var(--pv-rail) var(--pv-rail) no-repeat,
+    linear-gradient(
+        90deg,
+        #ea4335 0 20%,
+        #fbbc04 20% 40%,
+        #34a853 40% 60%,
+        #00acc1 60% 80%,
+        #a142f4 80%
+      )
+      var(--pv-rail) 0 / calc(100% - var(--pv-rail)) var(--pv-rail) no-repeat,
     #0d1214;
-  background-size: 100% 22%, auto;
-  background-repeat: no-repeat;
 }
 
 .variant-preview-path::after {
   content: '';
   position: absolute;
-  top: 0;
+  top: var(--pv-rail);
   left: 0;
-  width: 18%;
-  height: 100%;
-  background: linear-gradient(#4285f4 0 18%, #ea4335 18% 36%, #fbbc04 36% 54%, #34a853 54% 72%, #a142f4 72%);
+  width: var(--pv-rail);
+  height: calc(100% - var(--pv-rail));
+  background: linear-gradient(
+    #ea4335 0 20%,
+    #fbbc04 20% 40%,
+    #34a853 40% 60%,
+    #00acc1 60% 80%,
+    #a142f4 80%
+  );
 }
 
 .variant-modal-mock {
