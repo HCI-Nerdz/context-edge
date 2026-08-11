@@ -1,0 +1,4 @@
+= 2026-08-10 — Variant throggle
+
+* Three-way Map / Modal / Path control on demo pages
+* Current variant is selected and not a link (`aria-current`)

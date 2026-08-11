@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Throggle from '../../components/Throggle.astro';
 
 const base = import.meta.env.BASE_URL;
 ---
@@ -18,10 +19,7 @@ const base = import.meta.env.BASE_URL;
       Left edge: current level top-most, one mark per level, ancestors compress then unfold on
       scroll.
     </p>
-    <p class="meta-row">
-      <a href={`${base}demos/vanilla-mature/`}>A · Map Edge</a>
-      <a href={`${base}demos/modal-edge/`}>B · Modal Edge</a>
-    </p>
+    <Throggle current="path" />
     <div id="path-edge-root"></div>
   </main>
 </BaseLayout>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Throggle from '../../components/Throggle.astro';
 
 const base = import.meta.env.BASE_URL;
 ---
@@ -17,10 +18,7 @@ const base = import.meta.env.BASE_URL;
       <em>current</em> node’s color. Click the edge — the sheet slides down and right (View
       Transitions API) and ancestor layers show through. Click a layer to jump there.
     </p>
-    <p class="meta-row">
-      <a href={`${base}demos/vanilla-mature/`}>Variant A · Map Edge</a>
-      <span>Compare: directory map vs ancestry stack</span>
-    </p>
+    <Throggle current="modal" />
     <div id="modal-edge-root"></div>
   </main>
 </BaseLayout>

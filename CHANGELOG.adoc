@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-10 — Variant throggle
+
+* link:changelog-details/2026-08-10%20-%20throggle.adoc[Details]
+
 == 2026-08-10 — Path Edge breadcrumb colors
 
 * link:changelog-details/2026-08-10%20-%20path-edge.adoc[Details]

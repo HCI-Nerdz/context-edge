@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Throggle from '../../components/Throggle.astro';
 import ContextRailsShell from '../../components/solid/ContextRailsShell';
 
 const base = import.meta.env.BASE_URL;
@@ -17,6 +18,7 @@ const base = import.meta.env.BASE_URL;
       Fine-grained signals drive hover/open/platform identity. Toggle header overload to feel the
       anti-pattern.
     </p>
+    <Throggle current="map" />
     <ContextRailsShell client:load showOverloadToggle={true} initialId="cloud" />
   </main>
 </BaseLayout>
