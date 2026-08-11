@@ -180,6 +180,8 @@ a.variant-switch-item.is-current:hover {
   --overlay-2: 200 40% 28%;
   --rail-idle: 0.35rem;
   --rail-hover: 2.75rem;
+  --rail-top: var(--rail-idle);
+  --rail-left: var(--rail-idle);
   position: relative;
   min-height: 26rem;
   border: 1px solid var(--line);
@@ -210,18 +212,44 @@ a.variant-switch-item.is-current:hover {
   outline-offset: 2px;
 }
 
+.cr-stage:has(.cr-rail:hover),
+.cr-stage:has(.cr-rail:focus-visible) {
+  --rail-top: var(--rail-hover);
+  --rail-left: var(--rail-hover);
+}
+
+.cr-stage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: var(--rail-left);
+  height: var(--rail-top);
+  pointer-events: none;
+  background:
+    linear-gradient(
+      135deg,
+      transparent calc(50% - 0.6px),
+      rgba(0, 0, 0, 0.35) 50%,
+      transparent calc(50% + 0.6px)
+    ),
+    hsl(var(--overlay) / 0.92);
+  transition: width 0.22s ease, height 0.22s ease, background 0.3s ease;
+}
+
 .cr-rail-top {
   top: 0;
-  left: var(--rail-idle);
+  left: var(--rail-left);
   right: 0;
-  height: var(--rail-idle);
+  height: var(--rail-top);
 }
 
 .cr-rail-left {
-  top: var(--rail-idle);
+  top: var(--rail-top);
   left: 0;
   bottom: 0;
-  width: var(--rail-idle);
+  width: var(--rail-left);
 }
 
 .cr-rail-label {
@@ -236,20 +264,8 @@ a.variant-switch-item.is-current:hover {
   pointer-events: none;
 }
 
-.cr-rail-top:hover,
-.cr-rail-top:focus-visible {
-  height: var(--rail-hover);
-}
-
-.cr-rail-left:hover,
-.cr-rail-left:focus-visible {
-  width: var(--rail-hover);
-}
-
-.cr-rail-top:hover .cr-rail-label,
-.cr-rail-top:focus-visible .cr-rail-label,
-.cr-rail-left:hover .cr-rail-label,
-.cr-rail-left:focus-visible .cr-rail-label {
+.cr-stage:has(.cr-rail:hover) .cr-rail-top .cr-rail-label,
+.cr-stage:has(.cr-rail:focus-visible) .cr-rail-top .cr-rail-label {
   opacity: 1;
 }
 

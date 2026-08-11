@@ -37,7 +37,9 @@ import { hrefWithBase } from '../../lib/base';
   .pe-stage {
     --idle: 0.42rem;
     --hover-top: 2.6rem;
-    --hover-left: 3.1rem;
+    --hover-left: 3.4rem;
+    --rail-top: var(--idle);
+    --rail-left: var(--idle);
     position: relative;
     min-height: 28rem;
     border: 1px solid var(--line);
@@ -48,34 +50,80 @@ import { hrefWithBase } from '../../lib/base';
       #101418;
   }
 
+  .pe-stage.is-expanded {
+    --rail-top: var(--hover-top);
+    --rail-left: var(--hover-left);
+  }
+
+  .pe-corner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: var(--rail-left);
+    height: var(--rail-top);
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    background: transparent;
+    transition: width 0.22s ease, height 0.22s ease;
+  }
+
+  .pe-corner-top,
+  .pe-corner-left {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Top rail owns the upper-right of the square; left rail owns the lower-left. */
+  .pe-corner-top {
+    background: var(--top-seg);
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+
+  .pe-corner-left {
+    background: var(--left-seg);
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
+  }
+
+  .pe-corner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      transparent calc(50% - 0.6px),
+      rgba(0, 0, 0, 0.35) 50%,
+      transparent calc(50% + 0.6px)
+    );
+  }
+
+  .pe-corner:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+  }
+
   .pe-top {
     position: absolute;
     top: 0;
-    left: var(--idle);
+    left: var(--rail-left);
     right: 0;
-    height: var(--idle);
+    height: var(--rail-top);
     display: flex;
     z-index: 4;
-    transition: height 0.22s ease;
+    transition: height 0.22s ease, left 0.22s ease;
   }
 
   .pe-left {
     position: absolute;
-    top: var(--idle);
+    top: var(--rail-top);
     left: 0;
     bottom: 0;
-    width: var(--idle);
+    width: var(--rail-left);
     z-index: 4;
-    transition: width 0.22s ease;
+    transition: width 0.22s ease, top 0.22s ease;
     overflow: hidden;
-  }
-
-  .pe-stage.is-expanded .pe-top {
-    height: var(--hover-top);
-  }
-
-  .pe-stage.is-expanded .pe-left {
-    width: var(--hover-left);
   }
 
   .pe-left-scroll {
@@ -131,7 +179,8 @@ import { hrefWithBase } from '../../lib/base';
 
   .pe-seg-left.is-here {
     flex: 0 0 auto;
-    min-height: 2.75rem;
+    min-height: 3.1rem;
+    padding-top: 0.15rem;
   }
 
   .pe-seg-left.is-ancestor {

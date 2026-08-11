@@ -63,6 +63,17 @@ export function mountPathEdge(opts: PathEdgeOptions) {
       </div>
       <div class="pe-stage ${expanded ? 'is-expanded' : ''}" style="--ceiling:${ceiling}%">
         <div class="pe-rails" data-rails>
+          <button
+            type="button"
+            class="pe-corner"
+            data-goto="${current.id}"
+            title="${current.label}"
+            aria-label="Corner · ${current.label}"
+            style="--top-seg:${display[0]!.color};--left-seg:${display[0]!.color}"
+          >
+            <span class="pe-corner-top" aria-hidden="true"></span>
+            <span class="pe-corner-left" aria-hidden="true"></span>
+          </button>
           <div class="pe-top" role="toolbar" aria-label="Path labels (top edge)">
             ${display
               .map(
