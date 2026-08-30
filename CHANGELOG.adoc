@@ -1,5 +1,10 @@
 = Changelog
 
+== 2026-08-30 -- Hub entry lede for cold readers
+
+* Hub opens with a stuffed-suite-header scene, then names Context Edge / rails / Map-Modal-Path -- not "ecosystem navigation" first.
+* link:changelog-details/2026-08-30%20-%20hub-entry-copy-cold-readers.adoc[Details]
+
 == 2026-08-30 — Path Edge surfaces for light mode
 
 * Stage, chroma bases, toolbar controls, and tint mono mixes use theme tokens so light mode is not dark-on-dark

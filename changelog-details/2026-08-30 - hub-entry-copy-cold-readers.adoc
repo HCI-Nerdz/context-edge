@@ -1,0 +1,6 @@
+= Hub entry lede for cold readers
+
+The Context Edge hub no longer opens with "Ecosystem navigation" jargon.
+
+* First paragraph: growing suite header (Mail, Drive, Admin...) until you lose which product you are in; Context Edge keeps the page and puts travel on thin edge rails.
+* Second paragraph: Map / Modal / Path explained in plain language, then invite to tiles / matrix.
