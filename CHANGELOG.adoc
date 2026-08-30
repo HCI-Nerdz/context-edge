@@ -1,5 +1,9 @@
 = Changelog
 
+== 2026-08-30 — Modal Edge follows page light/dark
+
+* Stage, sheet, layer bodies, and crumbs use theme tokens so light mode is not dark-on-dark
+
 == 2026-08-30 — Modal Edge peel behaves like windows-on-windows
 
 * Closed sheet is opaque; ancestor stack stays hidden until reveal

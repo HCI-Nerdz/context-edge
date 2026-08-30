@@ -1,6 +1,6 @@
 .me-hint-btn {
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--me-hint-bg);
   color: inherit;
   border-radius: 0.3rem;
   padding: 0.35rem 0.7rem;
@@ -16,12 +16,41 @@
   --me-reveal-y: 26%;
   --me-reveal-scale: 0.1;
   --me-cascade: 1.85rem;
+  /* Dark defaults — overridden in light theme */
+  --me-stage: #070a0c;
+  --me-sheet: #0b1014;
+  --me-layer-body: rgba(6, 10, 12, 0.55);
+  --me-crumb-bg: rgba(0, 0, 0, 0.25);
+  --me-crumb-line: rgba(255, 255, 255, 0.16);
+  --me-hint-bg: rgba(255, 255, 255, 0.06);
+  --me-sheet-shadow: -14px -14px 44px rgba(0, 0, 0, 0.5);
+  --me-overlay-a: 0.45;
+  --me-overlay-b: 0.32;
+  --me-overlay-c: 0.5;
+  --me-layer-a: 0.55;
+  --me-layer-b: 0.72;
   position: relative;
   min-height: 28rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
-  background: #070a0c;
+  background: var(--me-stage);
+  color: var(--ink);
+}
+
+html[data-theme='light'] .me-viewport {
+  --me-stage: #dfe8e5;
+  --me-sheet: #f4f7f6;
+  --me-layer-body: rgba(255, 255, 255, 0.78);
+  --me-crumb-bg: rgba(255, 255, 255, 0.7);
+  --me-crumb-line: rgba(0, 0, 0, 0.12);
+  --me-hint-bg: rgba(0, 0, 0, 0.04);
+  --me-sheet-shadow: -10px -10px 36px rgba(0, 0, 0, 0.18);
+  --me-overlay-a: 0.28;
+  --me-overlay-b: 0.2;
+  --me-overlay-c: 0.32;
+  --me-layer-a: 0.42;
+  --me-layer-b: 0.58;
 }
 
 .me-viewport.is-revealed {
@@ -64,17 +93,25 @@
     calc(var(--depth) * var(--me-cascade))
   );
   background:
-    radial-gradient(100% 80% at 0% 0%, hsl(var(--layer-overlay) / 0.55), transparent 55%),
-    linear-gradient(145deg, hsl(var(--layer-overlay) / 0.55), hsl(var(--layer-overlay-2) / 0.72));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    radial-gradient(
+      100% 80% at 0% 0%,
+      hsl(var(--layer-overlay) / var(--me-layer-a)),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      hsl(var(--layer-overlay) / var(--me-layer-a)),
+      hsl(var(--layer-overlay-2) / var(--me-layer-b))
+    );
+  box-shadow: inset 0 0 0 1px var(--line);
   transition: filter 0.2s ease, transform 0.25s ease;
   z-index: calc(var(--depth) + 1);
 }
 
 .me-layer:hover,
 .me-layer:focus-visible {
-  filter: brightness(1.12);
-  outline: 2px solid #fff;
+  filter: brightness(1.08);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   z-index: 20;
 }
@@ -106,7 +143,7 @@
   align-content: start;
   gap: 0.15rem;
   padding: 0.85rem 1rem;
-  background: rgba(6, 10, 12, 0.55);
+  background: var(--me-layer-body);
 }
 
 .me-layer-body strong {
@@ -121,15 +158,20 @@
   position: absolute;
   inset: 0;
   z-index: 3;
+  color: var(--ink);
   /* Opaque base — gradients sit on top so closed state does not bleed ancestors */
-  background-color: #0b1014;
+  background-color: var(--me-sheet);
   background-image:
-    radial-gradient(120% 90% at 10% 0%, hsl(var(--overlay) / 0.45), transparent 55%),
+    radial-gradient(
+      120% 90% at 10% 0%,
+      hsl(var(--overlay) / var(--me-overlay-a)),
+      transparent 55%
+    ),
     linear-gradient(
       145deg,
-      hsl(var(--overlay) / 0.32),
-      hsl(var(--overlay-2) / 0.5) 55%,
-      #0b1014 100%
+      hsl(var(--overlay) / var(--me-overlay-b)),
+      hsl(var(--overlay-2) / var(--me-overlay-c)) 55%,
+      var(--me-sheet) 100%
     );
   transform: translate(
       calc(var(--me-reveal-x) * var(--me-open)),
@@ -149,7 +191,7 @@
 
 .me-viewport.is-revealed .me-sheet {
   --me-open: 1;
-  box-shadow: -14px -14px 44px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--me-sheet-shadow);
   border-radius: 0.4rem;
   cursor: pointer;
 }
@@ -172,8 +214,8 @@
 .me-crumb li {
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--me-crumb-line);
+  background: var(--me-crumb-bg);
 }
 
 .me-crumb li:not(:last-child)::after {
