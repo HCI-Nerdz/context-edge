@@ -1,7 +1,8 @@
 import {
   BLEND_MODES,
   demoPath,
-  depthShade,
+  pathSegMono,
+  pathStageVars,
   pathThrough,
   sizePathStacks,
   type BlendMode,
@@ -171,13 +172,12 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const list = nodes();
     const current = list[list.length - 1]!;
     const keep = new Set(list.map((n) => n.id));
-    const monoTop = `color-mix(in srgb, ${current.color} 18%, hsl(0 0% 42%))`;
-    const monoLeft = `color-mix(in srgb, ${current.color} 14%, hsl(0 0% 28%))`;
+    const vars = pathStageVars(current);
 
     root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
-      stage.style.setProperty('--page', current.color);
-      stage.style.setProperty('--mono-top', monoTop);
-      stage.style.setProperty('--mono-left', monoLeft);
+      stage.style.setProperty('--page', vars.page);
+      stage.style.setProperty('--mono-top', vars.monoTop);
+      stage.style.setProperty('--mono-left', vars.monoLeft);
       const corner = stage.querySelector('.pe-corner') as HTMLElement | null;
       if (corner) {
         corner.dataset.goto = current.id;
@@ -201,11 +201,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         const fromRoot = list.findIndex((n) => n.id === id);
         el.dataset.fromRoot = String(fromRoot);
         el.classList.toggle('is-here', id === current.id);
-        const shade = depthShade(fromRoot, list.length);
-        el.style.setProperty(
-          '--mono',
-          `color-mix(in srgb, ${current.color} 14%, hsl(0 0% ${Math.round(18 + shade * 42)}%))`,
-        );
+        el.style.setProperty('--mono', pathSegMono(current, fromRoot, list.length));
       });
     });
     applyLayout();
@@ -237,14 +233,13 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
   }
 
-  function segs(list: PathNode[], axis: 'top' | 'left', page: string): string {
+  function segs(list: PathNode[], axis: 'top' | 'left', page: PathNode): string {
     return [...list]
       .reverse()
       .map((n) => {
         const fromRoot = list.indexOf(n);
         const here = fromRoot === list.length - 1;
-        const shade = depthShade(fromRoot, list.length);
-        const mono = `color-mix(in srgb, ${page} 14%, hsl(0 0% ${Math.round(18 + shade * 42)}%))`;
+        const mono = pathSegMono(page, fromRoot, list.length);
         return `
           <button type="button" class="pe-seg pe-seg-${axis} ${here ? 'is-here' : 'is-ancestor'}"
             data-goto="${n.id}" data-from-root="${fromRoot}"
@@ -266,15 +261,14 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     current: PathNode,
   ): string {
     const blend = subtle ? blendSubtle : blendColor;
-    const monoTop = `color-mix(in srgb, ${current.color} 18%, hsl(0 0% 42%))`;
-    const monoLeft = `color-mix(in srgb, ${current.color} 14%, hsl(0 0% 28%))`;
+    const vars = pathStageVars(current);
     return `
       <article class="pe-cell ${live ? 'pe-cell-live' : 'pe-cell-rest'}" id="${kind}">
         <p class="pe-cell-label">${label}</p>
         ${live ? '' : `<div class="pe-blend-slot">${blendButtons(blend, subtle ? 'subtle' : 'color')}</div>`}
         <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
           data-stage="${kind}" data-live="${live ? '1' : '0'}"
-          style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${current.color};--mono-top:${monoTop};--mono-left:${monoLeft}">
+          style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${vars.page};--mono-top:${vars.monoTop};--mono-left:${vars.monoLeft}">
           <div class="pe-rails" data-rails>
             <button type="button" class="pe-corner cr-rail cr-rail-corner" data-goto="${current.id}" title="${current.label}"
               style="--top-seg:${current.color};--left-seg:${current.color}">
@@ -286,11 +280,11 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
               </span>
             </button>
             <div class="pe-top cr-rail cr-rail-top" role="toolbar" aria-label="${label} top path">
-              <div class="pe-stack pe-stack-top">${segs(list, 'top', current.color)}</div>
+              <div class="pe-stack pe-stack-top">${segs(list, 'top', current)}</div>
               <div class="pe-slack" aria-hidden="true"></div>
             </div>
             <div class="pe-left cr-rail cr-rail-left" data-pack="${leftPack}" role="toolbar" aria-label="${label} left path">
-              <div class="pe-stack pe-stack-left">${segs(list, 'left', current.color)}</div>
+              <div class="pe-stack pe-stack-left">${segs(list, 'left', current)}</div>
               <div class="pe-slack" aria-hidden="true"></div>
             </div>
           </div>

@@ -174,14 +174,15 @@ export type BlendMode = (typeof BLEND_MODES)[number];
 export function pathStageVars(current: PathNode) {
   return {
     page: current.color,
-    monoTop: `color-mix(in srgb, ${current.color} 18%, hsl(0 0% 42%))`,
-    monoLeft: `color-mix(in srgb, ${current.color} 14%, hsl(0 0% 28%))`,
+    /* Lightness/mix % come from --pe-mono-* on .pe-stage (theme tokens). */
+    monoTop: `color-mix(in srgb, ${current.color} var(--pe-mono-mix-top), hsl(0 0% var(--pe-mono-l-top)))`,
+    monoLeft: `color-mix(in srgb, ${current.color} var(--pe-mono-mix-left), hsl(0 0% var(--pe-mono-l-left)))`,
   };
 }
 
 export function pathSegMono(current: PathNode, fromRoot: number, count: number) {
   const shade = depthShade(fromRoot, count);
-  return `color-mix(in srgb, ${current.color} 14%, hsl(0 0% ${Math.round(18 + shade * 42)}%))`;
+  return `color-mix(in srgb, ${current.color} var(--pe-mono-mix-seg), hsl(0 0% calc(var(--pe-mono-l-min) + ${shade} * var(--pe-mono-l-span))))`;
 }
 
 export function namePathHops(stage: HTMLElement, sid: string) {

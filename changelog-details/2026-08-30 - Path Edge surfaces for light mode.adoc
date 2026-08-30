@@ -1,0 +1,6 @@
+= 2026-08-30 — Path Edge surfaces for light mode
+
+* Stage panels, chroma hop bases, toolbar selects, and mode buttons use `--pe-*` theme tokens (same pattern as Modal Edge)
+* Light theme aligns stage with page `--bg`; washes and tint mono mixes stay pastel instead of muddy mid-gray
+* Saturated hop colors keep their series identity; chroma/tint label ink follows the theme
+* Version 0.9.4

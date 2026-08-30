@@ -1,5 +1,10 @@
 = Changelog
 
+== 2026-08-30 — Path Edge surfaces for light mode
+
+* Stage, chroma bases, toolbar controls, and tint mono mixes use theme tokens so light mode is not dark-on-dark
+* Page-color washes stay soft pastels; hop color series and saturated rails stay visible
+
 == 2026-08-30 — Modal Edge light washes stay readable
 
 * Light stage/sheet match page `--bg` / `--panel`; overlay and layer alphas are soft pastels on an opaque white sheet

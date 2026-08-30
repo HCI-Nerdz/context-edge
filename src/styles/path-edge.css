@@ -1,5 +1,13 @@
 .pe-toolbar {
+  /* Dark defaults — overridden in light theme */
+  --pe-control-bg: #1a1f23;
+  --pe-mode-bg: rgba(255, 255, 255, 0.04);
   flex-wrap: wrap;
+}
+
+html[data-theme='light'] .pe-toolbar {
+  --pe-control-bg: #ffffff;
+  --pe-mode-bg: rgba(0, 0, 0, 0.04);
 }
 
 .pe-toolbar label {
@@ -15,7 +23,7 @@
 .pe-toolbar select {
   font: inherit;
   color: var(--ink);
-  background: #1a1f23;
+  background: var(--pe-control-bg);
   border: 1px solid var(--line);
   border-radius: 0.3rem;
   padding: 0.2rem 0.4rem;
@@ -91,11 +99,15 @@
   font-size: 0.75rem;
   font-family: var(--font-display);
   color: var(--muted);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--pe-mode-bg, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--line);
   border-radius: 0.3rem;
   padding: 0.22rem 0.45rem;
   cursor: pointer;
+}
+
+html[data-theme='light'] .mode-btn {
+  --pe-mode-bg: rgba(0, 0, 0, 0.04);
 }
 
 .mode-btn:hover {
@@ -143,14 +155,48 @@
   --top-length: 72%;
   --left-length: 72%;
   --blend: color;
+  /* Dark defaults — overridden in light theme (mirror Modal Edge tokens) */
+  --pe-stage: #101418;
+  --pe-wash: 18%;
+  --pe-chroma-seg: #1c2226;
+  --pe-seg-ink: #fff;
+  --pe-focus: #fff;
+  --pe-mono-mix-top: 18%;
+  --pe-mono-mix-left: 14%;
+  --pe-mono-mix-seg: 14%;
+  --pe-mono-l-top: 42%;
+  --pe-mono-l-left: 28%;
+  --pe-mono-l-min: 18%;
+  --pe-mono-l-span: 42%;
   position: relative;
   min-height: 24rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
+  color: var(--ink);
   background:
-    radial-gradient(80% 70% at 100% 0%, color-mix(in srgb, var(--page, #a142f4) 18%, transparent), transparent 50%),
-    #101418;
+    radial-gradient(
+      80% 70% at 100% 0%,
+      color-mix(in srgb, var(--page, #a142f4) var(--pe-wash), transparent),
+      transparent 50%
+    ),
+    var(--pe-stage);
+}
+
+html[data-theme='light'] .pe-stage {
+  /* Align with page --bg; soft page wash; tint mono stays pastel, not muddy */
+  --pe-stage: #f4f7f6;
+  --pe-wash: 14%;
+  --pe-chroma-seg: #e4e9e7;
+  --pe-seg-ink: #1a211f;
+  --pe-focus: var(--accent);
+  --pe-mono-mix-top: 22%;
+  --pe-mono-mix-left: 18%;
+  --pe-mono-mix-seg: 16%;
+  --pe-mono-l-top: 78%;
+  --pe-mono-l-left: 70%;
+  --pe-mono-l-min: 62%;
+  --pe-mono-l-span: 28%;
 }
 
 /* Paint only — L geometry lives on .cr-rail* in global.css (same as Map / Modal). */
@@ -255,6 +301,7 @@
   margin: 0;
   padding: 0;
   cursor: pointer;
+  /* Saturated hops keep white type; chroma/tint use --pe-seg-ink */
   color: #fff;
   background: var(--seg);
   font-family: var(--font-display);
@@ -274,7 +321,7 @@
 }
 
 .pe-seg:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--pe-focus);
   outline-offset: -2px;
   z-index: 1;
 }
@@ -319,8 +366,13 @@
   margin: calc(var(--rail-idle) + 0.85rem) 1rem 1rem calc(var(--rail-idle) + 0.85rem);
 }
 
+.pe-stage.is-chroma .pe-seg,
+.pe-stage.is-tint .pe-seg {
+  color: var(--pe-seg-ink);
+}
+
 .pe-stage.is-chroma .pe-seg {
-  background: #1c2226;
+  background: var(--pe-chroma-seg);
 }
 
 .pe-stage.is-chroma {
