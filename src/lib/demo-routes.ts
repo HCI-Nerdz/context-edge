@@ -1,5 +1,6 @@
 export type FrameworkId = 'vanilla' | 'solid' | 'react' | 'svelte';
 export type VariantId = 'map' | 'modal' | 'path';
+export type ModalModeId = 'rest' | 'live';
 
 export const frameworks: { id: FrameworkId; label: string }[] = [
   { id: 'vanilla', label: 'Vanilla' },
@@ -30,3 +31,15 @@ export const variantRoutes: Record<FrameworkId, Record<VariantId, string>> = {
     path: 'demos/svelte-path/',
   },
 };
+
+/** Modal Live routes — Rest stays on variantRoutes.*.modal */
+export const modalLiveRoutes: Record<FrameworkId, string> = {
+  vanilla: 'demos/modal-edge-live/',
+  solid: 'demos/solid-modal-live/',
+  react: 'demos/react-modal-live/',
+  svelte: 'demos/svelte-modal-live/',
+};
+
+export function modalRoute(framework: FrameworkId, mode: ModalModeId = 'rest'): string {
+  return mode === 'live' ? modalLiveRoutes[framework] : variantRoutes[framework].modal;
+}

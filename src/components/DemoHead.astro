@@ -14,6 +14,7 @@ interface Props {
 
 const { variant, mode, title, lede } = Astro.props;
 const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
+const modalMode = mode ?? 'rest';
 ---
 
 <div class="demo-head" transition:name="demo-head">
@@ -26,7 +27,7 @@ const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
   <p class="lede">{lede}</p>
   <div class="demo-switches">
     <VariantSwitch current={variant} framework="vanilla" />
-    <FrameworkSwitch current="vanilla" variant={variant} />
-    {variant === 'modal' && mode && <ModalMode current={mode} />}
+    <FrameworkSwitch current="vanilla" variant={variant} mode={variant === 'modal' ? modalMode : undefined} />
+    {variant === 'modal' && mode && <ModalMode current={mode} framework="vanilla" />}
   </div>
 </div>

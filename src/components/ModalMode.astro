@@ -1,14 +1,16 @@
 ---
 import { hrefWithBase } from '../lib/base';
+import { modalRoute, type FrameworkId, type ModalModeId } from '../lib/demo-routes';
 
 interface Props {
-  current: 'rest' | 'live';
+  current: ModalModeId;
+  framework?: FrameworkId;
 }
 
-const { current } = Astro.props;
+const { current, framework = 'vanilla' } = Astro.props;
 const items = [
-  { id: 'rest' as const, label: 'Rest', href: hrefWithBase('demos/modal-edge/') },
-  { id: 'live' as const, label: 'Live', href: hrefWithBase('demos/modal-edge-live/') },
+  { id: 'rest' as const, label: 'Rest', href: hrefWithBase(modalRoute(framework, 'rest')) },
+  { id: 'live' as const, label: 'Live', href: hrefWithBase(modalRoute(framework, 'live')) },
 ];
 ---
 

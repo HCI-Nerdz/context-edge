@@ -1,5 +1,13 @@
 = Changelog
 
+== 2026-08-30 — Modal Edge peel behaves like windows-on-windows
+
+* Closed sheet is opaque; ancestor stack stays hidden until reveal
+* Peek and reveal share `--me-open` (no inline transform fight)
+* Sheet VT is scoped like Map (`src/lib/modal-vt.ts`); CSS transition only for peek
+* Ancestor layers cascade with wide L hit targets; left rail is color-only (no rotated type)
+* Rest/Live Mode on every island; Island switch preserves mode
+
 == 2026-08-30 — Context Edge rename; Modal Mode no longer overlaps
 
 * Product name is Context Edge (repo / Pages slug `context-edge`); Edge Bar and context-rails are retired

@@ -1,14 +1,28 @@
 ---
 import FrameworkMark from './FrameworkMark.astro';
 import { hrefWithBase } from '../lib/base';
-import { frameworks, variantRoutes, type FrameworkId, type VariantId } from '../lib/demo-routes';
+import {
+  frameworks,
+  modalRoute,
+  variantRoutes,
+  type FrameworkId,
+  type ModalModeId,
+  type VariantId,
+} from '../lib/demo-routes';
 
 interface Props {
   current: FrameworkId;
   variant: VariantId;
+  /** Preserve Modal Rest/Live when switching islands. */
+  mode?: ModalModeId;
 }
 
-const { current, variant } = Astro.props;
+const { current, variant, mode = 'rest' } = Astro.props;
+
+function hrefFor(fw: FrameworkId) {
+  if (variant === 'modal') return hrefWithBase(modalRoute(fw, mode));
+  return hrefWithBase(variantRoutes[fw][variant]);
+}
 ---
 
 <nav class="variant-switch" aria-label="Framework">
@@ -19,7 +33,7 @@ const { current, variant } = Astro.props;
         <a
           class:list={['variant-switch-item', 'fw-switch-item', { 'is-current': fw.id === current }]}
           role="listitem"
-          href={hrefWithBase(variantRoutes[fw.id][variant])}
+          href={hrefFor(fw.id)}
           aria-current={fw.id === current ? 'page' : undefined}
         >
           <FrameworkMark id={fw.id} />

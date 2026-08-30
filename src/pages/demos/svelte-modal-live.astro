@@ -4,30 +4,30 @@ import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import ModalMode from '../../components/ModalMode.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ModalEdgeShell from '../../components/solid/ModalEdgeShell';
+import ModalEdgeShell from '../../components/svelte/ModalEdgeShell.svelte';
 import { hrefWithBase } from '../../lib/base';
 import '../../styles/modal-edge.css';
 ---
 
 <BaseLayout
-  title="Solid Modal Edge · Context Edge"
-  description="Solid island — Modal Edge ancestry stack."
+  title="Svelte Modal Edge · Live · Context Edge"
+  description="Svelte island — Modal Edge with live edge peek."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · Solid · Variant B</p>
+    <p class="eyebrow">Demo · Svelte · Variant B · Live</p>
     <div class="page-kicker">
-      <FrameworkMark id="solid" />
+      <FrameworkMark id="svelte" />
       <h1>Modal Edge</h1>
     </div>
     <p class="lede">
-      Same L-join as Map. Click slides this sheet back; ancestors stay as colored layers.
+      Pointer near the edges peeks the sheet. Click to open the full stack.
     </p>
     <div class="demo-switches">
-      <VariantSwitch current="modal" framework="solid" />
-      <FrameworkSwitch current="solid" variant="modal" mode="rest" />
-      <ModalMode current="rest" framework="solid" />
+      <VariantSwitch current="modal" framework="svelte" />
+      <FrameworkSwitch current="svelte" variant="modal" mode="live" />
+      <ModalMode current="live" framework="svelte" />
     </div>
-    <ModalEdgeShell client:load island="Solid" />
+    <ModalEdgeShell client:load island="Svelte" live={true} />
   </main>
 </BaseLayout>

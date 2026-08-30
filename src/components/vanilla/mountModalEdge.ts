@@ -25,6 +25,20 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
     return stackThrough(currentId, nodes);
   }
 
+  function withSheetVt(update: () => void) {
+    const vp = root.querySelector('.me-viewport') as HTMLElement | null;
+    const sheet = root.querySelector('.me-sheet') as HTMLElement | null;
+    if (!vp) {
+      update();
+      return Promise.resolve();
+    }
+    if (sheet) sheet.style.viewTransitionName = 'me-sheet';
+    return runModalViewTransition(vp, update).finally(() => {
+      const s = root.querySelector('.me-sheet') as HTMLElement | null;
+      if (s) s.style.viewTransitionName = '';
+    });
+  }
+
   function render() {
     const path = stack();
     const current = path[path.length - 1]!;
@@ -35,6 +49,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
         <span>
           Modal Edge · View Transitions stack ·
           ${revealed ? 'layers revealed' : 'sheet closed'} · ${current.label}
+          ${live ? ' · Live' : ' · Rest'}
         </span>
         <button type="button" class="me-hint-btn" data-toggle>
           ${revealed ? 'Close stack' : 'Open Context Edge'}
@@ -108,7 +123,6 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
     `;
 
     const vp = root.querySelector('.me-viewport') as HTMLElement;
-    const sheet = root.querySelector('.me-sheet') as HTMLElement;
 
     function clearPeek() {
       if (!revealed) vp.style.setProperty('--me-open', '0');
@@ -123,21 +137,12 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       stackEl?.setAttribute('aria-hidden', revealed ? 'false' : 'true');
     }
 
-    function withSheetVt(update: () => void) {
-      sheet.style.viewTransitionName = 'me-sheet';
-      return runModalViewTransition(vp, () => {
-        update();
-        applyReveal();
-      }).finally(() => {
-        sheet.style.viewTransitionName = '';
-      });
-    }
-
     root.querySelectorAll('[data-toggle]').forEach((el) => {
       el.addEventListener('click', () => {
         clearPeek();
         void withSheetVt(() => {
           revealed = !revealed;
+          applyReveal();
         });
       });
     });
@@ -155,12 +160,14 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       });
     });
 
+    const sheet = root.querySelector('.me-sheet') as HTMLElement;
     sheet.addEventListener('click', (e) => {
       if (!revealed) return;
       if ((e.target as HTMLElement).closest('[data-toggle]')) return;
       clearPeek();
       void withSheetVt(() => {
         revealed = false;
+        applyReveal();
       });
     });
 

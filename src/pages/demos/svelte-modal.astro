@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
+import ModalMode from '../../components/ModalMode.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
 import ModalEdgeShell from '../../components/svelte/ModalEdgeShell.svelte';
 import { hrefWithBase } from '../../lib/base';
@@ -24,7 +25,8 @@ import '../../styles/modal-edge.css';
     </p>
     <div class="demo-switches">
       <VariantSwitch current="modal" framework="svelte" />
-      <FrameworkSwitch current="svelte" variant="modal" />
+      <FrameworkSwitch current="svelte" variant="modal" mode="rest" />
+      <ModalMode current="rest" framework="svelte" />
     </div>
     <ModalEdgeShell client:load island="Svelte" />
   </main>

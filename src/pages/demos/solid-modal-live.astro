@@ -10,24 +10,24 @@ import '../../styles/modal-edge.css';
 ---
 
 <BaseLayout
-  title="Solid Modal Edge · Context Edge"
-  description="Solid island — Modal Edge ancestry stack."
+  title="Solid Modal Edge · Live · Context Edge"
+  description="Solid island — Modal Edge with live edge peek."
 >
   <main class="shell">
     <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · Solid · Variant B</p>
+    <p class="eyebrow">Demo · Solid · Variant B · Live</p>
     <div class="page-kicker">
       <FrameworkMark id="solid" />
       <h1>Modal Edge</h1>
     </div>
     <p class="lede">
-      Same L-join as Map. Click slides this sheet back; ancestors stay as colored layers.
+      Pointer near the edges peeks the sheet. Click to open the full stack.
     </p>
     <div class="demo-switches">
       <VariantSwitch current="modal" framework="solid" />
-      <FrameworkSwitch current="solid" variant="modal" mode="rest" />
-      <ModalMode current="rest" framework="solid" />
+      <FrameworkSwitch current="solid" variant="modal" mode="live" />
+      <ModalMode current="live" framework="solid" />
     </div>
-    <ModalEdgeShell client:load island="Solid" />
+    <ModalEdgeShell client:load island="Solid" live={true} />
   </main>
 </BaseLayout>
