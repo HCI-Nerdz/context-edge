@@ -39,18 +39,19 @@
 }
 
 html[data-theme='light'] .me-viewport {
-  --me-stage: #dfe8e5;
-  --me-sheet: #f4f7f6;
-  --me-layer-body: rgba(255, 255, 255, 0.78);
-  --me-crumb-bg: rgba(255, 255, 255, 0.7);
-  --me-crumb-line: rgba(0, 0, 0, 0.12);
-  --me-hint-bg: rgba(0, 0, 0, 0.04);
-  --me-sheet-shadow: -10px -10px 36px rgba(0, 0, 0, 0.18);
-  --me-overlay-a: 0.28;
-  --me-overlay-b: 0.2;
-  --me-overlay-c: 0.32;
-  --me-layer-a: 0.42;
-  --me-layer-b: 0.58;
+  /* Align with page --bg / --panel; soft pastels instead of muddy mid-alpha washes */
+  --me-stage: #f4f7f6;
+  --me-sheet: #ffffff;
+  --me-layer-body: rgba(255, 255, 255, 0.94);
+  --me-crumb-bg: #ffffff;
+  --me-crumb-line: rgba(0, 0, 0, 0.14);
+  --me-hint-bg: rgba(255, 255, 255, 0.88);
+  --me-sheet-shadow: -10px -10px 36px rgba(0, 0, 0, 0.12);
+  --me-overlay-a: 0.14;
+  --me-overlay-b: 0.09;
+  --me-overlay-c: 0.16;
+  --me-layer-a: 0.22;
+  --me-layer-b: 0.34;
 }
 
 .me-viewport.is-revealed {

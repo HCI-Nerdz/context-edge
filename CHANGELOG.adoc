@@ -1,5 +1,10 @@
 = Changelog
 
+== 2026-08-30 — Modal Edge light washes stay readable
+
+* Light stage/sheet match page `--bg` / `--panel`; overlay and layer alphas are soft pastels on an opaque white sheet
+* Layer bodies, crumbs, and hints stay high-contrast; rails keep saturated color
+
 == 2026-08-30 — Modal Edge follows page light/dark
 
 * Stage, sheet, layer bodies, and crumbs use theme tokens so light mode is not dark-on-dark
