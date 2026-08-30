@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 concurrency:
-  group: ci-context-rails-${{ github.ref }}
+  group: ci-context-edge-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

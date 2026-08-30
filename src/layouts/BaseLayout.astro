@@ -9,7 +9,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'Edge Bar demos' } = Astro.props;
+const { title, description = 'Context Edge demos' } = Astro.props;
 ---
 
 <!doctype html>
@@ -35,12 +35,12 @@ const { title, description = 'Edge Bar demos' } = Astro.props;
   <body>
     <slot />
     <p class="shell about">
-      Edge Bar {version.version} ·
-      <a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html">Docs</a>
+      Context Edge {version.version} ·
+      <a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html">Docs</a>
       ·
-      <a href={hrefWithBase('')}>Edge Bar</a>
+      <a href={hrefWithBase('')}>Context Edge</a>
       ·
-      <a href="https://github.com/HCI-Nerdz/context-rails">GitHub</a>
+      <a href="https://github.com/HCI-Nerdz/context-edge">GitHub</a>
       <span class="about-theme" data-theme-host></span>
     </p>
   </body>

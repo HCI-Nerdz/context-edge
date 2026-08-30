@@ -1,10 +1,10 @@
 {
-  "name": "@hci-nerdz/context-rails",
+  "name": "@hci-nerdz/context-edge",
   "private": true,
-  "version": "0.8.1",
+  "version": "0.9.0",
   "type": "module",
   "packageManager": "pnpm@10.28.2",
-  "description": "Context rails — edge-summoned ecosystem navigation (Astro islands: Solid, React, Svelte, vanilla)",
+  "description": "Context Edge — edge-summoned ecosystem navigation (Astro islands: Solid, React, Svelte, vanilla)",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

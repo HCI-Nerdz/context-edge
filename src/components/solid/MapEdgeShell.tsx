@@ -17,7 +17,7 @@ type Props = {
   showOverloadToggle?: boolean;
 };
 
-export default function ContextRailsShell(props: Props) {
+export default function MapEdgeShell(props: Props) {
   const nodes = () => flattenOrg();
   const [activeId, setActiveId] = createSignal(props.initialId ?? 'cloud');
   const [navOpen, setNavOpen] = createSignal(false);

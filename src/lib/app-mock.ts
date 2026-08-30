@@ -89,7 +89,7 @@ function mockBody(skin: AppSkin, node: OrgNode, logo: string): string {
               ${inboxRow('Northwind', 'Q2 planning doc', 'Can you review the rail proposal before Thursday?')}
               ${inboxRow('Priya S.', 'Cloud quota', 'GKE project northwind-prod is near the CPU cap.')}
               ${inboxRow('Calendar', 'Hold: design critique', 'Tue 2:00–2:45 · Meet link inside')}
-              ${inboxRow('Drive', 'Shared with you', 'Context rails — mockups (folder)')}
+              ${inboxRow('Drive', 'Shared with you', 'Context Edge — mockups (folder)')}
             </div>
           </div>
         </div>`;

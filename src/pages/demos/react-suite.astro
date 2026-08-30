@@ -3,16 +3,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ContextRailsShell from '../../components/react/ContextRailsShell';
+import MapEdgeShell from '../../components/react/MapEdgeShell';
 import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
-  title="React suite · Edge Bar"
+  title="React suite · Context Edge"
   description="React island demo — suite shell with duo-tone platform overlays."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Edge Bar</a></p>
+    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
     <p class="eyebrow">Demo · React</p>
     <div class="page-kicker">
       <FrameworkMark id="react" />
@@ -25,6 +25,6 @@ import { hrefWithBase } from '../../lib/base';
       <VariantSwitch current="map" framework="react" />
       <FrameworkSwitch current="react" variant="map" />
     </div>
-    <ContextRailsShell client:load initialId="gmail" />
+    <MapEdgeShell client:load initialId="gmail" />
   </main>
 </BaseLayout>

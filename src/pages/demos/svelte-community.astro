@@ -3,16 +3,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ContextRailsShell from '../../components/svelte/ContextRailsShell.svelte';
+import MapEdgeShell from '../../components/svelte/MapEdgeShell.svelte';
 import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
-  title="Svelte community · Edge Bar"
+  title="Svelte community · Context Edge"
   description="Svelte island demo — community/spaces ecosystem with softer chrome."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Edge Bar</a></p>
+    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
     <p class="eyebrow">Demo · Svelte</p>
     <div class="page-kicker">
       <FrameworkMark id="svelte" />
@@ -25,6 +25,6 @@ import { hrefWithBase } from '../../lib/base';
       <VariantSwitch current="map" framework="svelte" />
       <FrameworkSwitch current="svelte" variant="map" />
     </div>
-    <ContextRailsShell client:load initialId="docs" />
+    <MapEdgeShell client:load initialId="docs" />
   </main>
 </BaseLayout>

@@ -5,7 +5,7 @@ import svelte from '@astrojs/svelte';
 
 export default defineConfig({
   site: 'https://hci-nerdz.github.io',
-  base: '/context-rails',
+  base: '/context-edge',
   trailingSlash: 'always',
   integrations: [
     solid({ include: ['**/solid/**'] }),

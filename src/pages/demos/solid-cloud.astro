@@ -3,16 +3,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import VariantSwitch from '../../components/VariantSwitch.astro';
 import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
 import FrameworkMark from '../../components/FrameworkMark.astro';
-import ContextRailsShell from '../../components/solid/ContextRailsShell';
+import MapEdgeShell from '../../components/solid/MapEdgeShell';
 import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
-  title="Solid cloud · Edge Bar"
-  description="Solid island demo — cloud-console parody rescued by an Edge Bar."
+  title="Solid cloud · Context Edge"
+  description="Solid island demo — cloud-console parody rescued by a Context Edge."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Edge Bar</a></p>
+    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
     <p class="eyebrow">Demo · Solid</p>
     <div class="page-kicker">
       <FrameworkMark id="solid" />
@@ -26,6 +26,6 @@ import { hrefWithBase } from '../../lib/base';
       <VariantSwitch current="map" framework="solid" />
       <FrameworkSwitch current="solid" variant="map" />
     </div>
-    <ContextRailsShell client:load showOverloadToggle={true} initialId="cloud" />
+    <MapEdgeShell client:load showOverloadToggle={true} initialId="cloud" />
   </main>
 </BaseLayout>

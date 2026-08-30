@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-context-rails
+  group: pages-context-edge
   cancel-in-progress: true
 
 jobs:

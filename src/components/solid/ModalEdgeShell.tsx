@@ -59,7 +59,7 @@ export default function ModalEdgeShell(props: Props) {
           Live peek
         </label>
         <button type="button" class="me-hint-btn" onClick={toggle}>
-          {revealed() ? 'Close stack' : 'Open Edge Bar'}
+          {revealed() ? 'Close stack' : 'Open Context Edge'}
         </button>
       </div>
       <div

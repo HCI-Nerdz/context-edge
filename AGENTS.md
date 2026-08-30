@@ -1,8 +1,8 @@
-# Agent notes — context-rails
+# Agent notes — context-edge
 
 ## What this is
 
-MVP demos for **Edge Bar** (repo slug `context-rails`):
+MVP demos for **Context Edge** (repo slug `context-edge`):
 
 - **Variant A — Map Edge:** thin top/left edges → click slides the activity page off (View Transitions) to reveal a scrollable Alphabet/Google product tree underneath. Map VT is scoped to `.cr-stage` (`src/lib/map-vt.ts`). *Transition style* on the island. Footer *Appearance* is the real page (`html[data-theme]`). Island *Appearance* only themes `.cr-sheet` mocks — follows the page until overridden (`src/lib/theme.ts`)
 - **Variant B — Modal Edge:** edge = current node; View Transitions slide sheet to reveal colored ancestry layers (`/demos/modal-edge/`, plus Solid/React/Svelte islands)
@@ -11,11 +11,11 @@ MVP demos for **Edge Bar** (repo slug `context-rails`):
 
 ## Links
 
-- Docs: https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html
+- Docs: https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html
 - Essay: https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/
-- Site desk (vanilla Map Edge): https://hci-nerdz.github.io/demos/context-rails/
-- Live MVP / variant index: https://hci-nerdz.github.io/context-rails/ (visual Map / Modal / Path tiles, then island cards)
-- Modal Edge: https://hci-nerdz.github.io/context-rails/demos/modal-edge/
+- Site desk (vanilla Map Edge): https://hci-nerdz.github.io/demos/context-edge/
+- Live MVP / variant index: https://hci-nerdz.github.io/context-edge/ (visual Map / Modal / Path tiles, then island cards)
+- Modal Edge: https://hci-nerdz.github.io/context-edge/demos/modal-edge/
 
 ## Stack
 

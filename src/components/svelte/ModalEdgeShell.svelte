@@ -54,7 +54,7 @@
       Live peek
     </label>
     <button type="button" class="me-hint-btn" onclick={toggle}>
-      {revealed ? 'Close stack' : 'Open Edge Bar'}
+      {revealed ? 'Close stack' : 'Open Context Edge'}
     </button>
   </div>
   <div

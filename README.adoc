@@ -7,54 +7,54 @@ ifdef::env-github[]
 ++++
 <a id="readme-top"></a>
 <div align="center">
-<a href="https://github.com/HCI-Nerdz/context-rails/graphs/contributors"><img src="https://img.shields.io/github/contributors/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Contributors"></a>
-<a href="https://github.com/HCI-Nerdz/context-rails/network/members"><img src="https://img.shields.io/github/forks/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Forks"></a>
-<a href="https://github.com/HCI-Nerdz/context-rails/stargazers"><img src="https://img.shields.io/github/stars/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Stars"></a>
-<a href="https://github.com/HCI-Nerdz/context-rails/issues"><img src="https://img.shields.io/github/issues/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="Issues"></a>
-<a href="https://github.com/HCI-Nerdz/context-rails/blob/main/LICENSE"><img src="https://img.shields.io/github/license/HCI-Nerdz/context-rails.svg?style=for-the-badge" alt="License"></a>
+<a href="https://github.com/HCI-Nerdz/context-edge/graphs/contributors"><img src="https://img.shields.io/github/contributors/HCI-Nerdz/context-edge.svg?style=for-the-badge" alt="Contributors"></a>
+<a href="https://github.com/HCI-Nerdz/context-edge/network/members"><img src="https://img.shields.io/github/forks/HCI-Nerdz/context-edge.svg?style=for-the-badge" alt="Forks"></a>
+<a href="https://github.com/HCI-Nerdz/context-edge/stargazers"><img src="https://img.shields.io/github/stars/HCI-Nerdz/context-edge.svg?style=for-the-badge" alt="Stars"></a>
+<a href="https://github.com/HCI-Nerdz/context-edge/issues"><img src="https://img.shields.io/github/issues/HCI-Nerdz/context-edge.svg?style=for-the-badge" alt="Issues"></a>
+<a href="https://github.com/HCI-Nerdz/context-edge/blob/main/LICENSE"><img src="https://img.shields.io/github/license/HCI-Nerdz/context-edge.svg?style=for-the-badge" alt="License"></a>
 <br />
-<h3 align="center">Edge Bar</h3>
+<h3 align="center">Context Edge</h3>
 <p align="center">
 Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.<br />
-<a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html"><strong>Explore the docs »</strong></a><br /><br />
-<a href="https://hci-nerdz.github.io/context-rails/">View Demo</a>
+<a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html"><strong>Explore the docs »</strong></a><br /><br />
+<a href="https://hci-nerdz.github.io/context-edge/">View Demo</a>
 &middot;
-<a href="https://github.com/HCI-Nerdz/context-rails/issues">Report Bug</a>
+<a href="https://github.com/HCI-Nerdz/context-edge/issues">Report Bug</a>
 &middot;
-<a href="https://github.com/HCI-Nerdz/context-rails/issues">Request Feature</a>
+<a href="https://github.com/HCI-Nerdz/context-edge/issues">Request Feature</a>
 </p>
 </div>
 ++++
 endif::[]
 
 ifndef::env-github[]
-image:https://img.shields.io/github/contributors/HCI-Nerdz/context-rails.svg?style=for-the-badge[Contributors,link=https://github.com/HCI-Nerdz/context-rails/graphs/contributors]
-image:https://img.shields.io/github/forks/HCI-Nerdz/context-rails.svg?style=for-the-badge[Forks,link=https://github.com/HCI-Nerdz/context-rails/network/members]
-image:https://img.shields.io/github/stars/HCI-Nerdz/context-rails.svg?style=for-the-badge[Stars,link=https://github.com/HCI-Nerdz/context-rails/stargazers]
-image:https://img.shields.io/github/issues/HCI-Nerdz/context-rails.svg?style=for-the-badge[Issues,link=https://github.com/HCI-Nerdz/context-rails/issues]
-image:https://img.shields.io/github/license/HCI-Nerdz/context-rails.svg?style=for-the-badge[License,link=https://github.com/HCI-Nerdz/context-rails/blob/main/LICENSE]
+image:https://img.shields.io/github/contributors/HCI-Nerdz/context-edge.svg?style=for-the-badge[Contributors,link=https://github.com/HCI-Nerdz/context-edge/graphs/contributors]
+image:https://img.shields.io/github/forks/HCI-Nerdz/context-edge.svg?style=for-the-badge[Forks,link=https://github.com/HCI-Nerdz/context-edge/network/members]
+image:https://img.shields.io/github/stars/HCI-Nerdz/context-edge.svg?style=for-the-badge[Stars,link=https://github.com/HCI-Nerdz/context-edge/stargazers]
+image:https://img.shields.io/github/issues/HCI-Nerdz/context-edge.svg?style=for-the-badge[Issues,link=https://github.com/HCI-Nerdz/context-edge/issues]
+image:https://img.shields.io/github/license/HCI-Nerdz/context-edge.svg?style=for-the-badge[License,link=https://github.com/HCI-Nerdz/context-edge/blob/main/LICENSE]
 
-= Edge Bar
+= Context Edge
 
 Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.
 
-link:https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html[Explore the docs] ·
-link:https://hci-nerdz.github.io/context-rails/[View Demo] ·
-link:https://github.com/HCI-Nerdz/context-rails/issues[Report Bug] ·
-link:https://github.com/HCI-Nerdz/context-rails/issues[Request Feature]
+link:https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html[Explore the docs] ·
+link:https://hci-nerdz.github.io/context-edge/[View Demo] ·
+link:https://github.com/HCI-Nerdz/context-edge/issues[Report Bug] ·
+link:https://github.com/HCI-Nerdz/context-edge/issues[Request Feature]
 endif::[]
 
 == About The Project
 
 Cloud consoles and suite entrypoints often *overload* the entrypoint header with subsection platforms.
-*Edge Bar* (repo / Pages slug: `context-rails`) puts ecosystem nav on the top and/or left edges: hover expands the rail; click opens a wireframe platform map; each subplatform keeps a stable color overlay.
+*Context Edge* (repo / Pages slug: `context-edge`) puts ecosystem nav on the top and/or left edges: hover expands the rail; click opens a wireframe platform map; each subplatform keeps a stable color overlay.
 
 Streets under skyscrapers — not streets painted on the roof.
 
 Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 
 * Essay: link:https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/[When platforms overload the entrypoint]
-* Org site desk: link:https://hci-nerdz.github.io/demos/context-rails/[vanilla desk]
+* Org site desk: link:https://hci-nerdz.github.io/demos/context-edge/[vanilla desk]
 
 === Demos
 
@@ -97,7 +97,7 @@ This model helps clear up the page contents to perform their primary job: behavi
 * *Modal Edge* — edge is the current node; click slides the sheet to reveal colored ancestor layers
 * *Path Edge* — the edge is a path trace (unique color sequence); paired hover; labels on top; one mark per level, current at top-left
 +
-Also called context rails in older docs.
+Also called context edge in older docs.
 
 ifdef::env-github[]
 ++++
@@ -135,7 +135,7 @@ pnpm install
 pnpm dev
 ----
 
-Build for GitHub Pages (`base: /context-rails/`):
+Build for GitHub Pages (`base: /context-edge/`):
 
 [source,bash]
 ----
@@ -152,17 +152,17 @@ endif::[]
 
 == Framework impedance match
 
-Context rails are long-lived *shell chrome* (hover width, open overlay, platform identity).
+Context Edge are long-lived *shell chrome* (hover width, open overlay, platform identity).
 
 [cols="1,2"]
 |===
 | Host | Notes
 
 | Solid + SolidStart
-| *Shines.* Reuse `src/components/solid/ContextRailsShell.tsx` in a SolidStart root/layout. This repo does not ship a SolidStart app — SolidStart is the natural production host, not a demo requirement.
+| *Shines.* Reuse `src/components/solid/MapEdgeShell.tsx` in a SolidStart root/layout. This repo does not ship a SolidStart app — SolidStart is the natural production host, not a demo requirement.
 
 | React + Next.js
-| *Valuable.* Port `src/components/react/ContextRailsShell.tsx` as a `"use client"` layout wrapper. Keep live overlay identity in client state across the RSC boundary.
+| *Valuable.* Port `src/components/react/MapEdgeShell.tsx` as a `"use client"` layout wrapper. Keep live overlay identity in client state across the RSC boundary.
 
 | Svelte + SvelteKit
 | *Strong for motion.* Kit layout slots mirror the substrate idea.
@@ -177,7 +177,7 @@ Context rails are long-lived *shell chrome* (hover width, open overlay, platform
 | Edge hover is a poor default — out of scope for this MVP.
 |===
 
-Full write-up: link:https://hci-nerdz.github.io/docs/hci-nerdz/context-rails.html[Context rails docs].
+Full write-up: link:https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html[Context Edge docs].
 
 ifdef::env-github[]
 ++++

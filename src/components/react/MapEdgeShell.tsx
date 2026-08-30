@@ -17,7 +17,7 @@ type Props = {
   initialId?: string;
 };
 
-export default function ContextRailsShell({
+export default function MapEdgeShell({
   initialId = 'gmail',
 }: Props) {
   const [activeId, setActiveId] = useState(initialId);

@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-08-30 — Context Edge rename; Modal Mode no longer overlaps
+
+* Product name is Context Edge (repo / Pages slug `context-edge`); Edge Bar and context-rails are retired
+* Map island shells rename to `MapEdgeShell` (alongside Modal / Path)
+* Demo-head switch row height fits Variant + Island + Modal Mode so Rest/Live no longer paints over the toolbar
+
 == 2026-08-11 — Path hops stay in a row
 
 * Path top/left keep `display: flex` so hops do not stack in Map’s grid cell
