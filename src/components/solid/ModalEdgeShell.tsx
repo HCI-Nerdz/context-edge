@@ -1,17 +1,19 @@
 /** @jsxImportSource solid-js */
 import { createSignal, For } from 'solid-js';
-import { runDocViewTransition } from '../../lib/doc-vt';
+import { runModalViewTransition } from '../../lib/modal-vt';
 import { demoAncestry, stackThrough } from '../../lib/nav-stack';
 
 type Props = {
   island?: string;
   initialId?: string;
+  /** When true, pointer near edges peeks the sheet (Live mode). */
+  live?: boolean;
 };
 
 export default function ModalEdgeShell(props: Props) {
   const [currentId, setCurrentId] = createSignal(props.initialId ?? demoAncestry.at(-1)!.id);
   const [revealed, setRevealed] = createSignal(false);
-  const [live, setLive] = createSignal(false);
+  const live = () => props.live === true;
   let viewportEl: HTMLDivElement | undefined;
   let sheetEl: HTMLDivElement | undefined;
 
@@ -19,28 +21,47 @@ export default function ModalEdgeShell(props: Props) {
   const current = () => path().at(-1)!;
   const ancestors = () => path().slice(0, -1);
 
+  function clearPeek() {
+    if (!revealed() && viewportEl) viewportEl.style.setProperty('--me-open', '0');
+  }
+
+  function withSheetVt(update: () => void) {
+    if (!viewportEl || !sheetEl) {
+      update();
+      return;
+    }
+    const vp = viewportEl;
+    const sheet = sheetEl;
+    sheet.style.viewTransitionName = 'me-sheet';
+    void runModalViewTransition(vp, update).finally(() => {
+      sheet.style.viewTransitionName = '';
+    });
+  }
+
   function toggle() {
-    runDocViewTransition(() => setRevealed((v) => !v));
+    clearPeek();
+    withSheetVt(() => setRevealed((v) => !v));
   }
 
   function pick(id: string) {
-    runDocViewTransition(() => {
+    clearPeek();
+    withSheetVt(() => {
       setCurrentId(id);
       setRevealed(false);
     });
   }
 
   function peek(e: PointerEvent) {
-    if (!live() || revealed() || !viewportEl || !sheetEl) return;
+    if (!live() || revealed() || !viewportEl) return;
     const r = viewportEl.getBoundingClientRect();
     const top = Math.max(0, 1 - (e.clientY - r.top) / 72);
     const left = Math.max(0, 1 - (e.clientX - r.left) / 72);
     const t = Math.max(top, left);
-    sheetEl.style.transform = `translate(${18 * t}%, ${22 * t}%) scale(${1 - 0.08 * t})`;
+    viewportEl.style.setProperty('--me-open', String(t));
   }
 
   function unpeek() {
-    if (!revealed() && sheetEl) sheetEl.style.transform = '';
+    if (!revealed() && viewportEl) viewportEl.style.setProperty('--me-open', '0');
   }
 
   return (
@@ -49,15 +70,8 @@ export default function ModalEdgeShell(props: Props) {
         <span>
           {props.island ?? 'Solid'} island · Modal Edge · {revealed() ? 'layers revealed' : 'sheet closed'} ·{' '}
           {current().label}
+          {live() ? ' · Live' : ' · Rest'}
         </span>
-        <label>
-          <input
-            type="checkbox"
-            checked={live()}
-            onChange={(e) => setLive(e.currentTarget.checked)}
-          />
-          Live peek
-        </label>
         <button type="button" class="me-hint-btn" onClick={toggle}>
           {revealed() ? 'Close stack' : 'Open Context Edge'}
         </button>
@@ -66,7 +80,11 @@ export default function ModalEdgeShell(props: Props) {
         ref={viewportEl}
         class="me-viewport"
         classList={{ 'is-revealed': revealed() }}
-        style={{ '--overlay': current().overlay, '--overlay-2': current().overlay2 }}
+        style={{
+          '--overlay': current().overlay,
+          '--overlay-2': current().overlay2,
+          '--me-open': revealed() ? '1' : '0',
+        }}
         onPointerMove={peek}
         onPointerLeave={unpeek}
       >
@@ -84,6 +102,7 @@ export default function ModalEdgeShell(props: Props) {
                 onClick={() => pick(n.id)}
               >
                 <span class="me-layer-edge" aria-hidden="true" />
+                <span class="me-layer-top">{n.label}</span>
                 <span class="me-layer-body">
                   <strong>{n.label}</strong>
                   <small>{n.role}</small>
@@ -95,7 +114,6 @@ export default function ModalEdgeShell(props: Props) {
         <div
           ref={sheetEl}
           class="me-sheet"
-          style={{ 'view-transition-name': 'me-sheet' }}
           onClick={(e) => {
             if (!revealed()) return;
             if ((e.target as HTMLElement).closest('.cr-rail')) return;
@@ -121,9 +139,7 @@ export default function ModalEdgeShell(props: Props) {
             class="cr-rail cr-rail-left me-edge"
             aria-label="Reveal navigation stack from left edge"
             onClick={toggle}
-          >
-            <span class="cr-rail-label">{current().role}</span>
-          </button>
+          />
           <div class="cr-content me-content">
             <h2>{current().label}</h2>
             <p class="meta">

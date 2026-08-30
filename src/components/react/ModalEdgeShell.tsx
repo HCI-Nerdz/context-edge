@@ -1,21 +1,23 @@
 /** @jsxImportSource react */
 import { useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
 import { flushSync } from 'react-dom';
-import { runDocViewTransition } from '../../lib/doc-vt';
+import { runModalViewTransition } from '../../lib/modal-vt';
 import { demoAncestry, stackThrough } from '../../lib/nav-stack';
 
 type Props = {
   island?: string;
   initialId?: string;
+  /** When true, pointer near edges peeks the sheet (Live mode). */
+  live?: boolean;
 };
 
 export default function ModalEdgeShell({
   island = 'React',
   initialId = demoAncestry.at(-1)!.id,
+  live = false,
 }: Props) {
   const [currentId, setCurrentId] = useState(initialId);
   const [revealed, setRevealed] = useState(false);
-  const [live, setLive] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -23,37 +25,54 @@ export default function ModalEdgeShell({
   const current = path.at(-1)!;
   const ancestors = path.slice(0, -1);
 
+  function clearPeek() {
+    if (!revealed && viewportRef.current) viewportRef.current.style.setProperty('--me-open', '0');
+  }
+
+  function withSheetVt(update: () => void) {
+    const vp = viewportRef.current;
+    const sheet = sheetRef.current;
+    if (!vp || !sheet) {
+      update();
+      return;
+    }
+    sheet.style.viewTransitionName = 'me-sheet';
+    void runModalViewTransition(vp, () => flushSync(update)).finally(() => {
+      sheet.style.viewTransitionName = '';
+    });
+  }
+
   function toggle() {
-    runDocViewTransition(() => flushSync(() => setRevealed((v) => !v)));
+    clearPeek();
+    withSheetVt(() => setRevealed((v) => !v));
   }
 
   function pick(id: string) {
-    runDocViewTransition(() =>
-      flushSync(() => {
-        setCurrentId(id);
-        setRevealed(false);
-      }),
-    );
+    clearPeek();
+    withSheetVt(() => {
+      setCurrentId(id);
+      setRevealed(false);
+    });
   }
 
   function peek(e: PointerEvent<HTMLDivElement>) {
     const vp = viewportRef.current;
-    const sheet = sheetRef.current;
-    if (!live || revealed || !vp || !sheet) return;
+    if (!live || revealed || !vp) return;
     const r = vp.getBoundingClientRect();
     const top = Math.max(0, 1 - (e.clientY - r.top) / 72);
     const left = Math.max(0, 1 - (e.clientX - r.left) / 72);
     const t = Math.max(top, left);
-    sheet.style.transform = `translate(${18 * t}%, ${22 * t}%) scale(${1 - 0.08 * t})`;
+    vp.style.setProperty('--me-open', String(t));
   }
 
   function unpeek() {
-    if (!revealed && sheetRef.current) sheetRef.current.style.transform = '';
+    if (!revealed && viewportRef.current) viewportRef.current.style.setProperty('--me-open', '0');
   }
 
   const vpStyle = {
     '--overlay': current.overlay,
     '--overlay-2': current.overlay2,
+    '--me-open': revealed ? 1 : 0,
   } as CSSProperties;
 
   return (
@@ -61,15 +80,8 @@ export default function ModalEdgeShell({
       <div className="cr-toolbar">
         <span>
           {island} island · Modal Edge · {revealed ? 'layers revealed' : 'sheet closed'} · {current.label}
+          {live ? ' · Live' : ' · Rest'}
         </span>
-        <label>
-          <input
-            type="checkbox"
-            checked={live}
-            onChange={(e) => setLive(e.currentTarget.checked)}
-          />
-          Live peek
-        </label>
         <button type="button" className="me-hint-btn" onClick={toggle}>
           {revealed ? 'Close stack' : 'Open Context Edge'}
         </button>
@@ -97,6 +109,7 @@ export default function ModalEdgeShell({
               onClick={() => pick(n.id)}
             >
               <span className="me-layer-edge" aria-hidden="true" />
+              <span className="me-layer-top">{n.label}</span>
               <span className="me-layer-body">
                 <strong>{n.label}</strong>
                 <small>{n.role}</small>
@@ -107,7 +120,6 @@ export default function ModalEdgeShell({
         <div
           ref={sheetRef}
           className="me-sheet"
-          style={{ viewTransitionName: 'me-sheet' }}
           onClick={(e) => {
             if (!revealed) return;
             if ((e.target as HTMLElement).closest('.cr-rail')) return;
@@ -133,9 +145,7 @@ export default function ModalEdgeShell({
             className="cr-rail cr-rail-left me-edge"
             aria-label="Reveal navigation stack from left edge"
             onClick={toggle}
-          >
-            <span className="cr-rail-label">{current.role}</span>
-          </button>
+          />
           <div className="cr-content me-content">
             <h2>{current.label}</h2>
             <p className="meta">

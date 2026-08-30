@@ -53,7 +53,7 @@ Streets under skyscrapers — not streets painted on the roof.
 
 Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 
-* Essay: link:https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/[When platforms overload the entrypoint]
+* Essay: link:https://hci-nerdz.github.io/blog/ecosystem-nav-at-the-screen-edge/[Ecosystem nav at the screen edge]
 * Org site desk: link:https://hci-nerdz.github.io/demos/context-edge/[vanilla desk]
 
 === Demos

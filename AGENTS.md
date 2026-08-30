@@ -12,7 +12,7 @@ MVP demos for **Context Edge** (repo slug `context-edge`):
 ## Links
 
 - Docs: https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html
-- Essay: https://hci-nerdz.github.io/blog/when-platforms-overload-the-entrypoint/
+- Essay: https://hci-nerdz.github.io/blog/ecosystem-nav-at-the-screen-edge/
 - Site desk (vanilla Map Edge): https://hci-nerdz.github.io/demos/context-edge/
 - Live MVP / variant index: https://hci-nerdz.github.io/context-edge/ (visual Map / Modal / Path tiles, then island cards)
 - Modal Edge: https://hci-nerdz.github.io/context-edge/demos/modal-edge/

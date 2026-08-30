@@ -1,3 +1,4 @@
+import { runModalViewTransition } from '../../lib/modal-vt';
 import { demoAncestry, stackThrough, type NavNode } from '../../lib/nav-stack';
 
 export type ModalEdgeOptions = {
@@ -11,7 +12,7 @@ export type ModalEdgeOptions = {
 /**
  * Modal Edge / Context Edge variant B:
  * Edge color = current node. Click slides the current sheet down+right
- * (View Transitions when available) to reveal ancestor layers behind it.
+ * (scoped View Transitions when available) to reveal ancestor layers behind it.
  */
 export function mountModalEdge(opts: ModalEdgeOptions) {
   const nodes = opts.nodes ?? demoAncestry;
@@ -22,17 +23,6 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
 
   function stack(): NavNode[] {
     return stackThrough(currentId, nodes);
-  }
-
-  function runTransition(update: () => void) {
-    const doc = document as Document & {
-      startViewTransition?: (cb: () => void) => { finished: Promise<void> };
-    };
-    if (typeof doc.startViewTransition === 'function') {
-      doc.startViewTransition(update);
-    } else {
-      update();
-    }
   }
 
   function render() {
@@ -52,7 +42,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       </div>
       <div
         class="me-viewport ${revealed ? 'is-revealed' : ''}"
-        style="--overlay:${current.overlay};--overlay-2:${current.overlay2}"
+        style="--overlay:${current.overlay};--overlay-2:${current.overlay2};--me-open:${revealed ? 1 : 0}"
       >
         <div class="me-stack" aria-hidden="${revealed ? 'false' : 'true'}">
           ${ancestors
@@ -65,6 +55,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
               style="--layer-overlay:${n.overlay};--layer-overlay-2:${n.overlay2};--depth:${i}"
             >
               <span class="me-layer-edge" aria-hidden="true"></span>
+              <span class="me-layer-top">${n.label}</span>
               <span class="me-layer-body">
                 <strong>${n.label}</strong>
                 <small>${n.role}</small>
@@ -75,7 +66,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
             .join('')}
         </div>
 
-        <div class="me-sheet" style="view-transition-name: me-sheet">
+        <div class="me-sheet">
           <button
             type="button"
             class="cr-rail cr-rail-corner me-edge"
@@ -98,9 +89,7 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
             data-toggle
             aria-label="Reveal navigation stack from left edge"
             style="--overlay:${current.overlay}"
-          >
-            <span class="cr-rail-label">${current.role}</span>
-          </button>
+          ></button>
           <div class="cr-content me-content">
             <h2>${current.label}</h2>
             <p class="meta">Modal Edge · path depth ${path.length} · ${current.role}</p>
@@ -118,20 +107,37 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       </div>
     `;
 
+    const vp = root.querySelector('.me-viewport') as HTMLElement;
+    const sheet = root.querySelector('.me-sheet') as HTMLElement;
+
+    function clearPeek() {
+      if (!revealed) vp.style.setProperty('--me-open', '0');
+    }
+
     function applyReveal() {
-      const vp = root.querySelector('.me-viewport');
+      vp.classList.toggle('is-revealed', revealed);
+      vp.style.setProperty('--me-open', revealed ? '1' : '0');
       const btn = root.querySelector('.me-hint-btn');
-      vp?.classList.toggle('is-revealed', revealed);
       if (btn) btn.textContent = revealed ? 'Close stack' : 'Open Context Edge';
-      const stack = root.querySelector('.me-stack');
-      stack?.setAttribute('aria-hidden', revealed ? 'false' : 'true');
+      const stackEl = root.querySelector('.me-stack');
+      stackEl?.setAttribute('aria-hidden', revealed ? 'false' : 'true');
+    }
+
+    function withSheetVt(update: () => void) {
+      sheet.style.viewTransitionName = 'me-sheet';
+      return runModalViewTransition(vp, () => {
+        update();
+        applyReveal();
+      }).finally(() => {
+        sheet.style.viewTransitionName = '';
+      });
     }
 
     root.querySelectorAll('[data-toggle]').forEach((el) => {
       el.addEventListener('click', () => {
-        runTransition(() => {
+        clearPeek();
+        void withSheetVt(() => {
           revealed = !revealed;
-          applyReveal();
         });
       });
     });
@@ -140,7 +146,8 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       el.addEventListener('click', () => {
         const id = (el as HTMLElement).dataset.goto;
         if (!id) return;
-        runTransition(() => {
+        clearPeek();
+        void withSheetVt(() => {
           currentId = id;
           revealed = false;
           render();
@@ -148,31 +155,27 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       });
     });
 
-    const sheet = root.querySelector('.me-sheet') as HTMLElement | null;
-    if (sheet) {
-      sheet.addEventListener('click', (e) => {
-        if (!revealed) return;
-        if ((e.target as HTMLElement).closest('[data-toggle]')) return;
-        runTransition(() => {
-          revealed = false;
-          applyReveal();
-        });
+    sheet.addEventListener('click', (e) => {
+      if (!revealed) return;
+      if ((e.target as HTMLElement).closest('[data-toggle]')) return;
+      clearPeek();
+      void withSheetVt(() => {
+        revealed = false;
       });
-    }
+    });
 
-    if (live && sheet) {
-      const vp = root.querySelector('.me-viewport') as HTMLElement;
+    if (live) {
       const peek = (e: PointerEvent) => {
         if (revealed) return;
         const r = vp.getBoundingClientRect();
         const top = Math.max(0, 1 - (e.clientY - r.top) / 72);
         const left = Math.max(0, 1 - (e.clientX - r.left) / 72);
         const t = Math.max(top, left);
-        sheet.style.transform = `translate(${18 * t}%, ${22 * t}%) scale(${1 - 0.08 * t})`;
+        vp.style.setProperty('--me-open', String(t));
       };
       vp.addEventListener('pointermove', peek);
       vp.addEventListener('pointerleave', () => {
-        if (!revealed) sheet.style.transform = '';
+        if (!revealed) vp.style.setProperty('--me-open', '0');
       });
     }
   }
