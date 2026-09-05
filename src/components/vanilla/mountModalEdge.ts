@@ -56,9 +56,9 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
         type="button"
         class="ce-click-bubble${revealed ? ' is-open' : ''}"
         data-toggle
-        aria-label="${revealed ? 'Close stack' : 'Open Context Edge — click the demo edge'}"
+        aria-label="${revealed ? 'Close navigation stack' : 'Click to open the Context Edge desk'}"
       >
-        <span class="ce-click-bubble-label">${revealed ? 'close' : 'click me'}</span>
+        <span class="ce-click-bubble-label">${revealed ? 'Close stack' : 'click me'}</span>
         <span class="ce-click-bubble-tail" aria-hidden="true"></span>
       </button>
       <div
@@ -142,10 +142,10 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
         bubble.classList.toggle('is-open', revealed);
         bubble.setAttribute(
           'aria-label',
-          revealed ? 'Close stack' : 'Open Context Edge — click the demo edge',
+          revealed ? 'Close navigation stack' : 'Click to open the Context Edge desk',
         );
         const label = bubble.querySelector('.ce-click-bubble-label');
-        if (label) label.textContent = revealed ? 'close' : 'click me';
+        if (label) label.textContent = revealed ? 'Close stack' : 'click me';
       }
       const stackEl = root.querySelector('.me-stack');
       stackEl?.setAttribute('aria-hidden', revealed ? 'false' : 'true');

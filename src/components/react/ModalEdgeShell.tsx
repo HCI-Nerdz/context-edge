@@ -87,9 +87,9 @@ export default function ModalEdgeShell({
         type="button"
         className={`ce-click-bubble${revealed ? ' is-open' : ''}`}
         onClick={toggle}
-        aria-label={revealed ? 'Close stack' : 'Open Context Edge — click the demo edge'}
+        aria-label={revealed ? 'Close navigation stack' : 'Click to open the Context Edge desk'}
       >
-        <span className="ce-click-bubble-label">{revealed ? 'close' : 'click me'}</span>
+        <span className="ce-click-bubble-label">{revealed ? 'Close stack' : 'click me'}</span>
         <span className="ce-click-bubble-tail" aria-hidden="true" />
       </button>
       <div
