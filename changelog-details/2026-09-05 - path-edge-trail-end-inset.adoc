@@ -1,0 +1,5 @@
+= 2026-09-05 — Path Edge trail end inset
+
+* Track trailing spacer (`.pe-track::after`, `--pe-trail-end-inset: 50px`) grows max-content so overflow scroll engages while ~50px of rail foundation remains past the last hop
+* `scrollPathToCurrent` / `PE_TRAIL_END_INSET_PX` align the current hop with that same inset from the scroller’s trailing edge (Top horizontal and Side vertical)
+* Drag-resizing the stage no longer lets the page edge sit flush over the final tile

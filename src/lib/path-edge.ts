@@ -189,6 +189,12 @@ export const PATH_EDGE_DESCRIPTION =
 export const PE_TOP_PULL_REVEAL = false;
 
 /**
+ * Keep this much rail foundation visible past the current/last hop when
+ * aligning to the scroller’s trailing edge (and as overflow first engages).
+ */
+export const PE_TRAIL_END_INSET_PX = 50;
+
+/**
  * Mobile: swipe from the left stage edge to toggle the Path bar open/closed.
  * Prefer this over top pull-to-reveal while browsers own vertical overscroll.
  */
@@ -429,14 +435,15 @@ export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
 export function scrollPathToCurrent(scroller: HTMLElement, axis: PathEdgeAxis) {
   const here = scroller.querySelector('.pe-seg.is-here') as HTMLElement | null;
   if (!here) return;
+  const inset = PE_TRAIL_END_INSET_PX;
   if (axis === 'top') {
     const max = scroller.scrollWidth - scroller.clientWidth;
     if (max <= 0) {
       scroller.scrollLeft = 0;
       return;
     }
-    /* Align current’s right edge with the scroller’s right edge when possible. */
-    const target = here.offsetLeft + here.offsetWidth - scroller.clientWidth;
+    /* Align current with ~inset of foundation past its trailing edge. */
+    const target = here.offsetLeft + here.offsetWidth + inset - scroller.clientWidth;
     scroller.scrollLeft = Math.max(0, Math.min(max, target));
   } else {
     const max = scroller.scrollHeight - scroller.clientHeight;
@@ -444,7 +451,7 @@ export function scrollPathToCurrent(scroller: HTMLElement, axis: PathEdgeAxis) {
       scroller.scrollTop = 0;
       return;
     }
-    const target = here.offsetTop + here.offsetHeight - scroller.clientHeight;
+    const target = here.offsetTop + here.offsetHeight + inset - scroller.clientHeight;
     scroller.scrollTop = Math.max(0, Math.min(max, target));
   }
 }

@@ -212,6 +212,8 @@ html[data-theme='light'] .mode-btn {
   --pe-hop-top: 7.1rem;
   --pe-hop-left: 5.85rem;
   --pe-arrow: 0.7rem;
+  /* Match PE_TRAIL_END_INSET_PX — foundation past last hop before flush/clamp */
+  --pe-trail-end-inset: 50px;
   --pe-rail-foundation: #1c2226;
   --pe-depth-shadow: rgba(0, 0, 0, 0.42);
   /*
@@ -482,6 +484,28 @@ html[data-theme='light'] .pe-stage {
   min-width: 0;
   height: max-content;
   min-height: 100%;
+}
+
+/*
+ * Trailing foundation spacer (~PE_TRAIL_END_INSET_PX). Grows max-content so
+ * overflow/scroll engages before the stage edge sits flush on the last hop;
+ * scrollPathToCurrent leaves this much past the current hop.
+ */
+.pe-track-top::after,
+.pe-track-left::after {
+  content: '';
+  flex: 0 0 var(--pe-trail-end-inset);
+  pointer-events: none;
+}
+
+.pe-track-top::after {
+  width: var(--pe-trail-end-inset);
+  align-self: stretch;
+}
+
+.pe-track-left::after {
+  height: var(--pe-trail-end-inset);
+  width: 100%;
 }
 
 /*

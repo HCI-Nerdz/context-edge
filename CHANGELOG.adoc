@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Path Edge trail end inset
+
+* Keep ~50px of rail foundation past the last hop when overflow scroll engages and when aligning the current hop
+* Top (horizontal) and Side (vertical); drag-resize no longer sits the stage edge flush on the final tile
+* link:changelog-details/2026-09-05%20-%20path-edge-trail-end-inset.adoc[Details]
+
 == 2026-09-05 — DemoHead mobile stack and click-me bubble
 
 * Narrow viewports: DemoHead uses auto-height stack (no fixed-row overlap); switch tracks wrap
