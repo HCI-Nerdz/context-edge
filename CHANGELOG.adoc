@@ -1,5 +1,12 @@
 = Changelog
 
+== 2026-09-05 — Path Edge blend layering and workshop polish
+
+* Blend math stays on tile color faces over a fixed face base; rail foundation and depth shadow stay unblended
+* Console hop muted; Live above Still; Appearance in demo toolbar; in-stage ancestor crumbs; stage drop shadows
+* Blend control hover/focus always opens Still; hop clicks navigate again (drag-scroll capture deferred)
+* link:changelog-details/2026-09-05%20-%20path-edge-blend-polish.adoc[Details]
+
 == 2026-09-05 — Path Edge drag-resize and depth shadow
 
 * Zone slider → stage edge drag-resize (Still + Live synced); Resting → Still; Blend above Still

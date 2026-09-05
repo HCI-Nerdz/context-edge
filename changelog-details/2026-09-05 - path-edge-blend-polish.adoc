@@ -1,0 +1,9 @@
+= 2026-09-05 — Path Edge blend layering and workshop polish
+
+* `.pe-seg` uses `isolation: isolate` and a fixed `--pe-tile-face-base` under `.pe-seg-color` so mix-blend math does not wash the rail foundation or Home|hop depth shadow; unoccupied rail chrome keeps theme `--pe-rail-foundation`
+* Icons/labels keep `--tile-ink` (no icon blend) so contrast stays predictable against the blended face
+* Console hop `#fbbc04` → muted gold `#c9a227`; workshop row order is Live then Still
+* Appearance (page light/dark) copy in the Path Edge toolbar via shared `themeSwitchHtml` / `bootTheme`
+* Blend math slot opens Still on any pointerenter/focusin (not only on change); leave/blur restores
+* Drag-scroll and mobile edge-swipe defer pointer capture until movement, so hop/Home clicks call `applyPath` again; drag still scrolls without accidental navigate
+* Each stage content area has ancestor crumb buttons that drive the same path state; stages use a large drop shadow

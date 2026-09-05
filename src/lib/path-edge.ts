@@ -29,7 +29,7 @@ export const demoPath: PathNode[] = [
     label: 'Console',
     role: 'Control plane',
     blurb: 'The console is another node, not another header language.',
-    color: '#fbbc04',
+    color: '#c9a227',
     mark: '▣',
   },
   {
@@ -176,10 +176,10 @@ export type PathEdgeAxis = 'top' | 'left';
 
 /** Shared Path Edge page lede — vanilla and framework implementations. */
 export const PATH_EDGE_LEDE =
-  'One edge at a time — Top (marks + quiet labels) or Side (icons + labels). Still and Live each get a full stage; Color / Subtle is a style switch. Drag a stage edge to resize and force overflow; drag or swipe the rail to scroll hops out from under Home.';
+  'One edge at a time — Top (marks + quiet labels) or Side (icons + labels). Live and Still each get a full stage; Color / Subtle is a style switch. Drag a stage edge to resize and force overflow; drag or swipe the rail to scroll hops out from under Home.';
 
 export const PATH_EDGE_DESCRIPTION =
-  'Path Edge workshop: Top or Side; Still and Live rows; Color / Subtle style; overflow scroll with pinned Home.';
+  'Path Edge workshop: Top or Side; Live and Still rows; Color / Subtle style; overflow scroll with pinned Home.';
 
 /**
  * FUTURE: pull-down / swipe-down on the page to reveal then dismiss the top Path bar.
@@ -206,14 +206,26 @@ export function bindMobileEdgeSwipe(
   let startY = 0;
   let pointerId = -1;
 
+  let captured = false;
+
   const onDown = (e: PointerEvent) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const rect = stage.getBoundingClientRect();
     if (e.clientX - rect.left > edgePx) return;
+    /* Don't capture yet — early capture stole hop/Home clicks. */
     tracking = true;
+    captured = false;
     pointerId = e.pointerId;
     startX = e.clientX;
     startY = e.clientY;
+  };
+
+  const onMove = (e: PointerEvent) => {
+    if (!tracking || e.pointerId !== pointerId || captured) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (Math.abs(dx) < 12 || Math.abs(dx) < Math.abs(dy) * 1.1) return;
+    captured = true;
     try {
       stage.setPointerCapture(e.pointerId);
     } catch {
@@ -226,11 +238,15 @@ export function bindMobileEdgeSwipe(
     tracking = false;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
+    const wasCaptured = captured;
+    captured = false;
     pointerId = -1;
-    try {
-      stage.releasePointerCapture(e.pointerId);
-    } catch {
-      /* ignore */
+    if (wasCaptured) {
+      try {
+        stage.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
     }
     if (Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy) * 1.1) return;
     if (dx > 0 && !opts.isOpen()) opts.onToggle(true);
@@ -240,15 +256,18 @@ export function bindMobileEdgeSwipe(
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pointerId) return;
     tracking = false;
+    captured = false;
     pointerId = -1;
   };
 
   stage.addEventListener('pointerdown', onDown);
+  stage.addEventListener('pointermove', onMove);
   stage.addEventListener('pointerup', onUp);
   stage.addEventListener('pointercancel', onCancel);
 
   return () => {
     stage.removeEventListener('pointerdown', onDown);
+    stage.removeEventListener('pointermove', onMove);
     stage.removeEventListener('pointerup', onUp);
     stage.removeEventListener('pointercancel', onCancel);
   };
@@ -285,6 +304,7 @@ export function markPathLeaves(stage: HTMLElement, nextId: string, all: PathNode
 /**
  * Pointer drag → scrollLeft/scrollTop on a hidden-scrollbar overflow scroller.
  * Distinguishes drag from click via a small move threshold.
+ * Capture starts only after the drag threshold so hop clicks still navigate.
  */
 export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): () => void {
   const horizontal = axis === 'top';
@@ -302,7 +322,6 @@ export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): (
     pointerId = e.pointerId;
     startClient = horizontal ? e.clientX : e.clientY;
     startScroll = horizontal ? scroller.scrollLeft : scroller.scrollTop;
-    scroller.setPointerCapture(e.pointerId);
   };
 
   const onMove = (e: PointerEvent) => {
@@ -312,6 +331,11 @@ export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): (
     if (!dragging && Math.abs(delta) >= THRESHOLD) {
       dragging = true;
       scroller.classList.add('is-dragging');
+      try {
+        scroller.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
     }
     if (!dragging) return;
     e.preventDefault();

@@ -121,7 +121,7 @@ html[data-theme='light'] .pe-blend-select {
 }
 
 .pe-style-swatch-color {
-  background: linear-gradient(135deg, #4285f4 0 33%, #ea4335 33% 66%, #fbbc04 66%);
+  background: linear-gradient(135deg, #4285f4 0 33%, #ea4335 33% 66%, #c9a227 66%);
 }
 
 .pe-style-swatch-subtle {
@@ -214,6 +214,11 @@ html[data-theme='light'] .mode-btn {
   --pe-arrow: 0.7rem;
   --pe-rail-foundation: #1c2226;
   --pe-depth-shadow: rgba(0, 0, 0, 0.42);
+  /*
+   * Fixed face under hop color (not theme-dependent) so mix-blend math and
+   * --tile-ink stay coherent across light/dark. Rail chrome uses foundation.
+   */
+  --pe-tile-face-base: #2a3034;
   /* Dark defaults — overridden in light theme (mirror Modal Edge tokens) */
   --pe-stage: #101418;
   --pe-wash: 18%;
@@ -227,12 +232,14 @@ html[data-theme='light'] .mode-btn {
   --pe-mono-l-left: 28%;
   --pe-mono-l-min: 18%;
   --pe-mono-l-span: 42%;
+  --pe-stage-shadow: 0 22px 56px rgba(0, 0, 0, 0.48), 0 6px 18px rgba(0, 0, 0, 0.28);
   position: relative;
   min-height: 24rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
   color: var(--ink);
+  box-shadow: var(--pe-stage-shadow);
   background:
     radial-gradient(
       80% 70% at 100% 0%,
@@ -292,6 +299,7 @@ html[data-theme='light'] .pe-stage {
   --pe-chroma-seg: #e4e9e7;
   --pe-rail-foundation: #e4e9e7;
   --pe-depth-shadow: rgba(20, 28, 26, 0.28);
+  /* Face base stays fixed — do not follow light chroma */
   --pe-seg-ink: #1a211f;
   --pe-focus: var(--accent);
   --pe-mono-mix-top: 22%;
@@ -301,6 +309,7 @@ html[data-theme='light'] .pe-stage {
   --pe-mono-l-left: 70%;
   --pe-mono-l-min: 62%;
   --pe-mono-l-span: 28%;
+  --pe-stage-shadow: 0 22px 56px rgba(20, 28, 26, 0.22), 0 6px 18px rgba(20, 28, 26, 0.12);
 }
 
 .pe-stage.is-chroma {
@@ -528,7 +537,10 @@ html[data-theme='light'] .pe-stage {
   padding: 0;
   cursor: pointer;
   color: var(--tile-ink, var(--pe-seg-ink, #fff));
-  background: var(--seg);
+  /* Fixed blend backdrop; hop color lives on .pe-seg-color only */
+  background: var(--pe-tile-face-base);
+  /* Contain mix-blend so depth shadow / rail chrome stay unblended */
+  isolation: isolate;
   font-family: var(--font-display);
   min-width: 0;
   min-height: 0;
@@ -609,6 +621,10 @@ html[data-theme='light'] .pe-stage {
   display: none;
 }
 
+/*
+ * Colored face only — blend math against --pe-tile-face-base inside the tile.
+ * Icons/labels stay above with --tile-ink (no icon blend: fights currentColor).
+ */
 .pe-seg-color {
   display: block;
   position: absolute;
@@ -718,6 +734,56 @@ html[data-theme='light'] .pe-stage {
   margin: calc(var(--rail-idle) + 0.85rem) 1rem 1rem calc(var(--rail-idle) + 0.85rem);
 }
 
+.pe-crumbs {
+  margin: 0 0 0.75rem;
+}
+
+.pe-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.pe-crumbs li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pe-crumbs li:not(:last-child)::after {
+  content: '/';
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.pe-crumb {
+  font: inherit;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.pe-crumb:hover {
+  color: var(--ink);
+}
+
+.pe-crumb.is-here {
+  color: var(--ink);
+  text-decoration: none;
+  cursor: default;
+  font-weight: 600;
+}
+
 .pe-stage[data-edge='top'] .pe-content {
   margin-left: 1rem;
 }
@@ -732,7 +798,8 @@ html[data-theme='light'] .pe-stage {
 }
 
 .pe-stage.is-chroma .pe-seg {
-  background: var(--pe-chroma-seg);
+  /* Keep fixed face base — do not use theme chroma under blend */
+  background: var(--pe-tile-face-base);
 }
 
 /*

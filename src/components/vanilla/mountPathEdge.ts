@@ -15,14 +15,15 @@ import {
   type PathEdgeAxis,
   type PathNode,
 } from '../../lib/path-edge';
+import { syncThemeButtons, themeSwitchHtml } from '../../lib/theme';
 
 type Pack = 'start' | 'end';
 type VisualStyle = 'color' | 'subtle';
 type StageKind = 'rest' | 'live';
 
 const STAGES: { id: StageKind; live: boolean; label: string }[] = [
-  { id: 'rest', live: false, label: 'Still' },
   { id: 'live', live: true, label: 'Live' },
+  { id: 'rest', live: false, label: 'Still' },
 ];
 
 const DEFAULT_PATH_ID = demoPath[demoPath.length - 1]!.id;
@@ -306,6 +307,44 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       <span class="pe-label">${n.label}</span>`;
   }
 
+  function crumbsHtml(list: PathNode[], current: PathNode): string {
+    return `
+      <nav class="pe-crumbs" aria-label="Path ancestors">
+        <ol>
+          ${list
+            .map((n) => {
+              const here = n.id === current.id;
+              return `<li>${
+                here
+                  ? `<span class="pe-crumb is-here" aria-current="page">${n.label}</span>`
+                  : `<button type="button" class="pe-crumb" data-goto="${n.id}">${n.label}</button>`
+              }</li>`;
+            })
+            .join('')}
+        </ol>
+      </nav>`;
+  }
+
+  function navigateTo(id: string) {
+    if (!id || id === currentId) return;
+    nameHops();
+    markLeaves(id);
+    runPathVt(() => applyPath(id));
+  }
+
+  function bindGoto(el: HTMLElement) {
+    el.addEventListener('click', (ev) => {
+      const scroller = el.closest('.pe-scroll') as HTMLElement | null;
+      if (scroller?.dataset.peSuppressClick) {
+        ev.preventDefault();
+        return;
+      }
+      const id = el.dataset.goto;
+      if (!id) return;
+      navigateTo(id);
+    });
+  }
+
   function applyPath(nextId: string) {
     currentId = nextId;
     const list = nodes();
@@ -318,12 +357,22 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       stage.style.setProperty('--page', vars.page);
       stage.style.setProperty('--mono-top', vars.monoTop);
       stage.style.setProperty('--mono-left', vars.monoLeft);
-      const h2 = stage.querySelector('.pe-content h2');
-      const meta = stage.querySelector('.pe-content .meta');
-      const blurb = stage.querySelector('.pe-content p:last-of-type');
-      if (h2) h2.textContent = current.label;
-      if (meta) meta.textContent = current.role;
-      if (blurb) blurb.textContent = current.blurb;
+      const content = stage.querySelector('.pe-content') as HTMLElement | null;
+      if (content) {
+        const h2 = content.querySelector('h2');
+        const meta = content.querySelector('.meta');
+        const blurb = content.querySelector('p:not(.meta)');
+        if (h2) h2.textContent = current.label;
+        if (meta) meta.textContent = current.role;
+        if (blurb) blurb.textContent = current.blurb;
+        let crumbs = content.querySelector(':scope > nav.pe-crumbs');
+        if (crumbs) {
+          crumbs.outerHTML = crumbsHtml(list, current);
+        } else {
+          content.insertAdjacentHTML('afterbegin', crumbsHtml(list, current));
+        }
+        content.querySelectorAll<HTMLElement>('.pe-crumb[data-goto]').forEach(bindGoto);
+      }
 
       const axis = (stage.dataset.edge === 'left' ? 'left' : 'top') as PathEdgeAxis;
       const home = stage.querySelector('.pe-home') as HTMLElement | null;
@@ -354,18 +403,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           el.className = `pe-seg pe-seg-${axis} pe-arrow`;
           el.dataset.goto = n.id;
           el.innerHTML = hopInnerHtml(n);
-          el.addEventListener('click', (ev) => {
-            const scroller = el!.closest('.pe-scroll') as HTMLElement | null;
-            if (scroller?.dataset.peSuppressClick) {
-              ev.preventDefault();
-              return;
-            }
-            const id = el!.dataset.goto;
-            if (!id || id === currentId) return;
-            nameHops();
-            markLeaves(id);
-            runPathVt(() => applyPath(id));
-          });
+          bindGoto(el);
           track.append(el);
         }
         el.dataset.fromRoot = String(fromRoot);
@@ -574,6 +612,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
             ${railHtml(label, list, current)}
           </div>
           <div class="cr-content pe-content">
+            ${crumbsHtml(list, current)}
             <h2>${current.label}</h2>
             <p class="meta">${current.role}</p>
             <p>${current.blurb}</p>
@@ -642,10 +681,11 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         Home stays pinned; overflow hops hide under Home — drag, swipe, or arrow-key the rail to scroll.
         On touch, swipe inward from the left stage edge to open or dismiss the bar
         (pull-down reveal is stubbed until browsers stop owning that gesture for refresh).
-        Drag the stage’s free edge to resize (Still and Live stay synced). Side alignment packs hops inside the full rail.
+        Drag the stage’s free edge to resize (Live and Still stay synced). Side alignment packs hops inside the full rail.
         A zoomable facsimile-canvas shell is future work — this demo runs the real rail code.
       </p>
       <div class="cr-toolbar pe-toolbar">
+        ${themeSwitchHtml('page')}
         <div class="mode-btns" role="group" aria-label="Edge placement">
           <span class="variant-switch-name">Edge</span>
           <button type="button" class="mode-btn pe-ico-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top" title="Top edge" aria-label="Top edge">
@@ -703,20 +743,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       bindStageResize(handle, mode);
     });
 
-    root.querySelectorAll('[data-goto]').forEach((el) => {
-      el.addEventListener('click', (ev) => {
-        const scroller = (el as HTMLElement).closest('.pe-scroll') as HTMLElement | null;
-        if (scroller?.dataset.peSuppressClick) {
-          ev.preventDefault();
-          return;
-        }
-        const id = (el as HTMLElement).dataset.goto;
-        if (!id || id === currentId) return;
-        nameHops();
-        markLeaves(id);
-        runPathVt(() => applyPath(id));
-      });
-    });
+    root.querySelectorAll<HTMLElement>('[data-goto]').forEach(bindGoto);
 
     root.querySelectorAll<HTMLButtonElement>('[data-edge]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -751,20 +778,36 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         revealCurrent();
         return;
       }
-      nameHops();
-      markLeaves(DEFAULT_PATH_ID);
-      runPathVt(() => applyPath(DEFAULT_PATH_ID));
+      navigateTo(DEFAULT_PATH_ID);
     });
 
     const blendSel = root.querySelector<HTMLSelectElement>('[data-blend-select]');
+    const blendSlot = root.querySelector<HTMLElement>('.pe-blend-slot');
+    const openBlendPreview = () => {
+      if (!blendSel) return;
+      previewBlend(blendSel.value as BlendMode);
+    };
+    const closeBlendPreview = () => previewBlend(null);
+
     blendSel?.addEventListener('change', () => {
       const mode = blendSel.value as BlendMode;
       if (style === 'subtle') blendSubtle = mode;
       else blendColor = mode;
       applyStyle();
+      /* Keep Still open while interacting with the control */
+      openBlendPreview();
     });
-    blendSel?.addEventListener('focus', () => previewBlend(blendSel.value as BlendMode));
-    blendSel?.addEventListener('blur', () => previewBlend(null));
+    /* Any hover/focus on the blend control opens Still + previews — not only on change */
+    blendSlot?.addEventListener('pointerenter', openBlendPreview);
+    blendSlot?.addEventListener('pointerleave', closeBlendPreview);
+    blendSlot?.addEventListener('focusin', openBlendPreview);
+    blendSlot?.addEventListener('focusout', (e) => {
+      const next = e.relatedTarget as Node | null;
+      if (next && blendSlot.contains(next)) return;
+      closeBlendPreview();
+    });
+
+    syncThemeButtons(root);
 
     observer = new ResizeObserver(() => {
       requestAnimationFrame(() => syncShadows());
