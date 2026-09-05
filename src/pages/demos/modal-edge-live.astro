@@ -1,19 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
+import {
+  MODAL_EDGE_DESCRIPTION_LIVE,
+  MODAL_EDGE_LEDE_LIVE,
+} from '../../lib/modal-edge';
 import '../../styles/modal-edge.css';
 ---
 
-<BaseLayout
-  title="Modal Edge · Live"
-  description="Pointer near the edges peeks the modal sheet — constant reaction test."
->
+<BaseLayout title="Modal Edge · Live" description={MODAL_EDGE_DESCRIPTION_LIVE}>
   <main class="shell">
     <DemoHead
       variant="modal"
       mode="live"
       title="Modal Edge"
-      lede="The edge is this sheet. Click to slide it back; ancestor layers stay underneath."
+      lede={MODAL_EDGE_LEDE_LIVE}
     />
     <div id="modal-edge-root" data-live="1"></div>
   </main>

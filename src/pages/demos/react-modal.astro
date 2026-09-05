@@ -2,20 +2,18 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
 import ModalEdgeShell from '../../components/react/ModalEdgeShell';
+import { MODAL_EDGE_DESCRIPTION, MODAL_EDGE_LEDE } from '../../lib/modal-edge';
 import '../../styles/modal-edge.css';
 ---
 
-<BaseLayout
-  title="React Modal Edge · Context Edge"
-  description="React implementation — Modal Edge ancestry stack."
->
+<BaseLayout title="React Modal Edge · Context Edge" description={MODAL_EDGE_DESCRIPTION}>
   <main class="shell">
     <DemoHead
       variant="modal"
       mode="rest"
       framework="react"
       title="Modal Edge"
-      lede="Same L-join as Map. Click slides this sheet back; ancestors stay as colored layers."
+      lede={MODAL_EDGE_LEDE}
     />
     <ModalEdgeShell client:load island="React" />
   </main>

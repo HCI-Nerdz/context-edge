@@ -2,18 +2,16 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
 import MapEdgeShell from '../../components/solid/MapEdgeShell';
+import { MAP_EDGE_DESCRIPTION, MAP_EDGE_LEDE } from '../../lib/map-edge';
 ---
 
-<BaseLayout
-  title="Solid cloud · Context Edge"
-  description="Solid implementation demo — cloud-console parody rescued by a Context Edge."
->
+<BaseLayout title="Solid cloud · Context Edge" description={MAP_EDGE_DESCRIPTION}>
   <main class="shell">
     <DemoHead
       variant="map"
       framework="solid"
-      title="Cloud console → rails"
-      lede="Fine-grained signals drive hover/open/platform identity. Toggle header overload to feel the anti-pattern."
+      title="Map Edge"
+      lede={MAP_EDGE_LEDE}
     />
     <MapEdgeShell client:load showOverloadToggle={true} initialId="cloud" />
   </main>

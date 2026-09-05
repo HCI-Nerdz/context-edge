@@ -1,19 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
+import {
+  MODAL_EDGE_DESCRIPTION,
+  MODAL_EDGE_LEDE,
+} from '../../lib/modal-edge';
 import '../../styles/modal-edge.css';
 ---
 
-<BaseLayout
-  title="Modal Edge"
-  description="Variant B: View Transitions slide the current sheet to reveal colored ancestor layers."
->
+<BaseLayout title="Modal Edge" description={MODAL_EDGE_DESCRIPTION}>
   <main class="shell">
     <DemoHead
       variant="modal"
       mode="rest"
       title="Modal Edge"
-      lede="The edge is this sheet. Click to slide it back; ancestor layers stay underneath."
+      lede={MODAL_EDGE_LEDE}
     />
     <div id="modal-edge-root"></div>
   </main>

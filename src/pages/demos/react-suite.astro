@@ -2,18 +2,16 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
 import MapEdgeShell from '../../components/react/MapEdgeShell';
+import { MAP_EDGE_DESCRIPTION, MAP_EDGE_LEDE } from '../../lib/map-edge';
 ---
 
-<BaseLayout
-  title="React suite · Context Edge"
-  description="React implementation demo — suite shell with duo-tone platform overlays."
->
+<BaseLayout title="React suite · Context Edge" description={MAP_EDGE_DESCRIPTION}>
   <main class="shell">
     <DemoHead
       variant="map"
       framework="react"
-      title="Suite shell"
-      lede="Portable toward Next.js App Router as a client layout wrapper around page content."
+      title="Map Edge"
+      lede={MAP_EDGE_LEDE}
     />
     <MapEdgeShell client:load initialId="gmail" />
   </main>

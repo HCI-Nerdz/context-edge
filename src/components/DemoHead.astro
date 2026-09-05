@@ -11,6 +11,7 @@ interface Props {
   variant: 'map' | 'modal' | 'path';
   mode?: 'rest' | 'live';
   framework?: FrameworkId;
+  /** Active variant label shown after the selector (e.g. Path Edge). */
   title: string;
   lede: string;
 }
@@ -30,17 +31,20 @@ const eyebrow = parts.join(' · ');
 
 <div class="demo-head" transition:name="demo-head">
   <p class="demo-back">
-    <a class="back" href={hrefWithBase('')}>← Context Edge</a>
+    <a class="back" href={hrefWithBase('')}>← All variants</a>
   </p>
   <p class="eyebrow">{eyebrow}</p>
   <div class="page-kicker">
     <FrameworkMark id={framework} />
-    <h1>{title}</h1>
+    <h1>Context Edge</h1>
   </div>
-  <p class="lede">{lede}</p>
   <div class="demo-switches">
     <VariantSwitch current={variant} framework={framework} />
     <FrameworkSwitch current={framework} variant={variant} mode={variant === 'modal' ? modalMode : undefined} />
     {variant === 'modal' && mode && <ModalMode current={mode} framework={framework} />}
+  </div>
+  <div class="variant-blurb">
+    <h2 class="variant-title">{title}</h2>
+    <p class="lede">{lede}</p>
   </div>
 </div>

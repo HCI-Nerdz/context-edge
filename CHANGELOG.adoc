@@ -1,5 +1,12 @@
 = Changelog
 
+== 2026-09-05 — Demo chrome: Context Edge header and cold-reader ledes
+
+* Variant pages title the system (**Context Edge**); back link is **← All variants** to the suite hub
+* Variant selector moves above the active-variant heading + intro; Map / Modal / Path named there, then the desk
+* Modal and Path ledes rewritten for cold readers; Map shares a lay workflow lede
+* link:changelog-details/2026-09-05%20-%20demo-chrome-context-edge-header.adoc[Details]
+
 == 2026-09-05 — Shared stage shadow and Modal content light surfaces
 
 * Map / Modal / Path facsimile stages share `--demo-stage-shadow` (same Path drop shadow on every demo window)

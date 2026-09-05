@@ -1,18 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
+import { MAP_EDGE_DESCRIPTION, MAP_EDGE_LEDE } from '../../lib/map-edge';
 ---
 
-<BaseLayout
-  title="Map Edge"
-  description="Map Edge — hover expands the rails; click slides the page off a map underneath."
->
+<BaseLayout title="Map Edge" description={MAP_EDGE_DESCRIPTION}>
   <main class="shell">
-    <DemoHead
-      variant="map"
-      title="Map Edge"
-      lede="This animation reveals a navigation map underneath the current page. Much like a city with streets and buildings, what's at the bottom level allows travel between activities. This model helps clear up the page contents to perform their primary job: behaving like a UI, and not distracting users and designers with complicated nav menus and top bars."
-    />
+    <DemoHead variant="map" title="Map Edge" lede={MAP_EDGE_LEDE} />
     <div id="vanilla-root"></div>
   </main>
 </BaseLayout>

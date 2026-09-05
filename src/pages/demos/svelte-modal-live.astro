@@ -2,12 +2,16 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
 import ModalEdgeShell from '../../components/svelte/ModalEdgeShell.svelte';
+import {
+  MODAL_EDGE_DESCRIPTION_LIVE,
+  MODAL_EDGE_LEDE_LIVE,
+} from '../../lib/modal-edge';
 import '../../styles/modal-edge.css';
 ---
 
 <BaseLayout
   title="Svelte Modal Edge · Live · Context Edge"
-  description="Svelte implementation — Modal Edge with live edge peek."
+  description={MODAL_EDGE_DESCRIPTION_LIVE}
 >
   <main class="shell">
     <DemoHead
@@ -15,7 +19,7 @@ import '../../styles/modal-edge.css';
       mode="live"
       framework="svelte"
       title="Modal Edge"
-      lede="Pointer near the edges peeks the sheet. Click to open the full stack."
+      lede={MODAL_EDGE_LEDE_LIVE}
     />
     <ModalEdgeShell client:load island="Svelte" live={true} />
   </main>

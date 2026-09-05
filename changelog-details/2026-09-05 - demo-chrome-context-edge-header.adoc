@@ -1,0 +1,5 @@
+= 2026-09-05 — Demo chrome: Context Edge header and cold-reader ledes
+
+* Variant pages use H1 **Context Edge**; back link is **← All variants** (suite hub), not a second Context Edge label
+* Variant selector sits above the active-variant title + intro; Map / Modal / Path name appears as the section heading before the desk
+* Modal and Path intros rewritten for cold readers; Map gets a shared lay lede; copy lives in `src/lib/{map,modal,path}-edge.ts`

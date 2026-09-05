@@ -176,10 +176,10 @@ export type PathEdgeAxis = 'top' | 'left';
 
 /** Shared Path Edge page lede — vanilla and framework implementations. */
 export const PATH_EDGE_LEDE =
-  'One edge at a time — Top (marks + quiet labels) or Side (icons + labels). Live and Still each get a full stage; Color / Subtle is a style switch. Drag a stage edge to resize and force overflow; drag or swipe the rail to scroll hops out from under Home.';
+  'As you move across products, the places you visited stay on one thin rail — Top or Side — each hop its own color, Home pinned at the start. When the trail grows, drag or swipe the rail to scroll older stops out from under Home. Below, compare Live vs Still and Color vs Subtle; drag a stage edge to resize and force overflow.';
 
 export const PATH_EDGE_DESCRIPTION =
-  'Path Edge workshop: Top or Side; Live and Still rows; Color / Subtle style; overflow scroll with pinned Home.';
+  'Path Edge keeps your cross-product trail on one edge rail — colored hops, pinned Home, Top or Side.';
 
 /**
  * FUTURE: pull-down / swipe-down on the page to reveal then dismiss the top Path bar.
