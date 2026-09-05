@@ -1,0 +1,8 @@
+= 2026-09-05 — Path hop snappiness, Home tip stack, side chevrons, bubble
+
+* Path hops skip View Transitions when a hop VT is already playing or clicks arrive within ~240ms, so `applyPath` never queues behind a prior ~0.4s transition; goto uses one delegated click handler on the workshop root
+* Home pin splits rectangular body + overflowing `.pe-home-tip` so the chevron paints above the depth shadow while the shadow still starts at the body trailing face and hops stay under
+* Side (left) hop clip is a single-direction chevron: leading notch for nesting + trailing tip **down** (root→leaf along the track); no double-ended arrow
+* Side hops stack mark above label; top hops place mark beside label in the open rail
+* Trail end inset raised from 50px to **100px** (`PE_TRAIL_END_INSET_PX` and `--pe-trail-end-inset`) so more rail foundation stays past the last hop when the stage constricts
+* Modal “click me” bubble is decorative only (`pointer-events: none`, non-button) — open/close via the edge rails

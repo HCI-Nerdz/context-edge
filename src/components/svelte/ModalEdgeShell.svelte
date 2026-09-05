@@ -74,16 +74,10 @@
       {live ? 'Live' : 'Still'}
     </span>
   </div>
-  <button
-    type="button"
-    class="ce-click-bubble"
-    class:is-open={revealed}
-    onclick={toggle}
-    aria-label={revealed ? 'Close navigation stack' : 'Click to open the Context Edge desk'}
-  >
+  <div class="ce-click-bubble" class:is-open={revealed} aria-hidden="true">
     <span class="ce-click-bubble-label">{revealed ? 'Close stack' : 'click me'}</span>
     <span class="ce-click-bubble-tail" aria-hidden="true"></span>
-  </button>
+  </div>
   <div
     bind:this={viewportEl}
     class="me-viewport"

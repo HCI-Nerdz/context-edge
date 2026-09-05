@@ -179,18 +179,20 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   function applyPack() {
     root.querySelectorAll<HTMLElement>('.pe-left').forEach((left) => {
       left.dataset.pack = leftPack;
-      const home = left.querySelector('.pe-home');
+      const homePin =
+        (left.querySelector('.pe-home-pin') as HTMLElement | null) ??
+        (left.querySelector('.pe-home') as HTMLElement | null);
       const scroll = left.querySelector('.pe-scroll');
       const slack = left.querySelector('.pe-slack');
       const shadow = left.querySelector('.pe-depth-shadow');
-      if (!home || !scroll) return;
+      if (!homePin || !scroll) return;
       if (leftPack === 'start') {
-        if (slack) left.append(home, scroll, slack);
-        else left.append(home, scroll);
+        if (slack) left.append(homePin, scroll, slack);
+        else left.append(homePin, scroll);
       } else if (slack) {
-        left.append(slack, home, scroll);
+        left.append(slack, homePin, scroll);
       } else {
-        left.append(home, scroll);
+        left.append(homePin, scroll);
       }
       /* Sibling overlay between Home and scroll: Home above, hops below. */
       if (shadow) left.insertBefore(shadow, scroll);
@@ -264,6 +266,20 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
   }
 
+  /** True while a path hop View Transition animation is playing (update already applied). */
+  let pathVtBusy = false;
+  /** Last hop timestamp — rapid clicks skip VT so navigations never queue. */
+  let lastNavAt = 0;
+  const RAPID_HOP_MS = 240;
+
+  function prefersReducedMotion(): boolean {
+    return matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  /**
+   * Leaf fade VT only when useful: isolated hops with idle UI.
+   * Rapid / in-flight hops call `applyPath` immediately so clicks never wait on ~0.4s VT.
+   */
   function runPathVt(update: () => void) {
     const doc = document as Document & {
       startViewTransition?: (cb: () => void) => { finished: Promise<void> };
@@ -272,9 +288,13 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       update();
       return;
     }
+    pathVtBusy = true;
     doc.documentElement.classList.add('pe-path-vt');
     const t = doc.startViewTransition(update);
-    void t.finished.finally(() => doc.documentElement.classList.remove('pe-path-vt'));
+    void t.finished.finally(() => {
+      pathVtBusy = false;
+      doc.documentElement.classList.remove('pe-path-vt');
+    });
   }
 
   function nameHops() {
@@ -285,6 +305,17 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
         const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';
         el.style.viewTransitionName = `pe-${sid}-${axis}-${el.dataset.goto}`;
+      });
+    });
+  }
+
+  function clearHopVtNames() {
+    root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+      const copy = stage.querySelector('.pe-content') as HTMLElement | null;
+      if (copy) copy.style.viewTransitionName = '';
+      stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
+        el.style.viewTransitionName = '';
+        el.style.viewTransitionClass = '';
       });
     });
   }
@@ -327,22 +358,33 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
 
   function navigateTo(id: string) {
     if (!id || id === currentId) return;
+    const now = performance.now();
+    const rapid = now - lastNavAt < RAPID_HOP_MS;
+    lastNavAt = now;
+    /* Skip VT when busy/rapid so startViewTransition never queues applyPath behind a prior hop. */
+    const skipVt = pathVtBusy || rapid || prefersReducedMotion();
+    if (skipVt) {
+      clearHopVtNames();
+      applyPath(id);
+      return;
+    }
     nameHops();
     markLeaves(id);
     runPathVt(() => applyPath(id));
   }
 
-  function bindGoto(el: HTMLElement) {
-    el.addEventListener('click', (ev) => {
-      const scroller = el.closest('.pe-scroll') as HTMLElement | null;
-      if (scroller?.dataset.peSuppressClick) {
-        ev.preventDefault();
-        return;
-      }
-      const id = el.dataset.goto;
-      if (!id) return;
-      navigateTo(id);
-    });
+  /** One delegated handler — hops/crumbs stay clickable without rebinding after applyPath. */
+  function onGotoClick(ev: Event) {
+    const target = (ev.target as HTMLElement | null)?.closest?.('[data-goto]') as HTMLElement | null;
+    if (!target || !root.contains(target)) return;
+    const scroller = target.closest('.pe-scroll') as HTMLElement | null;
+    if (scroller?.dataset.peSuppressClick) {
+      ev.preventDefault();
+      return;
+    }
+    const id = target.dataset.goto;
+    if (!id) return;
+    navigateTo(id);
   }
 
   function applyPath(nextId: string) {
@@ -365,22 +407,25 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         if (h2) h2.textContent = current.label;
         if (meta) meta.textContent = current.role;
         if (blurb) blurb.textContent = current.blurb;
-        let crumbs = content.querySelector(':scope > nav.pe-crumbs');
+        const crumbs = content.querySelector(':scope > nav.pe-crumbs');
         if (crumbs) {
           crumbs.outerHTML = crumbsHtml(list, current);
         } else {
           content.insertAdjacentHTML('afterbegin', crumbsHtml(list, current));
         }
-        content.querySelectorAll<HTMLElement>('.pe-crumb[data-goto]').forEach(bindGoto);
       }
 
       const axis = (stage.dataset.edge === 'left' ? 'left' : 'top') as PathEdgeAxis;
+      const homePin = stage.querySelector('.pe-home-pin') as HTMLElement | null;
       const home = stage.querySelector('.pe-home') as HTMLElement | null;
+      const pin = homePin ?? home;
+      if (pin) {
+        pin.style.setProperty('--seg', rootNode.color);
+        pin.style.setProperty('--mono', pathSegMono(current, 0, list.length));
+        pin.style.setProperty('--tile-ink', segInk(rootNode, 0, current, list.length));
+      }
       if (home) {
         home.classList.toggle('is-here', current.id === rootNode.id);
-        home.style.setProperty('--seg', rootNode.color);
-        home.style.setProperty('--mono', pathSegMono(current, 0, list.length));
-        home.style.setProperty('--tile-ink', segInk(rootNode, 0, current, list.length));
       }
 
       const track = stage.querySelector('.pe-track') as HTMLElement | null;
@@ -403,7 +448,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           el.className = `pe-seg pe-seg-${axis} pe-arrow`;
           el.dataset.goto = n.id;
           el.innerHTML = hopInnerHtml(n);
-          bindGoto(el);
           track.append(el);
         }
         el.dataset.fromRoot = String(fromRoot);
@@ -544,15 +588,17 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const mono = pathSegMono(page, 0, count);
     const ink = segInk(rootNode, 0, page, count);
     return `
-      <button type="button" class="pe-home pe-seg pe-seg-${axis} pe-arrow pe-arrow-home ${here ? 'is-here' : ''}"
-        data-goto="${rootNode.id}" data-from-root="0"
-        style="--seg:${rootNode.color};--mono:${mono};--tile-ink:${ink}"
-        title="${rootNode.label} · ${rootNode.role}"
-        aria-label="${rootNode.label}">
-        <span class="pe-seg-color" aria-hidden="true"></span>
-        <span class="pe-chevron" aria-hidden="true"></span>
-        <span class="pe-home-ico" aria-hidden="true">${HOME_ICON_SVG}</span>
-      </button>`;
+      <div class="pe-home-pin" style="--seg:${rootNode.color};--mono:${mono};--tile-ink:${ink}">
+        <button type="button" class="pe-home pe-seg pe-seg-${axis} pe-arrow pe-arrow-home ${here ? 'is-here' : ''}"
+          data-goto="${rootNode.id}" data-from-root="0"
+          title="${rootNode.label} · ${rootNode.role}"
+          aria-label="${rootNode.label}">
+          <span class="pe-seg-color" aria-hidden="true"></span>
+          <span class="pe-chevron" aria-hidden="true"></span>
+          <span class="pe-home-ico" aria-hidden="true">${HOME_ICON_SVG}</span>
+        </button>
+        <span class="pe-home-tip" aria-hidden="true"><span class="pe-home-tip-face"></span></span>
+      </div>`;
   }
 
   function railHtml(label: string, list: PathNode[], current: PathNode): string {
@@ -753,8 +799,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       bindStageResize(handle, mode);
     });
 
-    root.querySelectorAll<HTMLElement>('[data-goto]').forEach(bindGoto);
-
     root.querySelectorAll<HTMLButtonElement>('[data-edge]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const next = btn.dataset.edge as PathEdgeAxis;
@@ -834,5 +878,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     }
   }
 
+  root.addEventListener('click', onGotoClick);
   render();
 }

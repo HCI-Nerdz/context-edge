@@ -1,5 +1,14 @@
 = Changelog
 
+== 2026-09-05 — Path hop snappiness, Home tip stack, side chevrons, bubble
+
+* Path hops: skip View Transitions on rapid or in-flight navigations so clicks stay immediate; delegated goto handling
+* Home: rect body + overflowing tip above the depth shadow; shadow still anchors at the body trailing face
+* Side tiles: single-direction chevron tip **down** (root→leaf); mark stacked above label; top hops mark beside label
+* Trail dead zone past last hop is **100px** (`PE_TRAIL_END_INSET_PX` / `--pe-trail-end-inset`)
+* Modal click-me bubble is non-interactive — open via edge rails only
+* link:changelog-details/2026-09-05%20-%20path-hop-home-tip-side-chevron-bubble.adoc[Details]
+
 == 2026-09-05 — Path Edge Home depth shadow body anchor
 
 * Depth shadow leading edge aligns with Home’s rectangular body (inset by `--pe-arrow` tip), under the clipped tip onto hops

@@ -192,7 +192,7 @@ export const PE_TOP_PULL_REVEAL = false;
  * Keep this much rail foundation visible past the current/last hop when
  * aligning to the scroller’s trailing edge (and as overflow first engages).
  */
-export const PE_TRAIL_END_INSET_PX = 50;
+export const PE_TRAIL_END_INSET_PX = 100;
 
 /**
  * Mobile: swipe from the left stage edge to toggle the Path bar open/closed.
@@ -381,25 +381,12 @@ export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): (
   };
 }
 
-/** Resolve a CSS length custom property on `el` to device pixels (0 if missing). */
-function cssVarLengthPx(el: HTMLElement, name: string): number {
-  const raw = getComputedStyle(el).getPropertyValue(name).trim();
-  if (!raw) return 0;
-  const probe = document.createElement('div');
-  probe.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;width:${raw};height:0`;
-  el.appendChild(probe);
-  const px = probe.offsetWidth;
-  probe.remove();
-  return px;
-}
-
 /**
  * Depth shadow at the Home|hop seam — rail chrome overlay (does not scroll with hops).
  *
- * Paint order: Home (above) → shadow → scrolling hops (below).
- * Placement: leading edge on Home's rectangular body trailing face (layout size minus
- * `--pe-arrow` / `--pe-arrow-n` tip), so the band sits under the clipped tip and casts
- * onto hops at the seam — not projected from the chevron point.
+ * Paint order: Home pin (body + overflowing tip) → shadow → scrolling hops.
+ * Placement: leading edge on the pin’s rectangular trailing face; `.pe-home-tip`
+ * overflows past that edge and paints above the band. Hops stay under the shadow.
  * Intensity: off when flush (underflow 0); ramps fast as the first hop slides under Home;
  * full effect by ~1/2 first-tile under (sooner via ease curve).
  */
@@ -407,8 +394,10 @@ export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
   const shadow = rail.querySelector('.pe-depth-shadow') as HTMLElement | null;
   const scroller = rail.querySelector('.pe-scroll') as HTMLElement | null;
   const track = rail.querySelector('.pe-track') as HTMLElement | null;
-  const home = rail.querySelector('.pe-home') as HTMLElement | null;
-  if (!shadow || !scroller || !track || !home) return;
+  const pin =
+    (rail.querySelector('.pe-home-pin') as HTMLElement | null) ??
+    (rail.querySelector('.pe-home') as HTMLElement | null);
+  if (!shadow || !scroller || !track || !pin) return;
 
   const firstHop = track.querySelector('.pe-seg') as HTMLElement | null;
   const scrollPos = axis === 'top' ? scroller.scrollLeft : scroller.scrollTop;
@@ -417,10 +406,7 @@ export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
       ? firstHop.offsetWidth
       : firstHop.offsetHeight
     : 0;
-  const homeSize = axis === 'top' ? home.offsetWidth : home.offsetHeight;
-  /* Clip-path tip width — body ends one tip short of the layout box. */
-  const tipPx =
-    cssVarLengthPx(home, '--pe-arrow-n') || cssVarLengthPx(home, '--pe-arrow') || 0;
+  const homeSize = axis === 'top' ? pin.offsetWidth : pin.offsetHeight;
 
   /* Full drama by ~halfway under the first hop; ease so strength arrives early. */
   const fullAt = Math.max(hopSize * 0.45, 1);
@@ -435,13 +421,13 @@ export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
   shadow.style.opacity = intensity <= 0.001 ? '0' : String(intensity);
 
   if (axis === 'top') {
-    /* Leading edge = rect body trailing face; tip + hop seam sit under the band. */
-    shadow.style.left = `${home.offsetLeft + home.offsetWidth - tipPx}px`;
+    /* Leading edge = pin rect trailing face; tip overflows above this band. */
+    shadow.style.left = `${pin.offsetLeft + pin.offsetWidth}px`;
     shadow.style.top = '0';
     shadow.style.width = `${span}px`;
     shadow.style.height = '100%';
   } else {
-    shadow.style.top = `${home.offsetTop + home.offsetHeight - tipPx}px`;
+    shadow.style.top = `${pin.offsetTop + pin.offsetHeight}px`;
     shadow.style.left = '0';
     shadow.style.height = `${span}px`;
     shadow.style.width = '100%';

@@ -301,7 +301,7 @@ html[data-theme='light'] .mode-btn {
   --pe-hop-left: 5.85rem;
   --pe-arrow: 0.7rem;
   /* Match PE_TRAIL_END_INSET_PX — foundation past last hop before flush/clamp */
-  --pe-trail-end-inset: 50px;
+  --pe-trail-end-inset: 100px;
   --pe-rail-foundation: #1c2226;
   /* Peak depth under Home tip/seam — strong when fully ramped (span unchanged). */
   --pe-depth-shadow: rgba(0, 0, 0, 0.82);
@@ -469,19 +469,66 @@ html[data-theme='light'] .pe-stage {
 
 /* --- Pinned Home + overflow scroll track --- */
 
-.pe-home {
+/*
+ * Home pin: rectangular body + overflowing tip. Pin stacks above .pe-depth-shadow;
+ * tip paints past the body trailing face onto the shadow band (hops stay under).
+ */
+.pe-home-pin {
   position: relative;
-  /* Above .pe-depth-shadow so Home’s face stays crisp; hops scroll under both. */
   z-index: 6;
   flex: 0 0 var(--pe-home-size);
   width: var(--pe-home-size);
   height: 100%;
+  overflow: visible;
 }
 
-.pe-stage[data-edge='left'] .pe-home {
+.pe-stage[data-edge='left'] .pe-home-pin {
   width: 100%;
   height: var(--pe-home-size-side);
   flex: 0 0 var(--pe-home-size-side);
+}
+
+.pe-home {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Chevron tip — sibling of the body face, above the depth shadow band. */
+.pe-home-tip {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  background: var(--pe-tile-face-base);
+  overflow: hidden;
+}
+
+.pe-home-tip-face {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: var(--seg);
+  mix-blend-mode: var(--blend, normal);
+}
+
+.pe-stage[data-edge='top'] .pe-home-tip {
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: var(--pe-arrow);
+  margin-left: -0.5px;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.pe-stage[data-edge='left'] .pe-home-tip {
+  --pe-arrow-n: 0.55rem;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: var(--pe-arrow-n);
+  margin-top: -0.5px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
 .pe-home-ico {
@@ -598,10 +645,9 @@ html[data-theme='light'] .pe-stage {
 }
 
 /*
- * Depth shadow: rail chrome sibling between Home and the scroll track.
- * Z-order: Home (6) > shadow (5) > .pe-scroll (1). syncPathDepthShadow anchors
- * the leading edge at Home’s rect body (inset by --pe-arrow tip), so the band
- * sits under the clipped tip and casts onto hops — Home’s face stays above.
+ * Depth shadow: rail chrome sibling between Home pin and the scroll track.
+ * Z-order: .pe-home-pin (6, body + tip) > shadow (5) > .pe-scroll (1).
+ * Leading edge at the pin’s rect trailing face; tip overflows above the band.
  * Tight falloff — short band, not a wash across the rail.
  */
 .pe-depth-shadow {
@@ -690,24 +736,19 @@ html[data-theme='light'] .pe-stage {
   padding-right: calc(var(--pe-arrow-n) * 0.85);
 }
 
+/* Home body is a rectangle; chevron tip is .pe-home-tip (above the depth shadow). */
 .pe-stage[data-edge='top'] .pe-arrow-home {
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--pe-arrow-n)) 0,
-    100% 50%,
-    calc(100% - var(--pe-arrow-n)) 100%,
-    0 100%
-  );
+  clip-path: none;
   border-radius: 0;
 }
 
-/* Side: downward chevron — correct winding so icon+label stay in the safe band */
+/* Side: single-direction chevron — leading notch (nests) + trailing tip down (root→leaf). */
 .pe-stage[data-edge='left'] .pe-arrow:not(.pe-home) {
   --pe-arrow-n: 0.55rem;
   clip-path: polygon(
-    0 var(--pe-arrow-n),
-    50% 0,
-    100% var(--pe-arrow-n),
+    0 0,
+    50% var(--pe-arrow-n),
+    100% 0,
     100% calc(100% - var(--pe-arrow-n)),
     50% 100%,
     0 calc(100% - var(--pe-arrow-n))
@@ -720,13 +761,8 @@ html[data-theme='light'] .pe-stage {
 
 .pe-stage[data-edge='left'] .pe-arrow-home {
   --pe-arrow-n: 0.55rem;
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - var(--pe-arrow-n)),
-    50% 100%,
-    0 calc(100% - var(--pe-arrow-n))
-  );
+  clip-path: none;
+  border-radius: 0;
 }
 
 .pe-chevron {
@@ -759,23 +795,25 @@ html[data-theme='light'] .pe-stage {
   place-items: center;
 }
 
-/* Top: mark-forward with subordinate label */
+/* Top: mark beside label in the open rail */
 .pe-seg-top:not(.pe-home) {
-  grid-template-rows: auto auto;
-  align-content: center;
-  justify-items: center;
-  gap: 0.12rem;
-  padding-block: 0.15rem;
-}
-
-/* Side: icon + readable label — keep content in the rectangular mid-band */
-.pe-seg-left:not(.pe-home) {
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: auto;
   align-items: center;
   justify-items: start;
-  column-gap: 0.35rem;
+  column-gap: 0.3rem;
+  padding-inline: 0.2rem 0.35rem;
   text-align: start;
+}
+
+/* Side: mark stacked above label */
+.pe-seg-left:not(.pe-home) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-content: center;
+  justify-items: center;
+  gap: 0.12rem;
+  text-align: center;
 }
 
 .pe-label,
@@ -801,17 +839,28 @@ html[data-theme='light'] .pe-stage {
 .pe-seg-top .pe-mark {
   font-size: 1.05rem;
   line-height: 1;
+  flex: 0 0 auto;
 }
 
 .pe-seg-left .pe-mark {
   font-size: 1.05rem;
   line-height: 1;
-  flex: 0 0 auto;
+}
+
+.pe-seg-top .pe-label {
+  position: relative;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.62rem;
+  font-weight: 600;
 }
 
 .pe-seg-left .pe-label {
   position: relative;
   width: auto;
+  max-width: 100%;
   height: auto;
   overflow: hidden;
   clip: auto;

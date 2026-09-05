@@ -52,15 +52,13 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
           ${live ? 'Live' : 'Still'}
         </span>
       </div>
-      <button
-        type="button"
+      <div
         class="ce-click-bubble${revealed ? ' is-open' : ''}"
-        data-toggle
-        aria-label="${revealed ? 'Close navigation stack' : 'Click to open the Context Edge desk'}"
+        aria-hidden="true"
       >
         <span class="ce-click-bubble-label">${revealed ? 'Close stack' : 'click me'}</span>
         <span class="ce-click-bubble-tail" aria-hidden="true"></span>
-      </button>
+      </div>
       <div
         class="me-viewport ${revealed ? 'is-revealed' : ''}"
         style="--overlay:${current.overlay};--overlay-2:${current.overlay2};--me-open:${revealed ? 1 : 0}"
@@ -140,10 +138,6 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
       const bubble = root.querySelector('.ce-click-bubble');
       if (bubble) {
         bubble.classList.toggle('is-open', revealed);
-        bubble.setAttribute(
-          'aria-label',
-          revealed ? 'Close navigation stack' : 'Click to open the Context Edge desk',
-        );
         const label = bubble.querySelector('.ce-click-bubble-label');
         if (label) label.textContent = revealed ? 'Close stack' : 'click me';
       }

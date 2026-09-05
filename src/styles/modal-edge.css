@@ -1,4 +1,4 @@
-/* Speech-bubble nudge above the Modal desk (replaces flat “Open Context Edge”). */
+/* Speech-bubble nudge above the Modal desk — decorative only; open via edge rails. */
 .ce-click-bubble {
   --ce-bubble-bg: var(--accent);
   --ce-bubble-ink: #fff;
@@ -11,16 +11,10 @@
   padding: 0;
   border: 0;
   background: transparent;
-  cursor: pointer;
+  pointer-events: none;
   font-family: var(--font-display);
   color: var(--ce-bubble-ink);
   animation: ce-bubble-point 1.35s ease-in-out infinite;
-}
-
-.ce-click-bubble:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
-  border-radius: 0.5rem;
 }
 
 .ce-click-bubble-label {
