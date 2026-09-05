@@ -483,36 +483,21 @@ html[data-theme='light'] .fw-solid {
     );
 }
 
+/* Path tile: one full top edge (not an L). Side placement is a workshop toggle. */
 .variant-preview-path {
   --pv-rail: 22%;
   background:
-    linear-gradient(#4285f4, #4285f4) 0 0 / var(--pv-rail) var(--pv-rail) no-repeat,
     linear-gradient(
         90deg,
-        #ea4335 0 20%,
-        #fbbc04 20% 40%,
-        #34a853 40% 60%,
-        #00acc1 60% 80%,
-        #a142f4 80%
+        #4285f4 0 16.6%,
+        #ea4335 16.6% 33.3%,
+        #fbbc04 33.3% 50%,
+        #34a853 50% 66.6%,
+        #00acc1 66.6% 83.3%,
+        #a142f4 83.3%
       )
-      var(--pv-rail) 0 / calc(100% - var(--pv-rail)) var(--pv-rail) no-repeat,
+      0 0 / 100% var(--pv-rail) no-repeat,
     #0d1214;
-}
-
-.variant-preview-path::after {
-  content: '';
-  position: absolute;
-  top: var(--pv-rail);
-  left: 0;
-  width: var(--pv-rail);
-  height: calc(100% - var(--pv-rail));
-  background: linear-gradient(
-    #ea4335 0 20%,
-    #fbbc04 20% 40%,
-    #34a853 40% 60%,
-    #00acc1 60% 80%,
-    #a142f4 80%
-  );
 }
 
 .variant-modal-mock {
@@ -630,16 +615,15 @@ button.variant-switch-item.is-current:hover {
   outline-offset: 2px;
 }
 
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-top,
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-top,
-.pe-stage.is-open .cr-rail-top {
+/* Map + Modal L-join. Path Edge uses a single edge — see path-edge.css. */
+:is(.cr-stage, .me-viewport):has(.cr-rail:hover) .cr-rail-top,
+:is(.cr-stage, .me-viewport):has(.cr-rail:focus-visible) .cr-rail-top {
   height: var(--rail-hover);
   left: var(--rail-hover);
 }
 
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-left,
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-left,
-.pe-stage.is-open .cr-rail-left {
+:is(.cr-stage, .me-viewport):has(.cr-rail:hover) .cr-rail-left,
+:is(.cr-stage, .me-viewport):has(.cr-rail:focus-visible) .cr-rail-left {
   width: var(--rail-hover);
   top: var(--rail-hover);
 }
@@ -652,9 +636,8 @@ button.variant-switch-item.is-current:hover {
   height: var(--rail-hover);
 }
 
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-corner,
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-corner,
-.pe-stage.is-open .cr-rail-corner {
+:is(.cr-stage, .me-viewport):has(.cr-rail:hover) .cr-rail-corner,
+:is(.cr-stage, .me-viewport):has(.cr-rail:focus-visible) .cr-rail-corner {
   width: calc(var(--rail-hover) + 2px);
   height: calc(var(--rail-hover) + 2px);
 }
@@ -775,9 +758,8 @@ button.variant-switch-item.is-current:hover {
   pointer-events: none;
 }
 
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:hover) .cr-rail-label,
-:is(.cr-stage, .me-viewport, .pe-stage):has(.cr-rail:focus-visible) .cr-rail-label,
-.pe-stage.is-open .cr-rail-label {
+:is(.cr-stage, .me-viewport):has(.cr-rail:hover) .cr-rail-label,
+:is(.cr-stage, .me-viewport):has(.cr-rail:focus-visible) .cr-rail-label {
   opacity: 1;
 }
 

@@ -1,0 +1,5 @@
+= 2026-09-05 — Path Edge is top or side, not an L
+
+* Top and Side are alternate placements — one edge, full length, no corner join
+* Workshop cells keep independent hover (Live does not drive Live Subtle)
+* Hub tile and island copy match the single-edge model

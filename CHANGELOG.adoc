@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Path Edge is top or side, not an L
+
+* Top and Side are alternate placements — one edge, full length, no corner join
+* Workshop cells keep independent hover (Live does not drive Live Subtle)
+* link:changelog-details/2026-09-05%20-%20path-edge-top-or-side.adoc[Details]
+
 == 2026-08-30 -- Hub entry lede for cold readers
 
 * Hub opens with a stuffed-suite-header scene, then names Context Edge / rails / Map-Modal-Path -- not "ecosystem navigation" first.

@@ -10,6 +10,7 @@ import {
   pathStageVars,
   pathThrough,
   sizePathStacks,
+  type PathEdgeAxis,
 } from '../../lib/path-edge';
 
 type Props = {
@@ -18,8 +19,10 @@ type Props = {
 
 export default function PathEdgeShell({ island = 'React' }: Props) {
   const [currentId, setCurrentId] = useState(demoPath.at(-1)!.id);
+  const [edge, setEdge] = useState<PathEdgeAxis>('top');
   const [subtle, setSubtle] = useState(false);
   const [live, setLive] = useState(false);
+  const [open, setOpen] = useState(false);
   const [focus, setFocus] = useState<number | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
 
@@ -40,12 +43,13 @@ export default function PathEdgeShell({ island = 'React' }: Props) {
         count: list.length,
         live,
         focusFromRoot: focus,
+        edge,
       });
     const ro = new ResizeObserver(layout);
     stage.querySelectorAll('.pe-top, .pe-left').forEach((el) => ro.observe(el));
     layout();
     return () => ro.disconnect();
-  }, [list, live, focus]);
+  }, [list, live, focus, edge]);
 
   function hop(id: string) {
     if (id === currentId) return;
@@ -59,12 +63,14 @@ export default function PathEdgeShell({ island = 'React' }: Props) {
 
   function hint(e: PointerEvent<HTMLDivElement>) {
     const stage = stageRef.current;
-    if (!stage || !subtle) return;
-    stage.querySelectorAll<HTMLElement>('.pe-seg, .pe-corner').forEach((el) => {
-      const sr = el.getBoundingClientRect();
-      el.style.setProperty('--local-x', `${e.clientX - sr.left}px`);
-      el.style.setProperty('--local-y', `${e.clientY - sr.top}px`);
-    });
+    if (!stage) return;
+    if (subtle) {
+      stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
+        const sr = el.getBoundingClientRect();
+        el.style.setProperty('--local-x', `${e.clientX - sr.left}px`);
+        el.style.setProperty('--local-y', `${e.clientY - sr.top}px`);
+      });
+    }
     if (live) {
       const t = (e.target as HTMLElement).closest('[data-from-root]') as HTMLElement | null;
       if (t) {
@@ -83,10 +89,32 @@ export default function PathEdgeShell({ island = 'React' }: Props) {
 
   return (
     <div>
-      <div className="cr-toolbar">
+      <div className="cr-toolbar pe-toolbar">
         <span>
           {island} island · Path Edge · {current.label}
         </span>
+        <div className="mode-btns" role="group" aria-label="Edge placement">
+          <button
+            type="button"
+            className={`mode-btn${edge === 'top' ? ' is-on' : ''}`}
+            onClick={() => {
+              setEdge('top');
+              setFocus(null);
+            }}
+          >
+            Top
+          </button>
+          <button
+            type="button"
+            className={`mode-btn${edge === 'left' ? ' is-on' : ''}`}
+            onClick={() => {
+              setEdge('left');
+              setFocus(null);
+            }}
+          >
+            Side
+          </button>
+        </div>
         <label>
           <input
             type="checkbox"
@@ -109,82 +137,74 @@ export default function PathEdgeShell({ island = 'React' }: Props) {
       </div>
       <div
         ref={stageRef}
-        className={`pe-stage${subtle ? ' is-tint' : ' is-chroma'}${live ? ' is-live' : ''}`}
+        className={`pe-stage${subtle ? ' is-tint' : ' is-chroma'}${live ? ' is-live' : ''}${open ? ' is-open' : ''}`}
+        data-edge={edge}
         style={stageStyle}
-        onPointerMove={hint}
-        onPointerLeave={() => {
-          if (!live) setFocus(null);
-        }}
       >
-        <div className="pe-rails" data-rails>
-          <button
-            type="button"
-            className="pe-corner cr-rail cr-rail-corner"
-            title={current.label}
-            style={{ '--top-seg': current.color, '--left-seg': current.color } as CSSProperties}
-            onClick={() => hop(current.id)}
-          >
-            <span className="pe-corner-miter" aria-hidden="true">
-              <span className="pe-miter-top" />
-              <span className="pe-miter-left" />
-            </span>
-            <span className="pe-corner-color" aria-hidden="true">
-              <span className="pe-miter-top" />
-              <span className="pe-miter-left" />
-            </span>
-          </button>
-          <div className="pe-top cr-rail cr-rail-top" role="toolbar" aria-label="Top path">
-            <div className="pe-stack pe-stack-top">
-              {display.map(({ n, fromRoot }) => (
-                <button
-                  key={`t-${n.id}`}
-                  type="button"
-                  className={`pe-seg pe-seg-top${n.id === current.id ? ' is-here' : ''}`}
-                  data-goto={n.id}
-                  data-from-root={fromRoot}
-                  style={
-                    {
-                      '--seg': n.color,
-                      '--mono': pathSegMono(current, fromRoot, list.length),
-                    } as CSSProperties
-                  }
-                  title={`${n.label} · ${n.role}`}
-                  onClick={() => hop(n.id)}
-                >
-                  <span className="pe-seg-color" aria-hidden="true" />
-                  <span className="pe-label">{n.label}</span>
-                </button>
-              ))}
+        <div
+          className="pe-rails"
+          data-rails
+          onPointerEnter={() => setOpen(true)}
+          onPointerLeave={() => {
+            setOpen(false);
+            setFocus(null);
+          }}
+          onPointerMove={hint}
+        >
+          {edge === 'top' ? (
+            <div className="pe-top cr-rail cr-rail-top" role="toolbar" aria-label="Top path">
+              <div className="pe-stack pe-stack-top">
+                {display.map(({ n, fromRoot }) => (
+                  <button
+                    key={`t-${n.id}`}
+                    type="button"
+                    className={`pe-seg pe-seg-top${n.id === current.id ? ' is-here' : ''}`}
+                    data-goto={n.id}
+                    data-from-root={fromRoot}
+                    style={
+                      {
+                        '--seg': n.color,
+                        '--mono': pathSegMono(current, fromRoot, list.length),
+                      } as CSSProperties
+                    }
+                    title={`${n.label} · ${n.role}`}
+                    onClick={() => hop(n.id)}
+                  >
+                    <span className="pe-seg-color" aria-hidden="true" />
+                    <span className="pe-label">{n.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="pe-slack" aria-hidden="true" />
-          </div>
-          <div className="pe-left cr-rail cr-rail-left" role="toolbar" aria-label="Left path">
-            <div className="pe-stack pe-stack-left">
-              {display.map(({ n, fromRoot }) => (
-                <button
-                  key={`l-${n.id}`}
-                  type="button"
-                  className={`pe-seg pe-seg-left${n.id === current.id ? ' is-here' : ''}`}
-                  data-goto={n.id}
-                  data-from-root={fromRoot}
-                  style={
-                    {
-                      '--seg': n.color,
-                      '--mono': pathSegMono(current, fromRoot, list.length),
-                    } as CSSProperties
-                  }
-                  title={`${n.label} · ${n.role}`}
-                  onClick={() => hop(n.id)}
-                >
-                  <span className="pe-seg-color" aria-hidden="true" />
-                  <span className="pe-mark" aria-hidden="true">
-                    {n.mark}
-                  </span>
-                </button>
-              ))}
+          ) : (
+            <div className="pe-left cr-rail cr-rail-left" role="toolbar" aria-label="Side path">
+              <div className="pe-stack pe-stack-left">
+                {display.map(({ n, fromRoot }) => (
+                  <button
+                    key={`l-${n.id}`}
+                    type="button"
+                    className={`pe-seg pe-seg-left${n.id === current.id ? ' is-here' : ''}`}
+                    data-goto={n.id}
+                    data-from-root={fromRoot}
+                    style={
+                      {
+                        '--seg': n.color,
+                        '--mono': pathSegMono(current, fromRoot, list.length),
+                      } as CSSProperties
+                    }
+                    title={`${n.label} · ${n.role}`}
+                    onClick={() => hop(n.id)}
+                  >
+                    <span className="pe-seg-color" aria-hidden="true" />
+                    <span className="pe-mark" aria-hidden="true">
+                      {n.mark}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <div className="pe-slack" aria-hidden="true" />
             </div>
-            <div className="pe-slack" aria-hidden="true" />
-          </div>
+          )}
         </div>
         <div className="cr-content pe-content">
           <h2>{current.label}</h2>

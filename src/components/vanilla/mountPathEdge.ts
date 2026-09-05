@@ -6,6 +6,7 @@ import {
   pathThrough,
   sizePathStacks,
   type BlendMode,
+  type PathEdgeAxis,
   type PathNode,
 } from '../../lib/path-edge';
 
@@ -35,13 +36,13 @@ function blendButtons(active: BlendMode, which: 'color' | 'subtle'): string {
 export function mountPathWorkshop(opts: { root: HTMLElement }) {
   const all = demoPath;
   let currentId = all[all.length - 1]!.id;
-  let topLength = 72;
-  let leftLength = 72;
+  let edge: PathEdgeAxis = 'top';
   let leftPack: Pack = 'start';
   let blendColor: BlendMode = 'normal';
   let blendSubtle: BlendMode = 'color';
-  let focusFromRoot: number | null = null;
   const expanded = new Set<StageKind>();
+  /** Live dock-zoom focus — one value per stage so Live ≠ Live Subtle. */
+  const focusByStage = new Map<StageKind, number | null>();
   let observer: ResizeObserver | null = null;
 
   const root = opts.root;
@@ -53,13 +54,13 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   function applyLayout() {
     const list = nodes();
     root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+      const id = stage.dataset.stage as StageKind;
       sizePathStacks({
         stage,
         count: list.length,
         live: stage.dataset.live === '1',
-        focusFromRoot,
-        topLength,
-        leftLength,
+        focusFromRoot: focusByStage.get(id) ?? null,
+        edge,
       });
     });
   }
@@ -69,9 +70,12 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       left.dataset.pack = leftPack;
       const stack = left.querySelector('.pe-stack-left');
       const slack = left.querySelector('.pe-slack');
-      if (!stack || !slack) return;
-      if (leftPack === 'start') left.append(stack, slack);
-      else left.append(slack, stack);
+      if (!stack) return;
+      if (leftPack === 'start') {
+        if (slack) left.append(stack, slack);
+        else left.append(stack);
+      } else if (slack) left.append(slack, stack);
+      else left.append(stack);
     });
     root.querySelectorAll<HTMLButtonElement>('[data-pack]').forEach((btn) => {
       btn.classList.toggle('is-on', btn.dataset.pack === leftPack);
@@ -93,35 +97,34 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
   }
 
+  /** Blend preview only on the Rest cell — never opens Live / Live Subtle. */
   function previewBlend(which: 'color' | 'subtle', mode: BlendMode | null) {
-    const ids: StageKind[] = which === 'subtle' ? ['subtle', 'live-subtle'] : ['color', 'live'];
-    ids.forEach((id) => {
-      const stage = root.querySelector(`[data-stage="${id}"]`) as HTMLElement | null;
-      if (!stage) return;
-      if (mode) {
-        stage.style.setProperty('--blend', mode);
-        stage.classList.add('is-open', 'is-blend-preview');
-      } else {
-        stage.style.setProperty('--blend', which === 'subtle' ? blendSubtle : blendColor);
-        stage.classList.remove('is-blend-preview');
-        if (!expanded.has(id)) stage.classList.remove('is-open');
-      }
-    });
+    const id: StageKind = which === 'subtle' ? 'subtle' : 'color';
+    const stage = root.querySelector(`[data-stage="${id}"]`) as HTMLElement | null;
+    if (!stage) return;
+    if (mode) {
+      stage.style.setProperty('--blend', mode);
+      stage.classList.add('is-open', 'is-blend-preview');
+    } else {
+      stage.style.setProperty('--blend', which === 'subtle' ? blendSubtle : blendColor);
+      stage.classList.remove('is-blend-preview');
+      if (!expanded.has(id)) stage.classList.remove('is-open');
+    }
   }
 
   function setExpanded(id: StageKind, on: boolean) {
     if (on) expanded.add(id);
     else expanded.delete(id);
     root.querySelector(`[data-stage="${id}"]`)?.classList.toggle('is-open', on);
-    if (!on && expanded.size === 0) {
-      focusFromRoot = null;
+    if (!on) {
+      focusByStage.set(id, null);
       applyLayout();
     }
   }
 
   function paintHint(stage: HTMLElement, e: PointerEvent) {
     const rails = stage.querySelector('[data-rails]') as HTMLElement;
-    rails.querySelectorAll<HTMLElement>('.pe-seg, .pe-corner').forEach((el) => {
+    rails.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
       const sr = el.getBoundingClientRect();
       el.style.setProperty('--local-x', `${e.clientX - sr.left}px`);
       el.style.setProperty('--local-y', `${e.clientY - sr.top}px`);
@@ -144,8 +147,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   function nameHops() {
     root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
       const sid = stage.dataset.stage ?? '';
-      const corner = stage.querySelector('.pe-corner') as HTMLElement | null;
-      if (corner) corner.style.viewTransitionName = `pe-${sid}-corner`;
       const copy = stage.querySelector('.pe-content') as HTMLElement | null;
       if (copy) copy.style.viewTransitionName = `pe-${sid}-copy`;
       stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
@@ -161,9 +162,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       const id = el.dataset.goto ?? '';
       const leaf = !keep.has(id);
       const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';
-      el.style.viewTransitionClass = leaf
-        ? `pe-leaf pe-leaf-${axis}`
-        : 'pe-keep';
+      el.style.viewTransitionClass = leaf ? `pe-leaf pe-leaf-${axis}` : 'pe-keep';
     });
   }
 
@@ -178,13 +177,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       stage.style.setProperty('--page', vars.page);
       stage.style.setProperty('--mono-top', vars.monoTop);
       stage.style.setProperty('--mono-left', vars.monoLeft);
-      const corner = stage.querySelector('.pe-corner') as HTMLElement | null;
-      if (corner) {
-        corner.dataset.goto = current.id;
-        corner.title = current.label;
-        corner.style.setProperty('--top-seg', current.color);
-        corner.style.setProperty('--left-seg', current.color);
-      }
       const h2 = stage.querySelector('.pe-content h2');
       const meta = stage.querySelector('.pe-content .meta');
       const blurb = stage.querySelector('.pe-content p:last-of-type');
@@ -215,25 +207,23 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
     rails.addEventListener('pointerleave', () => {
       setExpanded(kind, false);
-      if (!live) {
-        focusFromRoot = null;
-        applyLayout();
-      }
     });
     rails.addEventListener('pointermove', (e) => {
-      const t = (e.target as HTMLElement).closest('[data-from-root]') as HTMLElement | null;
-      if (live && t) {
-        const next = Number(t.dataset.fromRoot);
-        if (next !== focusFromRoot) {
-          focusFromRoot = next;
-          applyLayout();
+      if (live) {
+        const t = (e.target as HTMLElement).closest('[data-from-root]') as HTMLElement | null;
+        if (t) {
+          const next = Number(t.dataset.fromRoot);
+          if (next !== focusByStage.get(kind)) {
+            focusByStage.set(kind, next);
+            applyLayout();
+          }
         }
       }
       if (subtle) paintHint(stage, e);
     });
   }
 
-  function segs(list: PathNode[], axis: 'top' | 'left', page: PathNode): string {
+  function segs(list: PathNode[], axis: PathEdgeAxis, page: PathNode): string {
     return [...list]
       .reverse()
       .map((n) => {
@@ -252,6 +242,20 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       .join('');
   }
 
+  function railHtml(label: string, list: PathNode[], current: PathNode): string {
+    if (edge === 'top') {
+      return `
+        <div class="pe-top cr-rail cr-rail-top" role="toolbar" aria-label="${label} top path">
+          <div class="pe-stack pe-stack-top">${segs(list, 'top', current)}</div>
+        </div>`;
+    }
+    return `
+      <div class="pe-left cr-rail cr-rail-left" data-pack="${leftPack}" role="toolbar" aria-label="${label} side path">
+        <div class="pe-stack pe-stack-left">${segs(list, 'left', current)}</div>
+        <div class="pe-slack" aria-hidden="true"></div>
+      </div>`;
+  }
+
   function stageHtml(
     kind: StageKind,
     label: string,
@@ -267,26 +271,10 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         <p class="pe-cell-label">${label}</p>
         ${live ? '' : `<div class="pe-blend-slot">${blendButtons(blend, subtle ? 'subtle' : 'color')}</div>`}
         <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
-          data-stage="${kind}" data-live="${live ? '1' : '0'}"
-          style="--top-length:${topLength}%;--left-length:${leftLength}%;--blend:${blend};--page:${vars.page};--mono-top:${vars.monoTop};--mono-left:${vars.monoLeft}">
+          data-stage="${kind}" data-edge="${edge}" data-live="${live ? '1' : '0'}"
+          style="--blend:${blend};--page:${vars.page};--mono-top:${vars.monoTop};--mono-left:${vars.monoLeft}">
           <div class="pe-rails" data-rails>
-            <button type="button" class="pe-corner cr-rail cr-rail-corner" data-goto="${current.id}" title="${current.label}"
-              style="--top-seg:${current.color};--left-seg:${current.color}">
-              <span class="pe-corner-miter" aria-hidden="true">
-                <span class="pe-miter-top"></span><span class="pe-miter-left"></span>
-              </span>
-              <span class="pe-corner-color" aria-hidden="true">
-                <span class="pe-miter-top"></span><span class="pe-miter-left"></span>
-              </span>
-            </button>
-            <div class="pe-top cr-rail cr-rail-top" role="toolbar" aria-label="${label} top path">
-              <div class="pe-stack pe-stack-top">${segs(list, 'top', current)}</div>
-              <div class="pe-slack" aria-hidden="true"></div>
-            </div>
-            <div class="pe-left cr-rail cr-rail-left" data-pack="${leftPack}" role="toolbar" aria-label="${label} left path">
-              <div class="pe-stack pe-stack-left">${segs(list, 'left', current)}</div>
-              <div class="pe-slack" aria-hidden="true"></div>
-            </div>
+            ${railHtml(label, list, current)}
           </div>
           <div class="cr-content pe-content">
             <h2>${current.label}</h2>
@@ -303,27 +291,25 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const current = list[list.length - 1]!;
     root.innerHTML = `
       <div class="cr-toolbar pe-toolbar">
-        <label>Top length
-          <input type="range" min="28" max="100" value="${topLength}" data-top-length />
-          <span data-top-read>${topLength}%</span>
-        </label>
-        <label>Left length
-          <input type="range" min="28" max="100" value="${leftLength}" data-left-length />
-          <span data-left-read>${leftLength}%</span>
-        </label>
-        <div class="mode-btns pe-align" role="group" aria-label="Left alignment">
-          <span class="variant-switch-name">Left alignment</span>
-          <button type="button" class="mode-btn" data-pack="start" title="Top of left edge">
+        <div class="mode-btns" role="group" aria-label="Edge placement">
+          <span class="variant-switch-name">Edge</span>
+          <button type="button" class="mode-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top">Top</button>
+          <button type="button" class="mode-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left">Side</button>
+        </div>
+        <div class="mode-btns pe-align" role="group" aria-label="Side alignment" ${edge === 'left' ? '' : 'hidden'}>
+          <span class="variant-switch-name">Alignment</span>
+          <button type="button" class="mode-btn" data-pack="start" title="Top of side edge">
             <span class="align-ico align-ico-start" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
-          <button type="button" class="mode-btn" data-pack="end" title="Bottom of left edge">
+          <button type="button" class="mode-btn" data-pack="end" title="Bottom of side edge">
             <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
         </div>
       </div>
       <p class="pe-caption">
-        Rest uses log compression only on hops that would run off. Live uses even shares
-        and dock-zooms the focused hop. Subtle stays monochrome until hover reveals color.
+        Choose Top or Side — one edge only, full length. Rest compresses overflow hops;
+        Live uses even shares and dock-zooms the focused hop. Subtle stays monochrome until
+        hover reveals color. Each cell keeps its own hover response.
       </p>
       <div class="pe-quad">
         <div class="pe-row pe-row-rest">
@@ -356,23 +342,15 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       });
     });
 
-    const topR = root.querySelector('[data-top-length]') as HTMLInputElement;
-    const leftR = root.querySelector('[data-left-length]') as HTMLInputElement;
-    topR.addEventListener('input', () => {
-      topLength = Number(topR.value);
-      root.querySelector('[data-top-read]')!.textContent = `${topLength}%`;
-      root.querySelectorAll<HTMLElement>('[data-stage]').forEach((s) => {
-        s.style.setProperty('--top-length', `${topLength}%`);
+    root.querySelectorAll<HTMLButtonElement>('[data-edge]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.edge as PathEdgeAxis;
+        if (next === edge) return;
+        edge = next;
+        focusByStage.clear();
+        expanded.clear();
+        render();
       });
-      applyLayout();
-    });
-    leftR.addEventListener('input', () => {
-      leftLength = Number(leftR.value);
-      root.querySelector('[data-left-read]')!.textContent = `${leftLength}%`;
-      root.querySelectorAll<HTMLElement>('[data-stage]').forEach((s) => {
-        s.style.setProperty('--left-length', `${leftLength}%`);
-      });
-      applyLayout();
     });
 
     root.querySelectorAll<HTMLButtonElement>('[data-pack]').forEach((btn) => {

@@ -6,8 +6,8 @@ MVP demos for **Context Edge** (repo slug `context-edge`):
 
 - **Variant A — Map Edge:** thin top/left edges → click slides the activity page off (View Transitions) to reveal a scrollable Alphabet/Google product tree underneath. Map VT is scoped to `.cr-stage` (`src/lib/map-vt.ts`). *Transition style* on the island. Footer *Appearance* is the real page (`html[data-theme]`). Island *Appearance* only themes `.cr-sheet` mocks — follows the page until overridden (`src/lib/theme.ts`)
 - **Variant B — Modal Edge:** edge = current node; scoped View Transitions slide the sheet to reveal colored ancestry layers (`src/lib/modal-vt.ts`; `/demos/modal-edge/` Rest/Live on every island)
-- **Variant C — Path Edge:** breadcrumb as color series; paired hover; current-first left marks (`/demos/path-edge/` workshop, plus Solid/React/Svelte islands)
-- **L-join:** one geometry — `.cr-rail` / `.cr-rail-corner` / `.cr-rail-top` / `.cr-rail-left` in `global.css`. Path paints segments on top; it does not invent its own idle/hover sizes.
+- **Variant C — Path Edge:** breadcrumb as color series on one edge (Top labels or Side marks); full edge length; independent hover per workshop cell (`/demos/path-edge/` workshop, plus Solid/React/Svelte islands)
+- **L-join:** Map and Modal share `.cr-rail` / `.cr-rail-corner` / `.cr-rail-top` / `.cr-rail-left` in `global.css`. Path Edge is a single-edge placement (not an L).
 
 ## Links
 

@@ -124,6 +124,10 @@ html[data-theme='light'] .mode-btn {
   margin-left: 0.25rem;
 }
 
+.pe-align[hidden] {
+  display: none;
+}
+
 .align-ico {
   display: grid;
   width: 0.72rem;
@@ -152,8 +156,6 @@ html[data-theme='light'] .mode-btn {
   --rail-idle: 0.35rem;
   --rail-hover: 2.75rem;
   --idle: var(--rail-idle);
-  --top-length: 72%;
-  --left-length: 72%;
   --blend: color;
   /* Dark defaults — overridden in light theme (mirror Modal Edge tokens) */
   --pe-stage: #101418;
@@ -199,82 +201,51 @@ html[data-theme='light'] .pe-stage {
   --pe-mono-l-span: 28%;
 }
 
-/* Paint only — L geometry lives on .cr-rail* in global.css (same as Map / Modal). */
+/* Path reuses .cr-rail paint/transition tokens, not the Map/Modal L-join layout. */
 .pe-stage .cr-rail {
   background: transparent;
-}
-
-/*
- * Map rails are one button (display:grid). Path rails are hop stacks.
- * Without this, every hop lands in the same grid cell and the labels smash.
- */
-.pe-stage .pe-top.cr-rail,
-.pe-stage .pe-left.cr-rail {
   display: flex;
   place-items: unset;
   overflow: hidden;
 }
 
-.pe-corner {
-  isolation: isolate;
-}
-
-.pe-corner-miter,
-.pe-corner-color {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.pe-miter-top,
-.pe-miter-left {
-  position: absolute;
-  inset: 0;
-}
-
-/* Upper-right = top rail; lower-left = left rail. Overlap the shared diagonal. */
-.pe-miter-top {
-  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(100% + 2px));
-}
-
-.pe-miter-left {
-  clip-path: polygon(-2px -2px, calc(100% + 2px) calc(100% + 2px), -2px calc(100% + 2px));
-}
-
-.pe-corner-miter .pe-miter-top {
-  background: var(--miter-a);
-}
-
-.pe-corner-miter .pe-miter-left {
-  background: var(--miter-b);
-}
-
-.pe-corner-color .pe-miter-top {
-  background: var(--top-seg);
-}
-
-.pe-corner-color .pe-miter-left {
-  background: var(--left-seg);
-}
-
-.pe-top {
-  display: flex;
+/* Top placement — full width of the stage edge */
+.pe-stage[data-edge='top'] .pe-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--rail-idle);
+  z-index: 4;
   flex-direction: row;
-  z-index: 4;
 }
 
-.pe-left {
-  display: flex;
-  flex-direction: column;
+.pe-stage[data-edge='top'].is-open .pe-top,
+.pe-stage[data-edge='top']:has(.pe-top:hover, .pe-top:focus-within) .pe-top {
+  height: var(--rail-hover);
+  left: 0;
+}
+
+/* Side placement — full height of the stage edge */
+.pe-stage[data-edge='left'] .pe-left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--rail-idle);
   z-index: 4;
-  overflow: hidden;
+  flex-direction: column;
+}
+
+.pe-stage[data-edge='left'].is-open .pe-left,
+.pe-stage[data-edge='left']:has(.pe-left:hover, .pe-left:focus-within) .pe-left {
+  width: var(--rail-hover);
+  top: 0;
 }
 
 .pe-stack-top {
   display: flex;
   flex-direction: row;
   flex: 0 0 auto;
-  max-width: var(--top-length);
+  max-width: 100%;
   height: 100%;
   min-width: 0;
 }
@@ -283,11 +254,12 @@ html[data-theme='light'] .pe-stage {
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
-  max-height: var(--left-length);
+  max-height: 100%;
   width: 100%;
   min-height: 0;
 }
 
+/* Absorbs leftover length so side pack start/end can sit the stack */
 .pe-slack {
   flex: 1 1 auto;
   min-width: 0;
@@ -357,13 +329,21 @@ html[data-theme='light'] .pe-stage {
 
 .pe-stage.is-open .pe-label,
 .pe-stage.is-open .pe-mark,
-.pe-stage:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-label,
-.pe-stage:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-mark {
+.pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-label,
+.pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-mark {
   opacity: 1;
 }
 
 .pe-content {
   margin: calc(var(--rail-idle) + 0.85rem) 1rem 1rem calc(var(--rail-idle) + 0.85rem);
+}
+
+.pe-stage[data-edge='top'] .pe-content {
+  margin-left: 1rem;
+}
+
+.pe-stage[data-edge='left'] .pe-content {
+  margin-top: 1rem;
 }
 
 .pe-stage.is-chroma .pe-seg,
@@ -375,17 +355,8 @@ html[data-theme='light'] .pe-stage {
   background: var(--pe-chroma-seg);
 }
 
-.pe-stage.is-chroma {
-  --miter-a: var(--top-seg);
-  --miter-b: var(--left-seg);
-}
-
-.pe-stage.is-chroma .pe-corner-color {
-  display: none;
-}
-
 /*
- * Subtle: idle = monochrome + miter. Hover keeps icons + mono.
+ * Subtle: idle = monochrome. Hover keeps icons + mono.
  * Color is a blended overlay, masked to the pointer — not a content swap.
  */
 .pe-stage.is-tint .pe-seg {
@@ -397,9 +368,7 @@ html[data-theme='light'] .pe-stage {
 }
 
 .pe-stage.is-tint.is-open .pe-seg-color,
-.pe-stage.is-tint.is-open .pe-corner-color,
-.pe-stage.is-tint:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-seg-color,
-.pe-stage.is-tint:has(.cr-rail:hover, .cr-rail:focus-visible) .pe-corner-color {
+.pe-stage.is-tint:has(.cr-rail:hover, .cr-rail:focus-within) .pe-seg-color {
   opacity: 1;
   -webkit-mask-image: radial-gradient(
     6.5rem circle at var(--local-x, -40rem) var(--local-y, -40rem),
@@ -415,27 +384,10 @@ html[data-theme='light'] .pe-stage {
   );
 }
 
-.pe-stage.is-blend-preview.is-tint .pe-seg-color,
-.pe-stage.is-blend-preview.is-tint .pe-corner-color {
+.pe-stage.is-blend-preview.is-tint .pe-seg-color {
   opacity: 1;
   -webkit-mask-image: none;
   mask-image: none;
-}
-
-.pe-stage.is-tint {
-  --miter-a: var(--mono-top);
-  --miter-b: var(--mono-top);
-}
-
-.pe-stage.is-tint .pe-corner-color {
-  opacity: 0;
-  mix-blend-mode: normal;
-}
-
-.pe-stage.is-tint.is-open .pe-corner-color,
-.pe-stage.is-tint.is-blend-preview .pe-corner-color,
-.pe-stage.is-tint:has(.cr-rail:hover) .pe-corner-color {
-  mix-blend-mode: var(--blend, color);
 }
 
 /* Path hop click: leafier segs stack and fade; keepers slide into place. */

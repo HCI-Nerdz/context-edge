@@ -87,7 +87,7 @@ Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 | Solid / React / Svelte — Path Edge island
 |===
 
-Shared contracts: `src/lib/org-tree.ts` + `src/lib/map-vt.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge), `src/lib/path-edge.ts` (Path Edge). The L-join (`.cr-rail*`) is one CSS rule set for every variant.
+Shared contracts: `src/lib/org-tree.ts` + `src/lib/map-vt.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge), `src/lib/path-edge.ts` (Path Edge). Map and Modal share the L-join (`.cr-rail*`); Path Edge is a single full-length edge (Top or Side).
 
 Two click models (do not force into one gesture while studying):
 
@@ -95,7 +95,7 @@ Two click models (do not force into one gesture while studying):
 +
 This model helps clear up the page contents to perform their primary job: behaving like a UI, and not distracting users and designers with complicated nav menus and top bars.
 * *Modal Edge* — edge is the current node; click slides the sheet to reveal colored ancestor layers
-* *Path Edge* — the edge is a path trace (unique color sequence); paired hover; labels on top; one mark per level, current at top-left
+* *Path Edge* — one edge holds the path (unique color sequence); Top shows labels, Side shows one mark per level (current first); not the same hops on both edges at once
 +
 Also called context edge in older docs.
 

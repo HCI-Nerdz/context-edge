@@ -185,9 +185,9 @@ export function pathSegMono(current: PathNode, fromRoot: number, count: number) 
   return `color-mix(in srgb, ${current.color} var(--pe-mono-mix-seg), hsl(0 0% calc(var(--pe-mono-l-min) + ${shade} * var(--pe-mono-l-span))))`;
 }
 
+export type PathEdgeAxis = 'top' | 'left';
+
 export function namePathHops(stage: HTMLElement, sid: string) {
-  const corner = stage.querySelector('.pe-corner') as HTMLElement | null;
-  if (corner) corner.style.viewTransitionName = `pe-${sid}-corner`;
   stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
     const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';
     el.style.viewTransitionName = `pe-${sid}-${axis}-${el.dataset.goto}`;
@@ -207,41 +207,46 @@ export function remPx(n: number): number {
   return n * parseFloat(getComputedStyle(document.documentElement).fontSize || '16');
 }
 
-/** Size path stacks from the shared L geometry (same idle/hover as Map / Modal). */
+/** Size the active single-edge path stack across the full edge length. */
 export function sizePathStacks(opts: {
   stage: HTMLElement;
   count: number;
   live: boolean;
   focusFromRoot: number | null;
-  topLength?: number;
-  leftLength?: number;
+  edge?: PathEdgeAxis;
 }) {
-  const topRail = opts.stage.querySelector('.pe-top') as HTMLElement | null;
-  const leftRail = opts.stage.querySelector('.pe-left') as HTMLElement | null;
-  const topStack = opts.stage.querySelector('.pe-stack-top') as HTMLElement | null;
-  const leftStack = opts.stage.querySelector('.pe-stack-left') as HTMLElement | null;
-  if (!topRail || !leftRail || !topStack || !leftStack) return;
-
-  const topPct = opts.topLength ?? 72;
-  const leftPct = opts.leftLength ?? 72;
+  const edge =
+    opts.edge ??
+    (opts.stage.dataset.edge === 'left' ? 'left' : 'top');
   const layout = opts.live ? layoutLiveRail : layoutRail;
-  const topSizes = layout({
-    count: opts.count,
-    budget: topRail.clientWidth * (topPct / 100),
-    conventional: remPx(7.1),
-    focusFromRoot: opts.live ? opts.focusFromRoot : null,
-  });
-  const leftSizes = layout({
-    count: opts.count,
-    budget: leftRail.clientHeight * (leftPct / 100),
-    conventional: remPx(4.2),
-    focusFromRoot: opts.live ? opts.focusFromRoot : null,
-  });
+  const focus = opts.live ? opts.focusFromRoot : null;
 
-  topStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-    el.style.flex = `0 0 ${topSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
+  if (edge === 'top') {
+    const topRail = opts.stage.querySelector('.pe-top') as HTMLElement | null;
+    const topStack = opts.stage.querySelector('.pe-stack-top') as HTMLElement | null;
+    if (!topRail || !topStack) return;
+    const sizes = layout({
+      count: opts.count,
+      budget: topRail.clientWidth,
+      conventional: remPx(7.1),
+      focusFromRoot: focus,
+    });
+    topStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
+      el.style.flex = `0 0 ${sizes[Number(el.dataset.fromRoot)] ?? 0}px`;
+    });
+    return;
+  }
+
+  const leftRail = opts.stage.querySelector('.pe-left') as HTMLElement | null;
+  const leftStack = opts.stage.querySelector('.pe-stack-left') as HTMLElement | null;
+  if (!leftRail || !leftStack) return;
+  const sizes = layout({
+    count: opts.count,
+    budget: leftRail.clientHeight,
+    conventional: remPx(4.2),
+    focusFromRoot: focus,
   });
   leftStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-    el.style.flex = `0 0 ${leftSizes[Number(el.dataset.fromRoot)] ?? 0}px`;
+    el.style.flex = `0 0 ${sizes[Number(el.dataset.fromRoot)] ?? 0}px`;
   });
 }
