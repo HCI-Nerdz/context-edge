@@ -303,7 +303,8 @@ html[data-theme='light'] .mode-btn {
   /* Match PE_TRAIL_END_INSET_PX — foundation past last hop before flush/clamp */
   --pe-trail-end-inset: 50px;
   --pe-rail-foundation: #1c2226;
-  --pe-depth-shadow: rgba(0, 0, 0, 0.42);
+  /* Peak depth under Home tip/seam — strong when fully ramped (span unchanged). */
+  --pe-depth-shadow: rgba(0, 0, 0, 0.82);
   /*
    * Fixed face under hop color (not theme-dependent) so mix-blend math and
    * --tile-ink stay coherent across light/dark. Rail chrome uses foundation.
@@ -387,7 +388,7 @@ html[data-theme='light'] .pe-stage {
   --pe-wash: 14%;
   --pe-chroma-seg: #e4e9e7;
   --pe-rail-foundation: #e4e9e7;
-  --pe-depth-shadow: rgba(20, 28, 26, 0.28);
+  --pe-depth-shadow: rgba(20, 28, 26, 0.58);
   /* Face base stays fixed — do not follow light chroma */
   --pe-seg-ink: #1a211f;
   --pe-focus: var(--accent);
@@ -598,8 +599,9 @@ html[data-theme='light'] .pe-stage {
 
 /*
  * Depth shadow: rail chrome sibling between Home and the scroll track.
- * Z-order: Home (6) > shadow (5) > .pe-scroll (1). Positioned at the Home|hop
- * seam into the hop area only (syncPathDepthShadow); never covers Home’s face.
+ * Z-order: Home (6) > shadow (5) > .pe-scroll (1). syncPathDepthShadow anchors
+ * the leading edge at Home’s rect body (inset by --pe-arrow tip), so the band
+ * sits under the clipped tip and casts onto hops — Home’s face stays above.
  * Tight falloff — short band, not a wash across the rail.
  */
 .pe-depth-shadow {
@@ -615,7 +617,7 @@ html[data-theme='light'] .pe-stage {
   background: linear-gradient(
     to right,
     var(--pe-depth-shadow) 0%,
-    color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent) 42%,
+    color-mix(in srgb, var(--pe-depth-shadow) 78%, transparent) 36%,
     transparent 100%
   );
 }
@@ -626,7 +628,7 @@ html[data-theme='light'] .pe-stage {
   background: linear-gradient(
     to bottom,
     var(--pe-depth-shadow) 0%,
-    color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent) 42%,
+    color-mix(in srgb, var(--pe-depth-shadow) 78%, transparent) 36%,
     transparent 100%
   );
 }

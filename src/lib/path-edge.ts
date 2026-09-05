@@ -381,13 +381,27 @@ export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): (
   };
 }
 
+/** Resolve a CSS length custom property on `el` to device pixels (0 if missing). */
+function cssVarLengthPx(el: HTMLElement, name: string): number {
+  const raw = getComputedStyle(el).getPropertyValue(name).trim();
+  if (!raw) return 0;
+  const probe = document.createElement('div');
+  probe.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;width:${raw};height:0`;
+  el.appendChild(probe);
+  const px = probe.offsetWidth;
+  probe.remove();
+  return px;
+}
+
 /**
  * Depth shadow at the Home|hop seam — rail chrome overlay (does not scroll with hops).
  *
  * Paint order: Home (above) → shadow → scrolling hops (below).
- * Placement: short band just past Home’s layout edge into the hop area (never over Home’s face).
+ * Placement: leading edge on Home's rectangular body trailing face (layout size minus
+ * `--pe-arrow` / `--pe-arrow-n` tip), so the band sits under the clipped tip and casts
+ * onto hops at the seam — not projected from the chevron point.
  * Intensity: off when flush (underflow 0); ramps fast as the first hop slides under Home;
- * full effect by ~½ first-tile under (sooner via ease curve).
+ * full effect by ~1/2 first-tile under (sooner via ease curve).
  */
 export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
   const shadow = rail.querySelector('.pe-depth-shadow') as HTMLElement | null;
@@ -404,6 +418,9 @@ export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
       : firstHop.offsetHeight
     : 0;
   const homeSize = axis === 'top' ? home.offsetWidth : home.offsetHeight;
+  /* Clip-path tip width — body ends one tip short of the layout box. */
+  const tipPx =
+    cssVarLengthPx(home, '--pe-arrow-n') || cssVarLengthPx(home, '--pe-arrow') || 0;
 
   /* Full drama by ~halfway under the first hop; ease so strength arrives early. */
   const fullAt = Math.max(hopSize * 0.45, 1);
@@ -418,13 +435,13 @@ export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
   shadow.style.opacity = intensity <= 0.001 ? '0' : String(intensity);
 
   if (axis === 'top') {
-    /* Seam = Home’s far edge; band extends into the hop scroller only. */
-    shadow.style.left = `${home.offsetLeft + home.offsetWidth}px`;
+    /* Leading edge = rect body trailing face; tip + hop seam sit under the band. */
+    shadow.style.left = `${home.offsetLeft + home.offsetWidth - tipPx}px`;
     shadow.style.top = '0';
     shadow.style.width = `${span}px`;
     shadow.style.height = '100%';
   } else {
-    shadow.style.top = `${home.offsetTop + home.offsetHeight}px`;
+    shadow.style.top = `${home.offsetTop + home.offsetHeight - tipPx}px`;
     shadow.style.left = '0';
     shadow.style.height = `${span}px`;
     shadow.style.width = '100%';

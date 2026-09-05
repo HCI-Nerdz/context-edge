@@ -1,0 +1,5 @@
+= 2026-09-05 — Path Edge Home depth shadow body anchor
+
+* Depth shadow leading edge aligns with Home’s rectangular body (inset by `--pe-arrow` tip), so the band sits under the clipped tip and casts onto hops — not from the chevron point
+* Peak opacity raised (dark/light tokens + harder gradient falloff); span unchanged
+* Z-order unchanged: Home above shadow above scrolling hops

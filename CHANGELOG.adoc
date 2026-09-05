@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Path Edge Home depth shadow body anchor
+
+* Depth shadow leading edge aligns with Home’s rectangular body (inset by `--pe-arrow` tip), under the clipped tip onto hops
+* Peak opacity raised significantly; band span unchanged
+* link:changelog-details/2026-09-05%20-%20path-edge-depth-shadow-body-anchor.adoc[Details]
+
 == 2026-09-05 — DemoHead ownership, Path harness tidy, facsimile scale
 
 * DemoHead owns shared variant copy; Path workshop drops the duplicate “Top or Side…” caption
