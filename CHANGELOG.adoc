@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Path Edge overflow scroll and pinned Home
+
+* Hops overflow under pinned Home (drag/swipe scroll) instead of log-compress sizing
+* Top marks + quieter labels; full-edge rail background; depth shadow tracks the current hop
+* link:changelog-details/2026-09-05%20-%20path-edge-overflow-scroll.adoc[Details]
+
 == 2026-09-05 — Path Edge legacy redirects and Implementation chrome
 
 * Legacy Path pages (`path-edge-live`, `path-edge-tint`, `path-edge-tint-live`) redirect with `?style=` / `?stage=` and `#live` / `#rest`

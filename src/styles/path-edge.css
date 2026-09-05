@@ -157,6 +157,11 @@ html[data-theme='light'] .mode-btn {
   --rail-hover: 2.75rem;
   --idle: var(--rail-idle);
   --blend: color;
+  --pe-home-size: 2.75rem;
+  --pe-hop-top: 7.1rem;
+  --pe-hop-left: 4.2rem;
+  --pe-rail-foundation: #1c2226;
+  --pe-depth-shadow: rgba(0, 0, 0, 0.42);
   /* Dark defaults — overridden in light theme (mirror Modal Edge tokens) */
   --pe-stage: #101418;
   --pe-wash: 18%;
@@ -190,6 +195,8 @@ html[data-theme='light'] .pe-stage {
   --pe-stage: #f4f7f6;
   --pe-wash: 14%;
   --pe-chroma-seg: #e4e9e7;
+  --pe-rail-foundation: #e4e9e7;
+  --pe-depth-shadow: rgba(20, 28, 26, 0.28);
   --pe-seg-ink: #1a211f;
   --pe-focus: var(--accent);
   --pe-mono-mix-top: 22%;
@@ -201,12 +208,30 @@ html[data-theme='light'] .pe-stage {
   --pe-mono-l-span: 28%;
 }
 
-/* Path reuses .cr-rail paint/transition tokens, not the Map/Modal L-join layout. */
+.pe-stage.is-chroma {
+  --pe-rail-foundation: var(--pe-chroma-seg);
+}
+
+.pe-stage.is-tint {
+  --pe-rail-foundation: var(--mono-top);
+}
+
+.pe-stage.is-tint[data-edge='left'] {
+  --pe-rail-foundation: var(--mono-left);
+}
+
+/* Path reuses .cr-rail layout tokens, not the Map/Modal L-join. */
 .pe-stage .cr-rail {
-  background: transparent;
   display: flex;
   place-items: unset;
   overflow: hidden;
+  background: var(--pe-rail-foundation);
+  transition:
+    width 0.22s ease,
+    height 0.22s ease,
+    top 0.22s ease,
+    left 0.22s ease,
+    background 0.3s ease;
 }
 
 /* Top placement — full width of the stage edge */
@@ -217,6 +242,7 @@ html[data-theme='light'] .pe-stage {
   height: var(--rail-idle);
   z-index: 4;
   flex-direction: row;
+  align-items: stretch;
 }
 
 .pe-stage[data-edge='top'].is-open .pe-top,
@@ -227,7 +253,7 @@ html[data-theme='light'] .pe-stage {
 
 /*
  * Side placement — foundation spans the full stage edge height.
- * Alignment (data-pack) only reorders hops vs .pe-slack inside that rail;
+ * Alignment (data-pack) only reorders home+scroll vs .pe-slack;
  * never shrink the rail to the hop stack.
  */
 .pe-stage[data-edge='left'] .pe-left {
@@ -248,25 +274,128 @@ html[data-theme='light'] .pe-stage {
   bottom: 0;
 }
 
-.pe-stack-top {
-  display: flex;
-  flex-direction: row;
-  flex: 0 0 auto;
-  max-width: 100%;
+/* --- Pinned Home + overflow scroll track --- */
+
+.pe-home {
+  position: relative;
+  z-index: 6;
+  flex: 0 0 var(--pe-home-size);
+  width: var(--pe-home-size);
   height: 100%;
-  min-width: 0;
+  box-shadow: 0.2rem 0 0.65rem color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent);
 }
 
-.pe-stack-left {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 auto;
-  max-height: 100%;
+.pe-stage[data-edge='left'] .pe-home {
   width: 100%;
-  min-height: 0;
+  height: var(--pe-home-size);
+  flex: 0 0 var(--pe-home-size);
+  box-shadow: 0 0.2rem 0.65rem color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent);
 }
 
-/* Absorbs leftover length so side pack start/end can sit the stack */
+.pe-home-ico {
+  position: relative;
+  z-index: 2;
+  font-size: 1.15rem;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pe-stage.is-open .pe-home-ico,
+.pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-home-ico {
+  opacity: 1;
+}
+
+.pe-scroll {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  /* Pull under Home so overflow clips behind the pin */
+  margin-inline-start: calc(var(--pe-home-size) * -1);
+  padding-inline-start: var(--pe-home-size);
+  touch-action: none;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.pe-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.pe-scroll.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.pe-scroll-top {
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100%;
+}
+
+.pe-scroll-left {
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+  margin-block-start: calc(var(--pe-home-size) * -1);
+  padding-block-start: var(--pe-home-size);
+}
+
+.pe-track {
+  position: relative;
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.pe-track-top {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.pe-track-left {
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  height: max-content;
+  min-height: 100%;
+}
+
+/* Depth shadow: scrolls with the track; capped to bar length in JS */
+.pe-depth-shadow {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  background: linear-gradient(
+    to right,
+    var(--pe-depth-shadow) 0%,
+    color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent) 42%,
+    transparent 100%
+  );
+}
+
+.pe-track-left .pe-depth-shadow {
+  background: linear-gradient(
+    to bottom,
+    var(--pe-depth-shadow) 0%,
+    color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent) 42%,
+    transparent 100%
+  );
+}
+
+/* Absorbs leftover length so side pack start/end can sit the hop group */
 .pe-slack {
   flex: 1 1 auto;
   min-width: 0;
@@ -275,6 +404,7 @@ html[data-theme='light'] .pe-stage {
 
 .pe-seg {
   position: relative;
+  z-index: 2;
   flex: 0 0 auto;
   border: 0;
   margin: 0;
@@ -287,6 +417,18 @@ html[data-theme='light'] .pe-stage {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+}
+
+.pe-track-top > .pe-seg {
+  flex: 0 0 var(--pe-hop-top);
+  width: var(--pe-hop-top);
+  height: 100%;
+}
+
+.pe-track-left > .pe-seg {
+  flex: 0 0 var(--pe-hop-left);
+  height: var(--pe-hop-left);
+  width: 100%;
 }
 
 .pe-seg-color {
@@ -302,11 +444,25 @@ html[data-theme='light'] .pe-stage {
 .pe-seg:focus-visible {
   outline: 2px solid var(--pe-focus);
   outline-offset: -2px;
-  z-index: 1;
+  z-index: 4;
 }
 
 .pe-seg-top,
 .pe-seg-left {
+  display: grid;
+  place-items: center;
+}
+
+/* Top: mark-forward with subordinate label */
+.pe-seg-top:not(.pe-home) {
+  grid-template-rows: auto auto;
+  align-content: center;
+  justify-items: center;
+  gap: 0.12rem;
+  padding: 0 0.35rem;
+}
+
+.pe-seg-left:not(.pe-home) {
   display: grid;
   place-items: center;
 }
@@ -320,18 +476,34 @@ html[data-theme='light'] .pe-stage {
 }
 
 .pe-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: 0;
+  color: color-mix(in srgb, currentColor 72%, transparent);
 }
 
-.pe-mark {
+.pe-seg-top .pe-mark {
   font-size: 1.05rem;
   line-height: 1;
+}
+
+.pe-seg-left .pe-mark {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.pe-seg-left .pe-label {
+  /* Side stays mark-forward; label available to a11y via title */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
 }
 
 .pe-stage.is-open .pe-label,
@@ -339,6 +511,16 @@ html[data-theme='light'] .pe-stage {
 .pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-label,
 .pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-mark {
   opacity: 1;
+}
+
+.pe-stage.is-open .pe-seg-top .pe-label,
+.pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-seg-top .pe-label {
+  opacity: 0.72;
+}
+
+.pe-stage.is-live .pe-seg.is-focus {
+  filter: brightness(1.08);
+  z-index: 3;
 }
 
 .pe-content {

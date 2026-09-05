@@ -44,7 +44,7 @@ export const demoPath: PathNode[] = [
     id: 'invoices',
     label: 'Invoices',
     role: 'Collection',
-    blurb: 'Another hop so the length budget can overflow and reserve an end zone.',
+    blurb: 'Another hop so a tight zone overflows — drag or swipe the rail to reveal ancestors under Home.',
     color: '#00acc1',
     mark: '▤',
   },
@@ -62,93 +62,6 @@ export function pathThrough(id: string, all: PathNode[] = demoPath): PathNode[] 
   const i = all.findIndex((n) => n.id === id);
   if (i < 0) return all.slice(0, 1);
   return all.slice(0, i + 1);
-}
-
-/** Root smallest; grows toward the leaf. Used only for hops that do not fit. */
-export function logWeight(indexFromRoot: number): number {
-  return Math.log2(2 + indexFromRoot);
-}
-
-function reservedForOverflow(overflow: number, minSliver: number): number {
-  if (overflow <= 0) return 0;
-  let w = 0;
-  for (let i = 0; i < overflow; i++) w += logWeight(i);
-  return Math.max(overflow * minSliver, w * minSliver);
-}
-
-function dockSizes(sizes: number[], focus: number): number[] {
-  if (focus < 0 || focus >= sizes.length) return sizes;
-  const next = sizes.slice();
-  const extra = next[focus]! * 0.85;
-  next[focus]! += extra;
-  const others = next.reduce((s, v, i) => s + (i === focus ? 0 : v), 0);
-  if (others <= 0) return sizes;
-  for (let i = 0; i < next.length; i++) {
-    if (i === focus) continue;
-    next[i] = Math.max(4, next[i]! - extra * (sizes[i]! / others));
-  }
-  return next;
-}
-
-/**
- * Live: equal conventional shares (uniform shrink if the budget is tight),
- * then dock-zoom the focused hop and shrink the rest. No log compression.
- */
-export function layoutLiveRail(opts: {
-  count: number;
-  budget: number;
-  conventional: number;
-  focusFromRoot?: number | null;
-}): number[] {
-  const count = Math.max(0, Math.floor(opts.count));
-  const budget = Math.max(0, opts.budget);
-  const conventional = Math.max(1, opts.conventional);
-  if (count === 0) return [];
-  const unit = Math.min(conventional, budget / count);
-  const sizes = Array.from({ length: count }, () => unit);
-  if (opts.focusFromRoot != null) return dockSizes(sizes, opts.focusFromRoot);
-  return sizes;
-}
-
-/**
- * Rest: leafward hops keep a conventional size. Only hops that would run off
- * the length budget share a reserved end-zone, weighted by log(depth).
- */
-export function layoutRail(opts: {
-  count: number;
-  budget: number;
-  conventional: number;
-  focusFromRoot?: number | null;
-  minSliver?: number;
-}): number[] {
-  const count = Math.max(0, Math.floor(opts.count));
-  const budget = Math.max(0, opts.budget);
-  const conventional = Math.max(1, opts.conventional);
-  const minSliver = opts.minSliver ?? 6;
-  if (count === 0) return [];
-
-  let full = 0;
-  for (let k = count; k >= 0; k--) {
-    if (k * conventional + reservedForOverflow(count - k, minSliver) <= budget + 0.5) {
-      full = k;
-      break;
-    }
-  }
-
-  const overflow = count - full;
-  const sizes = new Array<number>(count).fill(0);
-  for (let i = overflow; i < count; i++) sizes[i] = conventional;
-
-  if (overflow > 0) {
-    const pool = Math.max(budget - full * conventional, reservedForOverflow(overflow, minSliver));
-    const weights = Array.from({ length: overflow }, (_, i) => logWeight(i));
-    const wsum = weights.reduce((a, b) => a + b, 0);
-    for (let i = 0; i < overflow; i++) {
-      sizes[i] = (weights[i]! / wsum) * pool;
-    }
-  }
-
-  return sizes;
 }
 
 /** Depth shade for monochrome idle rails (0 = root). */
@@ -189,10 +102,10 @@ export type PathEdgeAxis = 'top' | 'left';
 
 /** Shared Path Edge page lede — vanilla and framework implementations. */
 export const PATH_EDGE_LEDE =
-  'One edge at a time — Top (labels) or Side (marks). Rest and Live each get a full stage; Color / Subtle is a style switch. Expand or shrink the demo zone to see overflow compression vs fit.';
+  'One edge at a time — Top (marks + quiet labels) or Side (marks). Rest and Live each get a full stage; Color / Subtle is a style switch. Shrink the demo zone to overflow; drag or swipe the rail to scroll hops out from under Home.';
 
 export const PATH_EDGE_DESCRIPTION =
-  'Path Edge workshop: Top or Side; Rest and Live rows; Color / Subtle style; expandable demo zone.';
+  'Path Edge workshop: Top or Side; Rest and Live rows; Color / Subtle style; overflow scroll with pinned Home.';
 
 export function namePathHops(stage: HTMLElement, sid: string) {
   stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
@@ -210,50 +123,130 @@ export function markPathLeaves(stage: HTMLElement, nextId: string, all: PathNode
   });
 }
 
-export function remPx(n: number): number {
-  return n * parseFloat(getComputedStyle(document.documentElement).fontSize || '16');
+/**
+ * Pointer drag → scrollLeft/scrollTop on a hidden-scrollbar overflow scroller.
+ * Distinguishes drag from click via a small move threshold.
+ */
+export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): () => void {
+  const horizontal = axis === 'top';
+  let active = false;
+  let dragging = false;
+  let pointerId = -1;
+  let startClient = 0;
+  let startScroll = 0;
+  const THRESHOLD = 4;
+
+  const onDown = (e: PointerEvent) => {
+    if (e.button !== 0) return;
+    active = true;
+    dragging = false;
+    pointerId = e.pointerId;
+    startClient = horizontal ? e.clientX : e.clientY;
+    startScroll = horizontal ? scroller.scrollLeft : scroller.scrollTop;
+    scroller.setPointerCapture(e.pointerId);
+  };
+
+  const onMove = (e: PointerEvent) => {
+    if (!active || e.pointerId !== pointerId) return;
+    const client = horizontal ? e.clientX : e.clientY;
+    const delta = client - startClient;
+    if (!dragging && Math.abs(delta) >= THRESHOLD) {
+      dragging = true;
+      scroller.classList.add('is-dragging');
+    }
+    if (!dragging) return;
+    e.preventDefault();
+    if (horizontal) scroller.scrollLeft = startScroll - delta;
+    else scroller.scrollTop = startScroll - delta;
+  };
+
+  const onUp = (e: PointerEvent) => {
+    if (e.pointerId !== pointerId) return;
+    if (dragging) {
+      scroller.dataset.peSuppressClick = '1';
+      requestAnimationFrame(() => {
+        delete scroller.dataset.peSuppressClick;
+      });
+    }
+    active = false;
+    dragging = false;
+    pointerId = -1;
+    scroller.classList.remove('is-dragging');
+    try {
+      scroller.releasePointerCapture(e.pointerId);
+    } catch {
+      /* already released */
+    }
+  };
+
+  scroller.addEventListener('pointerdown', onDown);
+  scroller.addEventListener('pointermove', onMove);
+  scroller.addEventListener('pointerup', onUp);
+  scroller.addEventListener('pointercancel', onUp);
+
+  return () => {
+    scroller.removeEventListener('pointerdown', onDown);
+    scroller.removeEventListener('pointermove', onMove);
+    scroller.removeEventListener('pointerup', onUp);
+    scroller.removeEventListener('pointercancel', onUp);
+  };
 }
 
-/** Size the active single-edge path stack across the full edge length. */
-export function sizePathStacks(opts: {
-  stage: HTMLElement;
-  count: number;
-  live: boolean;
-  focusFromRoot: number | null;
-  edge?: PathEdgeAxis;
-}) {
-  const edge =
-    opts.edge ??
-    (opts.stage.dataset.edge === 'left' ? 'left' : 'top');
-  const layout = opts.live ? layoutLiveRail : layoutRail;
-  const focus = opts.live ? opts.focusFromRoot : null;
+/** Size the depth shadow to the current hop’s far edge, capped at the bar length. */
+export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
+  const track = rail.querySelector('.pe-track') as HTMLElement | null;
+  const shadow = rail.querySelector('.pe-depth-shadow') as HTMLElement | null;
+  const here = rail.querySelector('.pe-seg.is-here') as HTMLElement | null;
+  if (!track || !shadow) return;
 
-  if (edge === 'top') {
-    const topRail = opts.stage.querySelector('.pe-top') as HTMLElement | null;
-    const topStack = opts.stage.querySelector('.pe-stack-top') as HTMLElement | null;
-    if (!topRail || !topStack) return;
-    const sizes = layout({
-      count: opts.count,
-      budget: topRail.clientWidth,
-      conventional: remPx(7.1),
-      focusFromRoot: focus,
-    });
-    topStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-      el.style.flex = `0 0 ${sizes[Number(el.dataset.fromRoot)] ?? 0}px`;
-    });
+  const barLen = axis === 'top' ? rail.clientWidth : rail.clientHeight;
+  if (!here) {
+    shadow.style.width = axis === 'top' ? '0px' : '100%';
+    shadow.style.height = axis === 'top' ? '100%' : '0px';
     return;
   }
 
-  const leftRail = opts.stage.querySelector('.pe-left') as HTMLElement | null;
-  const leftStack = opts.stage.querySelector('.pe-stack-left') as HTMLElement | null;
-  if (!leftRail || !leftStack) return;
-  const sizes = layout({
-    count: opts.count,
-    budget: leftRail.clientHeight,
-    conventional: remPx(4.2),
-    focusFromRoot: focus,
-  });
-  leftStack.querySelectorAll<HTMLElement>('[data-from-root]').forEach((el) => {
-    el.style.flex = `0 0 ${sizes[Number(el.dataset.fromRoot)] ?? 0}px`;
-  });
+  /* Far edge of current in track coords; shadow right-aligns to that edge. */
+  const far =
+    axis === 'top'
+      ? here.offsetLeft + here.offsetWidth
+      : here.offsetTop + here.offsetHeight;
+  const span = Math.min(Math.max(far, 0), barLen);
+  const start = Math.max(0, far - span);
+
+  if (axis === 'top') {
+    shadow.style.width = `${span}px`;
+    shadow.style.height = '100%';
+    shadow.style.left = `${start}px`;
+    shadow.style.top = '0';
+  } else {
+    shadow.style.height = `${span}px`;
+    shadow.style.width = '100%';
+    shadow.style.top = `${start}px`;
+    shadow.style.left = '0';
+  }
+}
+
+/** Prefer showing the current hop; ancestors may sit under the pinned Home. */
+export function scrollPathToCurrent(scroller: HTMLElement, axis: PathEdgeAxis) {
+  const here = scroller.querySelector('.pe-seg.is-here') as HTMLElement | null;
+  if (!here) return;
+  if (axis === 'top') {
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    if (max <= 0) {
+      scroller.scrollLeft = 0;
+      return;
+    }
+    /* Align current’s right edge with the scroller’s right edge when possible. */
+    const target = here.offsetLeft + here.offsetWidth - scroller.clientWidth;
+    scroller.scrollLeft = Math.max(0, Math.min(max, target));
+  } else {
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    if (max <= 0) {
+      scroller.scrollTop = 0;
+      return;
+    }
+    const target = here.offsetTop + here.offsetHeight - scroller.clientHeight;
+    scroller.scrollTop = Math.max(0, Math.min(max, target));
+  }
 }
