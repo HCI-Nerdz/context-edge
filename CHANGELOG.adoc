@@ -1,5 +1,10 @@
 = Changelog
 
+== 2026-09-05 — Hub eyebrow links to site desk
+
+* Hub eyebrow “HCI Nerdz” links to the org site desk; the separate “Site desk” meta link is removed
+* link:changelog-details/2026-09-05%20-%20hub-eyebrow-site-desk.adoc[Details]
+
 == 2026-09-05 — Sheer selected button fills
 
 * Selected controls use translucent `--accent-sheer` fills instead of flat solid accent

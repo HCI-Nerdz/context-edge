@@ -1,0 +1,5 @@
+= 2026-09-05 — Hub eyebrow links to site desk
+
+* On the Context Edge hub, the eyebrow reads **HCI Nerdz · MVP**; “HCI Nerdz” is the link back to https://hci-nerdz.github.io/demos/context-edge/
+* The redundant “Site desk” entry in the Essay / Docs meta row is removed
+* Eyebrow link inherits accent styling; underline on hover only
