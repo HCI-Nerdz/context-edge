@@ -11,19 +11,22 @@ import {
 } from '../../lib/path-edge';
 
 type Pack = 'start' | 'end';
+type VisualStyle = 'color' | 'subtle';
+type StageKind = 'rest' | 'live';
 
-type StageKind = 'color' | 'subtle' | 'live' | 'live-subtle';
-
-const STAGES: { id: StageKind; subtle: boolean; live: boolean; label: string }[] = [
-  { id: 'color', subtle: false, live: false, label: 'Color' },
-  { id: 'subtle', subtle: true, live: false, label: 'Subtle' },
-  { id: 'live', subtle: false, live: true, label: 'Live' },
-  { id: 'live-subtle', subtle: true, live: true, label: 'Live Subtle' },
+const STAGES: { id: StageKind; live: boolean; label: string }[] = [
+  { id: 'rest', live: false, label: 'Rest' },
+  { id: 'live', live: true, label: 'Live' },
 ];
 
-function blendButtons(active: BlendMode, which: 'color' | 'subtle'): string {
+/** Zone size as % of the workshop width (top) or a rem height (side). */
+const ZONE_MIN = 42;
+const ZONE_MAX = 100;
+const ZONE_DEFAULT = 100;
+
+function blendButtons(active: BlendMode): string {
   return `
-    <div class="mode-btns" role="group" aria-label="${which} blend" data-blend-for="${which}">
+    <div class="mode-btns" role="group" aria-label="Blend mode" data-blend-for="style">
       ${BLEND_MODES.map(
         (m) => `
         <button type="button" class="mode-btn${m === active ? ' is-on' : ''}" data-blend="${m}">
@@ -38,10 +41,12 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   let currentId = all[all.length - 1]!.id;
   let edge: PathEdgeAxis = 'top';
   let leftPack: Pack = 'start';
+  let style: VisualStyle = 'color';
   let blendColor: BlendMode = 'normal';
   let blendSubtle: BlendMode = 'color';
+  let zonePct = ZONE_DEFAULT;
   const expanded = new Set<StageKind>();
-  /** Live dock-zoom focus — one value per stage so Live ≠ Live Subtle. */
+  /** Live dock-zoom focus — Rest ignores this. */
   const focusByStage = new Map<StageKind, number | null>();
   let observer: ResizeObserver | null = null;
 
@@ -49,6 +54,20 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
 
   function nodes(): PathNode[] {
     return pathThrough(currentId, all);
+  }
+
+  function activeBlend(): BlendMode {
+    return style === 'subtle' ? blendSubtle : blendColor;
+  }
+
+  function applyZone() {
+    root.style.setProperty('--pe-zone-pct', String(zonePct));
+    const rows = root.querySelector<HTMLElement>('.pe-rows');
+    if (rows) rows.style.setProperty('--pe-zone-pct', String(zonePct));
+    const slider = root.querySelector<HTMLInputElement>('[data-zone-size]');
+    if (slider) slider.value = String(zonePct);
+    const read = root.querySelector('[data-zone-readout]');
+    if (read) read.textContent = `${zonePct}%`;
   }
 
   function applyLayout() {
@@ -83,32 +102,34 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     applyLayout();
   }
 
-  function applyBlends() {
+  function applyStyle() {
+    const blend = activeBlend();
     root.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
-      const subtle = stage.classList.contains('is-tint');
-      stage.style.setProperty('--blend', subtle ? blendSubtle : blendColor);
+      stage.classList.toggle('is-tint', style === 'subtle');
+      stage.classList.toggle('is-chroma', style === 'color');
+      stage.style.setProperty('--blend', blend);
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-style]').forEach((btn) => {
+      btn.classList.toggle('is-on', btn.dataset.style === style);
     });
     root.querySelectorAll<HTMLElement>('[data-blend-for]').forEach((group) => {
-      const which = group.dataset.blendFor;
-      const active = which === 'subtle' ? blendSubtle : blendColor;
       group.querySelectorAll<HTMLButtonElement>('[data-blend]').forEach((btn) => {
-        btn.classList.toggle('is-on', btn.dataset.blend === active);
+        btn.classList.toggle('is-on', btn.dataset.blend === blend);
       });
     });
   }
 
-  /** Blend preview only on the Rest cell — never opens Live / Live Subtle. */
-  function previewBlend(which: 'color' | 'subtle', mode: BlendMode | null) {
-    const id: StageKind = which === 'subtle' ? 'subtle' : 'color';
-    const stage = root.querySelector(`[data-stage="${id}"]`) as HTMLElement | null;
+  /** Blend preview on the Rest stage only. */
+  function previewBlend(mode: BlendMode | null) {
+    const stage = root.querySelector('[data-stage="rest"]') as HTMLElement | null;
     if (!stage) return;
     if (mode) {
       stage.style.setProperty('--blend', mode);
       stage.classList.add('is-open', 'is-blend-preview');
     } else {
-      stage.style.setProperty('--blend', which === 'subtle' ? blendSubtle : blendColor);
+      stage.style.setProperty('--blend', activeBlend());
       stage.classList.remove('is-blend-preview');
-      if (!expanded.has(id)) stage.classList.remove('is-open');
+      if (!expanded.has('rest')) stage.classList.remove('is-open');
     }
   }
 
@@ -199,11 +220,11 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     applyLayout();
   }
 
-  function bindStage(stage: HTMLElement, kind: StageKind, live: boolean, subtle: boolean) {
+  function bindStage(stage: HTMLElement, kind: StageKind, live: boolean) {
     const rails = stage.querySelector('[data-rails]') as HTMLElement;
     rails.addEventListener('pointerenter', (e) => {
       setExpanded(kind, true);
-      if (subtle) paintHint(stage, e as PointerEvent);
+      if (style === 'subtle') paintHint(stage, e as PointerEvent);
     });
     rails.addEventListener('pointerleave', () => {
       setExpanded(kind, false);
@@ -219,7 +240,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           }
         }
       }
-      if (subtle) paintHint(stage, e);
+      if (style === 'subtle') paintHint(stage, e);
     });
   }
 
@@ -259,17 +280,17 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   function stageHtml(
     kind: StageKind,
     label: string,
-    subtle: boolean,
     live: boolean,
     list: PathNode[],
     current: PathNode,
   ): string {
-    const blend = subtle ? blendSubtle : blendColor;
+    const blend = activeBlend();
     const vars = pathStageVars(current);
+    const subtle = style === 'subtle';
     return `
       <article class="pe-cell ${live ? 'pe-cell-live' : 'pe-cell-rest'}" id="${kind}">
         <p class="pe-cell-label">${label}</p>
-        ${live ? '' : `<div class="pe-blend-slot">${blendButtons(blend, subtle ? 'subtle' : 'color')}</div>`}
+        ${live ? '' : `<div class="pe-blend-slot">${blendButtons(blend)}</div>`}
         <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
           data-stage="${kind}" data-edge="${edge}" data-live="${live ? '1' : '0'}"
           style="--blend:${blend};--page:${vars.page};--mono-top:${vars.monoTop};--mono-left:${vars.monoLeft}">
@@ -296,39 +317,50 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
           <button type="button" class="mode-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top">Top</button>
           <button type="button" class="mode-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left">Side</button>
         </div>
+        <div class="mode-btns" role="group" aria-label="Visual style">
+          <span class="variant-switch-name">Style</span>
+          <button type="button" class="mode-btn${style === 'color' ? ' is-on' : ''}" data-style="color">Color</button>
+          <button type="button" class="mode-btn${style === 'subtle' ? ' is-on' : ''}" data-style="subtle">Subtle</button>
+        </div>
         <div class="mode-btns pe-align" role="group" aria-label="Side alignment" ${edge === 'left' ? '' : 'hidden'}>
           <span class="variant-switch-name">Alignment</span>
-          <button type="button" class="mode-btn" data-pack="start" title="Top of side edge">
+          <button type="button" class="mode-btn" data-pack="start" title="Pack hops toward the start of the rail">
             <span class="align-ico align-ico-start" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
-          <button type="button" class="mode-btn" data-pack="end" title="Bottom of side edge">
+          <button type="button" class="mode-btn" data-pack="end" title="Pack hops toward the end of the rail">
             <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
         </div>
+        <div class="mode-btns pe-zone" role="group" aria-label="Demo zone size">
+          <span class="variant-switch-name">Zone</span>
+          <input type="range" min="${ZONE_MIN}" max="${ZONE_MAX}" value="${zonePct}"
+            data-zone-size aria-valuetext="${zonePct} percent" />
+          <span class="pe-zone-readout" data-zone-readout>${zonePct}%</span>
+        </div>
       </div>
       <p class="pe-caption">
-        Choose Top or Side — one edge only, full length. Rest compresses overflow hops;
-        Live uses even shares and dock-zooms the focused hop. Subtle stays monochrome until
-        hover reveals color. Each cell keeps its own hover response.
+        Top or Side — one full-length edge. Style paints Color or Subtle on both rows.
+        Rest compresses overflow hops; Live uses even shares and dock-zooms the focused hop.
+        Shrink the zone to force overflow; expand it to see hops fit. Side alignment packs hops
+        inside the full rail — the foundation still spans the whole edge.
       </p>
-      <div class="pe-quad">
-        <div class="pe-row pe-row-rest">
-          ${STAGES.filter((s) => !s.live).map((s) => stageHtml(s.id, s.label, s.subtle, s.live, list, current)).join('')}
-        </div>
-        <div class="pe-row pe-row-live">
-          ${STAGES.filter((s) => s.live).map((s) => stageHtml(s.id, s.label, s.subtle, s.live, list, current)).join('')}
-        </div>
+      <div class="pe-rows" data-edge="${edge}">
+        ${STAGES.map((s) => `
+          <div class="pe-row pe-row-${s.id}">
+            ${stageHtml(s.id, s.label, s.live, list, current)}
+          </div>`).join('')}
       </div>
     `;
 
+    applyZone();
     applyPack();
-    applyBlends();
+    applyStyle();
 
     STAGES.forEach((s) => {
       const stage = root.querySelector(`[data-stage="${s.id}"]`) as HTMLElement | null;
       if (stage) {
         if (expanded.has(s.id)) stage.classList.add('is-open');
-        bindStage(stage, s.id, s.live, s.subtle);
+        bindStage(stage, s.id, s.live);
       }
     });
 
@@ -353,6 +385,15 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       });
     });
 
+    root.querySelectorAll<HTMLButtonElement>('[data-style]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.style as VisualStyle;
+        if (next === style) return;
+        style = next;
+        applyStyle();
+      });
+    });
+
     root.querySelectorAll<HTMLButtonElement>('[data-pack]').forEach((btn) => {
       btn.addEventListener('click', () => {
         leftPack = btn.dataset.pack as Pack;
@@ -360,18 +401,24 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       });
     });
 
+    const zoneInput = root.querySelector<HTMLInputElement>('[data-zone-size]');
+    zoneInput?.addEventListener('input', () => {
+      zonePct = Number(zoneInput.value);
+      applyZone();
+      applyLayout();
+    });
+
     root.querySelectorAll<HTMLElement>('[data-blend-for]').forEach((group) => {
-      const which = group.dataset.blendFor === 'subtle' ? 'subtle' : 'color';
-      group.addEventListener('pointerleave', () => previewBlend(which, null));
+      group.addEventListener('pointerleave', () => previewBlend(null));
       group.querySelectorAll<HTMLButtonElement>('[data-blend]').forEach((btn) => {
         btn.addEventListener('pointerenter', () => {
-          previewBlend(which, btn.dataset.blend as BlendMode);
+          previewBlend(btn.dataset.blend as BlendMode);
         });
         btn.addEventListener('click', () => {
           const mode = btn.dataset.blend as BlendMode;
-          if (which === 'subtle') blendSubtle = mode;
+          if (style === 'subtle') blendSubtle = mode;
           else blendColor = mode;
-          applyBlends();
+          applyStyle();
         });
       });
     });

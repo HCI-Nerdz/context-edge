@@ -1,31 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
-import FrameworkMark from '../../components/FrameworkMark.astro';
+import DemoHead from '../../components/DemoHead.astro';
 import PathEdgeShell from '../../components/react/PathEdgeShell';
-import { hrefWithBase } from '../../lib/base';
+import { PATH_EDGE_DESCRIPTION, PATH_EDGE_LEDE } from '../../lib/path-edge';
 import '../../styles/path-edge.css';
 ---
 
-<BaseLayout
-  title="React Path Edge · Context Edge"
-  description="React island — Path Edge breadcrumb colors."
->
+<BaseLayout title="React Path Edge · Context Edge" description={PATH_EDGE_DESCRIPTION}>
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · React · Variant C</p>
-    <div class="page-kicker">
-      <FrameworkMark id="react" />
-      <h1>Path Edge</h1>
-    </div>
-    <p class="lede">
-      One edge at a time (Top labels or Side marks) — not an L with the same hops twice. Unique colors for the path you took.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="path" framework="react" />
-      <FrameworkSwitch current="react" variant="path" />
-    </div>
-    <PathEdgeShell client:load island="React" />
+    <DemoHead
+      variant="path"
+      framework="react"
+      title="Path Edge"
+      lede={PATH_EDGE_LEDE}
+    />
+    <PathEdgeShell client:load />
   </main>
 </BaseLayout>

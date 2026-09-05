@@ -13,7 +13,7 @@ import {
 interface Props {
   current: FrameworkId;
   variant: VariantId;
-  /** Preserve Modal Rest/Live when switching islands. */
+  /** Preserve Modal Rest/Live when switching implementations. */
   mode?: ModalModeId;
 }
 
@@ -25,8 +25,8 @@ function hrefFor(fw: FrameworkId) {
 }
 ---
 
-<nav class="variant-switch" aria-label="Framework">
-  <span class="variant-switch-name">Island</span>
+<nav class="variant-switch" aria-label="Framework implementation">
+  <span class="variant-switch-name">Implementation</span>
   <div class="variant-switch-track" role="list">
     {
       frameworks.map((fw) => (

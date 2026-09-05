@@ -1,5 +1,13 @@
 = Changelog
 
+== 2026-09-05 — Path Edge workshop suite for every implementation
+
+* Solid / React / Svelte Path pages host the same workshop as vanilla (shared `mountPathWorkshop`)
+* Workshop rows are Rest and Live; Color / Subtle is a style selector; Zone slider syncs stage size
+* Side alignment packs hops inside a full-length rail; chrome says Implementation (not Island)
+* Demo-head grid keeps Path pages aligned across frameworks
+* link:changelog-details/2026-09-05%20-%20path-edge-workshop-suite.adoc[Details]
+
 == 2026-09-05 — Path Edge is top or side, not an L
 
 * Top and Side are alternate placements — one edge, full length, no corner join

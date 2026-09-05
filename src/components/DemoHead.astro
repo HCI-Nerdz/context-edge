@@ -4,30 +4,36 @@ import FrameworkSwitch from './FrameworkSwitch.astro';
 import ModalMode from './ModalMode.astro';
 import FrameworkMark from './FrameworkMark.astro';
 import { hrefWithBase } from '../lib/base';
+import type { FrameworkId } from '../lib/demo-routes';
+import { frameworks } from '../lib/demo-routes';
 
 interface Props {
   variant: 'map' | 'modal' | 'path';
   mode?: 'rest' | 'live';
+  framework?: FrameworkId;
   title: string;
   lede: string;
 }
 
-const { variant, mode, title, lede } = Astro.props;
+const { variant, mode, framework = 'vanilla', title, lede } = Astro.props;
 const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
 const modalMode = mode ?? 'rest';
+const fwLabel = frameworks.find((f) => f.id === framework)?.label ?? 'Vanilla';
+const eyebrow =
+  framework === 'vanilla' ? `Demo · Variant ${letter}` : `Demo · ${fwLabel} · Variant ${letter}`;
 ---
 
 <div class="demo-head" transition:name="demo-head">
   <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-  <p class="eyebrow">Demo · Variant {letter}</p>
+  <p class="eyebrow">{eyebrow}</p>
   <div class="page-kicker">
-    <FrameworkMark id="vanilla" />
+    <FrameworkMark id={framework} />
     <h1>{title}</h1>
   </div>
   <p class="lede">{lede}</p>
   <div class="demo-switches">
-    <VariantSwitch current={variant} framework="vanilla" />
-    <FrameworkSwitch current="vanilla" variant={variant} mode={variant === 'modal' ? modalMode : undefined} />
-    {variant === 'modal' && mode && <ModalMode current={mode} framework="vanilla" />}
+    <VariantSwitch current={variant} framework={framework} />
+    <FrameworkSwitch current={framework} variant={variant} mode={variant === 'modal' ? modalMode : undefined} />
+    {variant === 'modal' && mode && <ModalMode current={mode} framework={framework} />}
   </div>
 </div>

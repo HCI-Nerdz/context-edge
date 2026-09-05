@@ -2,4 +2,4 @@
 
 * Top and Side are alternate placements — one edge, full length, no corner join
 * Workshop cells keep independent hover (Live does not drive Live Subtle)
-* Hub tile and island copy match the single-edge model
+* Hub tile and implementation copy match the single-edge model

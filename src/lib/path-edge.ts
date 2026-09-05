@@ -187,6 +187,13 @@ export function pathSegMono(current: PathNode, fromRoot: number, count: number) 
 
 export type PathEdgeAxis = 'top' | 'left';
 
+/** Shared Path Edge page lede — vanilla and framework implementations. */
+export const PATH_EDGE_LEDE =
+  'One edge at a time — Top (labels) or Side (marks). Rest and Live each get a full stage; Color / Subtle is a style switch. Expand or shrink the demo zone to see overflow compression vs fit.';
+
+export const PATH_EDGE_DESCRIPTION =
+  'Path Edge workshop: Top or Side; Rest and Live rows; Color / Subtle style; expandable demo zone.';
+
 export function namePathHops(stage: HTMLElement, sid: string) {
   stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
     const axis = el.classList.contains('pe-seg-top') ? 'top' : 'left';

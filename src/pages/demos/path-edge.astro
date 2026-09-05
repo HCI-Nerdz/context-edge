@@ -1,19 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DemoHead from '../../components/DemoHead.astro';
+import { PATH_EDGE_DESCRIPTION, PATH_EDGE_LEDE } from '../../lib/path-edge';
 import '../../styles/path-edge.css';
 ---
 
-<BaseLayout
-  title="Path Edge"
-  description="Path trace workshop: Top or Side edge; Color / Subtle / Live / Live Subtle."
->
+<BaseLayout title="Path Edge" description={PATH_EDGE_DESCRIPTION}>
   <main class="shell">
-    <DemoHead
-      variant="path"
-      title="Path Edge"
-      lede="One edge at a time — Top (labels) or Side (marks). Color and Subtle on row one; Live and Live Subtle on row two. Each cell keeps its own hover."
-    />
+    <DemoHead variant="path" title="Path Edge" lede={PATH_EDGE_LEDE} />
     <div id="path-edge-root"></div>
   </main>
 </BaseLayout>

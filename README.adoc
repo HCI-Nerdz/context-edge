@@ -15,7 +15,7 @@ ifdef::env-github[]
 <br />
 <h3 align="center">Context Edge</h3>
 <p align="center">
-Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.<br />
+Edge-summoned ecosystem navigation — framework implementations in Solid, React, Svelte, and vanilla.<br />
 <a href="https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html"><strong>Explore the docs »</strong></a><br /><br />
 <a href="https://hci-nerdz.github.io/context-edge/">View Demo</a>
 &middot;
@@ -36,7 +36,7 @@ image:https://img.shields.io/github/license/HCI-Nerdz/context-edge.svg?style=for
 
 = Context Edge
 
-Edge-summoned ecosystem navigation — Astro islands in Solid, React, Svelte, and vanilla.
+Edge-summoned ecosystem navigation — framework implementations in Solid, React, Svelte, and vanilla.
 
 link:https://hci-nerdz.github.io/docs/hci-nerdz/context-edge.html[Explore the docs] ·
 link:https://hci-nerdz.github.io/context-edge/[View Demo] ·
@@ -60,7 +60,7 @@ Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 
 [cols="1,2"]
 |===
-| Route | Island / aesthetic
+| Route | Implementation / aesthetic
 
 | `/demos/solid-cloud/`
 | Solid — Map Edge · cloud-console parody + overload toggle
@@ -84,7 +84,7 @@ Part of link:https://github.com/HCI-Nerdz[HCI Nerdz].
 | Vanilla — *Path Edge* workshop (Variant C)
 
 | `/demos/solid-path/`, `/demos/react-path/`, `/demos/svelte-path/`
-| Solid / React / Svelte — Path Edge island
+| Solid / React / Svelte — Path Edge (shared workshop suite)
 |===
 
 Shared contracts: `src/lib/org-tree.ts` + `src/lib/map-vt.ts` (Map Edge), `src/lib/nav-stack.ts` (Modal Edge), `src/lib/path-edge.ts` (Path Edge). Map and Modal share the L-join (`.cr-rail*`); Path Edge is a single full-length edge (Top or Side).
@@ -167,7 +167,7 @@ Context Edge are long-lived *shell chrome* (hover width, open overlay, platform 
 | Svelte + SvelteKit
 | *Strong for motion.* Kit layout slots mirror the substrate idea.
 
-| Astro islands
+| Astro implementations
 | *Excellent for demos.* If each platform is already a heavy SPA, put rails inside that SPA shell.
 
 | Vue / Nuxt

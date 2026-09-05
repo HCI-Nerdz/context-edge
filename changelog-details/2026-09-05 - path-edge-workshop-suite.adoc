@@ -1,0 +1,7 @@
+= 2026-09-05 — Path Edge workshop suite for every implementation
+
+* Solid, React, and Svelte Path pages mount the shared vanilla workshop (`mountPathWorkshop`) so the suite matches
+* Layout: Edge (Top|Side), Style (Color|Subtle), Rest and Live as one stage per row, Zone size synced across rows
+* Side Alignment packs hops inside the rail; the foundation still spans the full edge length
+* Framework switch and Path chrome say *Implementation* instead of *Island*
+* `DemoHead` on every Path page plus fixed demo-head rows keep the desk start line consistent

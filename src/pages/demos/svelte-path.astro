@@ -1,31 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
-import FrameworkMark from '../../components/FrameworkMark.astro';
+import DemoHead from '../../components/DemoHead.astro';
 import PathEdgeShell from '../../components/svelte/PathEdgeShell.svelte';
-import { hrefWithBase } from '../../lib/base';
+import { PATH_EDGE_DESCRIPTION, PATH_EDGE_LEDE } from '../../lib/path-edge';
 import '../../styles/path-edge.css';
 ---
 
-<BaseLayout
-  title="Svelte Path Edge · Context Edge"
-  description="Svelte island — Path Edge breadcrumb colors."
->
+<BaseLayout title="Svelte Path Edge · Context Edge" description={PATH_EDGE_DESCRIPTION}>
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · Svelte · Variant C</p>
-    <div class="page-kicker">
-      <FrameworkMark id="svelte" />
-      <h1>Path Edge</h1>
-    </div>
-    <p class="lede">
-      One edge at a time (Top labels or Side marks) — not an L with the same hops twice. Unique colors for the path you took.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="path" framework="svelte" />
-      <FrameworkSwitch current="svelte" variant="path" />
-    </div>
-    <PathEdgeShell client:load island="Svelte" />
+    <DemoHead
+      variant="path"
+      framework="svelte"
+      title="Path Edge"
+      lede={PATH_EDGE_LEDE}
+    />
+    <PathEdgeShell client:load />
   </main>
 </BaseLayout>

@@ -137,34 +137,51 @@ h1 {
 }
 
 .demo-head {
-  /* Row 5 must fit Variant thumbs + Island + Modal Mode (Rest/Live).
-     7.35rem was sized for two switch rows; Mode overflowed onto .cr-toolbar. */
+  /* Fixed rows so vanilla / Solid / React / Svelte Path (and peers) start the
+     desk at the same vertical offset. Row 5 fits Variant + Implementation + Mode. */
   display: grid;
-  grid-template-rows: auto auto auto 4.8rem 10.5rem;
+  grid-template-rows: 1.75rem 1.35rem 2.6rem 4.8rem 10.5rem;
   margin-bottom: 0.25rem;
 }
 
 .demo-head .eyebrow {
-  margin: 0 0 0.35rem;
+  margin: 0;
+  align-self: end;
+}
+
+.demo-head .page-kicker {
+  margin: 0;
+  min-height: 2.6rem;
+  align-self: center;
+}
+
+.demo-head .page-kicker .fw-mark svg {
+  width: 1.6rem;
+  height: 1.6rem;
 }
 
 .demo-head h1 {
-  margin: 0 0 0.45rem;
+  margin: 0;
+  font-size: clamp(1.55rem, 2.8vw, 2rem);
+  line-height: 1.15;
 }
 
 .demo-head .back {
-  margin: 0 0 0.85rem;
+  margin: 0;
+  align-self: start;
 }
 
 .demo-head .lede {
   height: 4.8rem;
   overflow: auto;
-  margin: 0 0 0.85rem;
+  margin: 0;
+  align-self: stretch;
 }
 
 .demo-switches {
   min-height: 10.5rem;
-  margin-bottom: 0.35rem;
+  margin: 0;
+  align-self: stretch;
 }
 
 .fw-switch-item {
