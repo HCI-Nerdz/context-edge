@@ -71,6 +71,7 @@ export function depthShade(indexFromRoot: number, count: number): number {
 }
 
 export const BLEND_MODES = [
+  'normal',
   'color',
   'soft-light',
   'overlay',
@@ -79,10 +80,71 @@ export const BLEND_MODES = [
   'hue',
   'saturation',
   'luminosity',
-  'normal',
 ] as const;
 
 export type BlendMode = (typeof BLEND_MODES)[number];
+
+/** Heroicons v2 outline home — MIT. Inline so currentColor follows tile ink. */
+export const HOME_ICON_SVG = `<svg class="pe-home-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.25 12L11.2045 3.04549C11.6438 2.60615 12.3562 2.60615 12.7955 3.04549L21.75 12M4.5 9.75V19.875C4.5 20.4963 5.00368 21 5.625 21H9.75V16.125C9.75 15.5037 10.2537 15 10.875 15H13.125C13.7463 15 14.25 15.5037 14.25 16.125V21H18.375C18.9963 21 19.5 20.4963 19.5 19.875V9.75M8.25 21H16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/**
+ * Relative luminance (WCAG). Returns 0–1 for sRGB hex (#rgb / #rrggbb).
+ * Used to pick light vs dark tile ink independent of page theme.
+ */
+export function relativeLuminance(hex: string): number | null {
+  const raw = hex.trim().replace(/^#/, '');
+  if (!/^[0-9a-f]{3}$|^[0-9a-f]{6}$/i.test(raw)) return null;
+  const full =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : raw;
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  const lin = (c: number) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+/** Light ink on dark tiles, dark ink on light tiles — from the tile fill, not page theme. */
+export function inkForBg(
+  hex: string,
+  opts?: { light?: string; dark?: string; threshold?: number },
+): string {
+  const light = opts?.light ?? '#f4f7f6';
+  const dark = opts?.dark ?? '#12181a';
+  const threshold = opts?.threshold ?? 0.45;
+  const L = relativeLuminance(hex);
+  if (L == null) return light;
+  return L > threshold ? dark : light;
+}
+
+/**
+ * Approximate the Subtle mono fill for ink contrast (mirrors CSS color-mix weights).
+ */
+export function approxMonoHex(color: string, mixPct: number, grayL: number): string {
+  const raw = color.trim().replace(/^#/, '');
+  if (!/^[0-9a-f]{3}$|^[0-9a-f]{6}$/i.test(raw)) return color;
+  const full =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : raw;
+  const t = Math.min(1, Math.max(0, mixPct / 100));
+  const gray = Math.round((grayL / 100) * 255);
+  const mix = (c: number) => Math.round(c * t + gray * (1 - t));
+  const r = mix(parseInt(full.slice(0, 2), 16));
+  const g = mix(parseInt(full.slice(2, 4), 16));
+  const b = mix(parseInt(full.slice(4, 6), 16));
+  return `#${[r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('')}`;
+}
 
 export function pathStageVars(current: PathNode) {
   return {
@@ -98,14 +160,111 @@ export function pathSegMono(current: PathNode, fromRoot: number, count: number) 
   return `color-mix(in srgb, ${current.color} var(--pe-mono-mix-seg), hsl(0 0% calc(var(--pe-mono-l-min) + ${shade} * var(--pe-mono-l-span))))`;
 }
 
+/** Ink for a hop given Color vs Subtle style (tile fill, not page theme). */
+export function pathSegInk(
+  nodeColor: string,
+  opts: { style: 'color' | 'subtle'; fromRoot: number; count: number; page: PathNode },
+): string {
+  if (opts.style === 'color') return inkForBg(nodeColor);
+  const shade = depthShade(opts.fromRoot, opts.count);
+  const grayL = 18 + shade * 42;
+  const approx = approxMonoHex(opts.page.color, 14, grayL);
+  return inkForBg(approx);
+}
+
 export type PathEdgeAxis = 'top' | 'left';
 
 /** Shared Path Edge page lede — vanilla and framework implementations. */
 export const PATH_EDGE_LEDE =
-  'One edge at a time — Top (marks + quiet labels) or Side (marks). Rest and Live each get a full stage; Color / Subtle is a style switch. Shrink the demo zone to overflow; drag or swipe the rail to scroll hops out from under Home.';
+  'One edge at a time — Top (marks + quiet labels) or Side (icons + labels). Resting and Live each get a full stage; Color / Subtle is a style switch. Shrink the demo zone to overflow; drag or swipe the rail to scroll hops out from under Home.';
 
 export const PATH_EDGE_DESCRIPTION =
-  'Path Edge workshop: Top or Side; Rest and Live rows; Color / Subtle style; overflow scroll with pinned Home.';
+  'Path Edge workshop: Top or Side; Resting and Live rows; Color / Subtle style; overflow scroll with pinned Home.';
+
+/**
+ * FUTURE: pull-down / swipe-down on the page to reveal then dismiss the top Path bar.
+ * Browsers currently capture vertical overscroll for pull-to-refresh, so this stays off.
+ * Flip when UA behavior allows a reliable page-owned gesture.
+ */
+export const PE_TOP_PULL_REVEAL = false;
+
+/**
+ * Mobile: swipe from the left stage edge to toggle the Path bar open/closed.
+ * Prefer this over top pull-to-reveal while browsers own vertical overscroll.
+ */
+export function bindMobileEdgeSwipe(
+  stage: HTMLElement,
+  opts: {
+    onToggle: (open: boolean) => void;
+    isOpen: () => boolean;
+    edgePx?: number;
+  },
+): () => void {
+  const edgePx = opts.edgePx ?? 28;
+  let tracking = false;
+  let startX = 0;
+  let startY = 0;
+  let pointerId = -1;
+
+  const onDown = (e: PointerEvent) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const rect = stage.getBoundingClientRect();
+    if (e.clientX - rect.left > edgePx) return;
+    tracking = true;
+    pointerId = e.pointerId;
+    startX = e.clientX;
+    startY = e.clientY;
+    try {
+      stage.setPointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const onUp = (e: PointerEvent) => {
+    if (!tracking || e.pointerId !== pointerId) return;
+    tracking = false;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    pointerId = -1;
+    try {
+      stage.releasePointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+    if (Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy) * 1.1) return;
+    if (dx > 0 && !opts.isOpen()) opts.onToggle(true);
+    else if (dx < 0 && opts.isOpen()) opts.onToggle(false);
+  };
+
+  const onCancel = (e: PointerEvent) => {
+    if (e.pointerId !== pointerId) return;
+    tracking = false;
+    pointerId = -1;
+  };
+
+  stage.addEventListener('pointerdown', onDown);
+  stage.addEventListener('pointerup', onUp);
+  stage.addEventListener('pointercancel', onCancel);
+
+  return () => {
+    stage.removeEventListener('pointerdown', onDown);
+    stage.removeEventListener('pointerup', onUp);
+    stage.removeEventListener('pointercancel', onCancel);
+  };
+}
+
+/**
+ * Stub for future top pull-to-reveal (see PE_TOP_PULL_REVEAL).
+ * No-op while browsers capture the gesture for refresh.
+ */
+export function bindTopPullReveal(
+  _stage: HTMLElement,
+  _opts: { onReveal: () => void; onDismiss: () => void },
+): () => void {
+  if (!PE_TOP_PULL_REVEAL) return () => {};
+  return () => {};
+}
 
 export function namePathHops(stage: HTMLElement, sid: string) {
   stage.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {

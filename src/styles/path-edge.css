@@ -30,7 +30,7 @@ html[data-theme='light'] .pe-toolbar {
 }
 
 .pe-caption {
-  margin: -0.35rem 0 1rem;
+  margin: 0 0 0.85rem;
   font-size: 0.88rem;
   color: var(--muted);
   max-width: 48rem;
@@ -85,6 +85,70 @@ html[data-theme='light'] .pe-toolbar {
 
 .pe-blend-slot {
   margin: 0;
+}
+
+.pe-blend-label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font: inherit;
+  color: var(--muted);
+}
+
+.pe-blend-select {
+  font: inherit;
+  font-size: 0.78rem;
+  font-family: var(--font-display);
+  color: var(--ink);
+  background: var(--pe-control-bg, #1a1f23);
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  padding: 0.28rem 0.5rem;
+  min-width: 8.5rem;
+}
+
+html[data-theme='light'] .pe-blend-select {
+  background: #fff;
+}
+
+.pe-ico-btn,
+.pe-style-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2rem;
+  min-height: 1.85rem;
+  padding: 0.28rem 0.4rem;
+}
+
+.pe-ctrl-svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  display: block;
+}
+
+.pe-style-swatch {
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 0.2rem;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+}
+
+.pe-style-swatch-color {
+  background: linear-gradient(135deg, #4285f4 0 33%, #ea4335 33% 66%, #fbbc04 66%);
+}
+
+.pe-style-swatch-subtle {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #4285f4 22%, #6a7378) 0 50%,
+    color-mix(in srgb, #a142f4 18%, #8a9094) 50%
+  );
+}
+
+.pe-reset {
+  margin-left: 0.15rem;
 }
 
 .mode-btns {
@@ -153,13 +217,16 @@ html[data-theme='light'] .mode-btn {
 }
 
 .pe-stage {
-  --rail-idle: 0.35rem;
-  --rail-hover: 2.75rem;
+  --rail-idle: 0.65rem;
+  --rail-hover: 3.15rem;
+  --rail-hover-side: 5.75rem;
   --idle: var(--rail-idle);
   --blend: color;
-  --pe-home-size: 2.75rem;
+  --pe-home-size: 3.15rem;
+  --pe-home-size-side: 3.35rem;
   --pe-hop-top: 7.1rem;
-  --pe-hop-left: 4.2rem;
+  --pe-hop-left: 5.5rem;
+  --pe-arrow: 0.7rem;
   --pe-rail-foundation: #1c2226;
   --pe-depth-shadow: rgba(0, 0, 0, 0.42);
   /* Dark defaults — overridden in light theme (mirror Modal Edge tokens) */
@@ -269,7 +336,7 @@ html[data-theme='light'] .pe-stage {
 
 .pe-stage[data-edge='left'].is-open .pe-left,
 .pe-stage[data-edge='left']:has(.pe-left:hover, .pe-left:focus-within) .pe-left {
-  width: var(--rail-hover);
+  width: var(--rail-hover-side);
   top: 0;
   bottom: 0;
 }
@@ -287,18 +354,30 @@ html[data-theme='light'] .pe-stage {
 
 .pe-stage[data-edge='left'] .pe-home {
   width: 100%;
-  height: var(--pe-home-size);
-  flex: 0 0 var(--pe-home-size);
+  height: var(--pe-home-size-side);
+  flex: 0 0 var(--pe-home-size-side);
   box-shadow: 0 0.2rem 0.65rem color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent);
 }
 
 .pe-home-ico {
   position: relative;
   z-index: 2;
-  font-size: 1.15rem;
-  line-height: 1;
+  display: grid;
+  place-items: center;
   opacity: 0;
   pointer-events: none;
+  color: var(--tile-ink, var(--pe-seg-ink));
+}
+
+.pe-home-svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: block;
+}
+
+.pe-stage[data-edge='left'] .pe-home-svg {
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 .pe-stage.is-open .pe-home-ico,
@@ -345,8 +424,8 @@ html[data-theme='light'] .pe-stage {
   width: 100%;
   margin-inline-start: 0;
   padding-inline-start: 0;
-  margin-block-start: calc(var(--pe-home-size) * -1);
-  padding-block-start: var(--pe-home-size);
+  margin-block-start: calc(var(--pe-home-size-side) * -1);
+  padding-block-start: var(--pe-home-size-side);
 }
 
 .pe-track {
@@ -410,13 +489,12 @@ html[data-theme='light'] .pe-stage {
   margin: 0;
   padding: 0;
   cursor: pointer;
-  /* Saturated hops keep white type; chroma/tint use --pe-seg-ink */
-  color: #fff;
+  color: var(--tile-ink, var(--pe-seg-ink, #fff));
   background: var(--seg);
   font-family: var(--font-display);
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .pe-track-top > .pe-seg {
@@ -429,6 +507,64 @@ html[data-theme='light'] .pe-stage {
   flex: 0 0 var(--pe-hop-left);
   height: var(--pe-hop-left);
   width: 100%;
+}
+
+/* Connected arrow blocks: Home |> hop > hop > current */
+.pe-arrow {
+  --pe-arrow-n: var(--pe-arrow);
+}
+
+.pe-stage[data-edge='top'] .pe-arrow:not(.pe-home) {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--pe-arrow-n)) 0,
+    100% 50%,
+    calc(100% - var(--pe-arrow-n)) 100%,
+    0 100%,
+    var(--pe-arrow-n) 50%
+  );
+  margin-left: calc(var(--pe-arrow-n) * -1);
+  padding-left: calc(var(--pe-arrow-n) * 0.55);
+  padding-right: calc(var(--pe-arrow-n) * 0.85);
+}
+
+.pe-stage[data-edge='top'] .pe-arrow-home {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--pe-arrow-n)) 0,
+    100% 50%,
+    calc(100% - var(--pe-arrow-n)) 100%,
+    0 100%
+  );
+  border-radius: 0;
+}
+
+.pe-stage[data-edge='left'] .pe-arrow:not(.pe-home) {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--pe-arrow-n)),
+    50% 100%,
+    0 calc(100% - var(--pe-arrow-n)),
+    50% var(--pe-arrow-n)
+  );
+  margin-top: calc(var(--pe-arrow-n) * -1);
+  padding-top: calc(var(--pe-arrow-n) * 0.55);
+  padding-bottom: calc(var(--pe-arrow-n) * 0.85);
+}
+
+.pe-stage[data-edge='left'] .pe-arrow-home {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--pe-arrow-n)),
+    50% 100%,
+    0 calc(100% - var(--pe-arrow-n))
+  );
+}
+
+.pe-chevron {
+  display: none;
 }
 
 .pe-seg-color {
@@ -459,12 +595,18 @@ html[data-theme='light'] .pe-stage {
   align-content: center;
   justify-items: center;
   gap: 0.12rem;
-  padding: 0 0.35rem;
+  padding-block: 0.15rem;
 }
 
+/* Side: icon + readable label */
 .pe-seg-left:not(.pe-home) {
-  display: grid;
-  place-items: center;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+  align-items: center;
+  justify-items: start;
+  column-gap: 0.4rem;
+  padding-inline: 0.55rem 0.65rem;
+  text-align: start;
 }
 
 .pe-label,
@@ -473,6 +615,7 @@ html[data-theme='light'] .pe-stage {
   z-index: 2;
   opacity: 0;
   pointer-events: none;
+  color: var(--tile-ink, var(--pe-seg-ink));
 }
 
 .pe-label {
@@ -484,7 +627,6 @@ html[data-theme='light'] .pe-stage {
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0;
-  color: color-mix(in srgb, currentColor 72%, transparent);
 }
 
 .pe-seg-top .pe-mark {
@@ -495,15 +637,18 @@ html[data-theme='light'] .pe-stage {
 .pe-seg-left .pe-mark {
   font-size: 1.05rem;
   line-height: 1;
+  flex: 0 0 auto;
 }
 
 .pe-seg-left .pe-label {
-  /* Side stays mark-forward; label available to a11y via title */
-  position: absolute;
-  width: 1px;
-  height: 1px;
+  position: relative;
+  width: auto;
+  height: auto;
   overflow: hidden;
-  clip: rect(0 0 0 0);
+  clip: auto;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .pe-stage.is-open .pe-label,
@@ -515,7 +660,12 @@ html[data-theme='light'] .pe-stage {
 
 .pe-stage.is-open .pe-seg-top .pe-label,
 .pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-seg-top .pe-label {
-  opacity: 0.72;
+  opacity: 0.78;
+}
+
+.pe-stage.is-open .pe-seg-left .pe-label,
+.pe-stage:has(.cr-rail:hover, .cr-rail:focus-within) .pe-seg-left .pe-label {
+  opacity: 1;
 }
 
 .pe-stage.is-live .pe-seg.is-focus {
@@ -537,7 +687,7 @@ html[data-theme='light'] .pe-stage {
 
 .pe-stage.is-chroma .pe-seg,
 .pe-stage.is-tint .pe-seg {
-  color: var(--pe-seg-ink);
+  color: var(--tile-ink, var(--pe-seg-ink));
 }
 
 .pe-stage.is-chroma .pe-seg {

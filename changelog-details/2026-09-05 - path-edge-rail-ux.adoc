@@ -1,0 +1,6 @@
+= 2026-09-05 — Path Edge rail UX polish
+
+* Thicker idle/open rails; side open width fits icon + label
+* Arrow-shaped hop tiles; Heroicons home SVG; luma-based tile ink
+* Edge/Style icon controls; Resting label; Reset path; Blend math dropdown (normal first)
+* Caption above toolbar; DemoHead spacing; mobile left-edge swipe (top pull stubbed)

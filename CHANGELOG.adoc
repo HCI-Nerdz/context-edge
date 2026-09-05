@@ -1,5 +1,13 @@
 = Changelog
 
+== 2026-09-05 — Path Edge rail UX polish
+
+* Thicker idle/open rails; side open width fits icon + label
+* Arrow-shaped hop tiles; Heroicons home SVG; luma-based tile ink
+* Edge/Style icon controls; Resting label; Reset path; Blend math dropdown
+* Caption above toolbar; DemoHead spacing; mobile left-edge swipe (top pull stubbed)
+* link:changelog-details/2026-09-05%20-%20path-edge-rail-ux.adoc[Details]
+
 == 2026-09-05 — Path Edge overflow scroll and pinned Home
 
 * Hops overflow under pinned Home (drag/swipe scroll) instead of log-compress sizing

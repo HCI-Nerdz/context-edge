@@ -1,7 +1,11 @@
 import {
   BLEND_MODES,
+  bindMobileEdgeSwipe,
   bindPathDragScroll,
+  bindTopPullReveal,
   demoPath,
+  HOME_ICON_SVG,
+  pathSegInk,
   pathSegMono,
   pathStageVars,
   pathThrough,
@@ -17,25 +21,30 @@ type VisualStyle = 'color' | 'subtle';
 type StageKind = 'rest' | 'live';
 
 const STAGES: { id: StageKind; live: boolean; label: string }[] = [
-  { id: 'rest', live: false, label: 'Rest' },
+  { id: 'rest', live: false, label: 'Resting' },
   { id: 'live', live: true, label: 'Live' },
 ];
+
+const DEFAULT_PATH_ID = demoPath[demoPath.length - 1]!.id;
 
 /** Zone size as % of the workshop width (top) or a rem height (side). */
 const ZONE_MIN = 42;
 const ZONE_MAX = 100;
 const ZONE_DEFAULT = 100;
 
-function blendButtons(active: BlendMode): string {
+const EDGE_TOP_ICO = `<svg class="pe-ctrl-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5h18v3H3V5zm0 0v14h2V5H3zm18 0v14h-2V5h2z"/><path fill="currentColor" d="M7 8h10v2H7V8z" opacity=".55"/></svg>`;
+const EDGE_SIDE_ICO = `<svg class="pe-ctrl-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3h3v18H5V3zm0 0h14v2H5V3zm0 16h14v2H5v-2z"/><path fill="currentColor" d="M8 7h2v10H8V7z" opacity=".55"/></svg>`;
+
+function blendSelect(active: BlendMode): string {
   return `
-    <div class="mode-btns" role="group" aria-label="Blend mode" data-blend-for="style">
-      ${BLEND_MODES.map(
-        (m) => `
-        <button type="button" class="mode-btn${m === active ? ' is-on' : ''}" data-blend="${m}">
-          ${m}
-        </button>`,
-      ).join('')}
-    </div>`;
+    <label class="pe-blend-label">
+      <span class="variant-switch-name">Blend math</span>
+      <select class="pe-blend-select" data-blend-select aria-label="Blend math">
+        ${BLEND_MODES.map(
+          (m) => `<option value="${m}"${m === active ? ' selected' : ''}>${m}</option>`,
+        ).join('')}
+      </select>
+    </label>`;
 }
 
 /** Boot from ?style=&stage= and hashes (#live|#rest|#subtle|#live-subtle). */
@@ -82,7 +91,7 @@ function canonicalizeBootUrl(style: VisualStyle, focusStage: StageKind | null) {
 
 export function mountPathWorkshop(opts: { root: HTMLElement }) {
   const all = demoPath;
-  let currentId = all[all.length - 1]!.id;
+  let currentId = DEFAULT_PATH_ID;
   let edge: PathEdgeAxis = 'top';
   let leftPack: Pack = 'start';
   const boot = readBootIntent();
@@ -91,11 +100,14 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   let blendSubtle: BlendMode = 'color';
   let zonePct = ZONE_DEFAULT;
   const expanded = new Set<StageKind>();
+  /** Sticky open from mobile edge-swipe (survives pointerleave). */
+  const stickyOpen = new Set<StageKind>();
   /** Live hover focus — visual only (no hop resize). */
   const focusByStage = new Map<StageKind, number | null>();
   let observer: ResizeObserver | null = null;
   let didBootScroll = false;
   const dragCleanups: Array<() => void> = [];
+  const gestureCleanups: Array<() => void> = [];
 
   if (boot.focusStage) expanded.add(boot.focusStage);
   if (boot.legacy || boot.focusStage || boot.style === 'subtle') {
@@ -110,6 +122,10 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
 
   function activeBlend(): BlendMode {
     return style === 'subtle' ? blendSubtle : blendColor;
+  }
+
+  function segInk(n: PathNode, fromRoot: number, page: PathNode, count: number): string {
+    return pathSegInk(n.color, { style, fromRoot, count, page });
   }
 
   function applyZone() {
@@ -181,14 +197,20 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     root.querySelectorAll<HTMLButtonElement>('[data-style]').forEach((btn) => {
       btn.classList.toggle('is-on', btn.dataset.style === style);
     });
-    root.querySelectorAll<HTMLElement>('[data-blend-for]').forEach((group) => {
-      group.querySelectorAll<HTMLButtonElement>('[data-blend]').forEach((btn) => {
-        btn.classList.toggle('is-on', btn.dataset.blend === blend);
-      });
+    const sel = root.querySelector<HTMLSelectElement>('[data-blend-select]');
+    if (sel) sel.value = blend;
+    /* Refresh per-tile ink when style flips. */
+    const list = nodes();
+    const page = list[list.length - 1]!;
+    root.querySelectorAll<HTMLElement>('.pe-seg[data-goto]').forEach((el) => {
+      const id = el.dataset.goto ?? '';
+      const n = list.find((x) => x.id === id);
+      if (!n) return;
+      const fromRoot = Number(el.dataset.fromRoot);
+      el.style.setProperty('--tile-ink', segInk(n, fromRoot, page, list.length));
     });
   }
 
-  /** Blend preview on the Rest stage only. */
   function previewBlend(mode: BlendMode | null) {
     const stage = root.querySelector('[data-stage="rest"]') as HTMLElement | null;
     if (!stage) return;
@@ -198,18 +220,25 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     } else {
       stage.style.setProperty('--blend', activeBlend());
       stage.classList.remove('is-blend-preview');
-      if (!expanded.has('rest')) stage.classList.remove('is-open');
+      if (!expanded.has('rest') && !stickyOpen.has('rest')) stage.classList.remove('is-open');
     }
   }
 
   function setExpanded(id: StageKind, on: boolean) {
     if (on) expanded.add(id);
     else expanded.delete(id);
-    root.querySelector(`[data-stage="${id}"]`)?.classList.toggle('is-open', on);
-    if (!on) {
+    const open = on || stickyOpen.has(id);
+    root.querySelector(`[data-stage="${id}"]`)?.classList.toggle('is-open', open);
+    if (!on && !stickyOpen.has(id)) {
       focusByStage.set(id, null);
       applyFocusClasses();
     }
+  }
+
+  function setStickyOpen(id: StageKind, on: boolean) {
+    if (on) stickyOpen.add(id);
+    else stickyOpen.delete(id);
+    root.querySelector(`[data-stage="${id}"]`)?.classList.toggle('is-open', on || expanded.has(id));
   }
 
   function paintHint(stage: HTMLElement, e: PointerEvent) {
@@ -256,6 +285,14 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     });
   }
 
+  function hopInnerHtml(n: PathNode): string {
+    return `
+      <span class="pe-seg-color" aria-hidden="true"></span>
+      <span class="pe-chevron" aria-hidden="true"></span>
+      <span class="pe-mark" aria-hidden="true">${n.mark}</span>
+      <span class="pe-label">${n.label}</span>`;
+  }
+
   function applyPath(nextId: string) {
     currentId = nextId;
     const list = nodes();
@@ -281,12 +318,12 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         home.classList.toggle('is-here', current.id === rootNode.id);
         home.style.setProperty('--seg', rootNode.color);
         home.style.setProperty('--mono', pathSegMono(current, 0, list.length));
+        home.style.setProperty('--tile-ink', segInk(rootNode, 0, current, list.length));
       }
 
       const track = stage.querySelector('.pe-track') as HTMLElement | null;
       if (!track) return;
 
-      /* Remove hops that left the path; keep home pin outside the track. */
       track.querySelectorAll<HTMLElement>('.pe-seg').forEach((el) => {
         const id = el.dataset.goto ?? '';
         if (!keep.has(id) || id === rootNode.id) {
@@ -294,7 +331,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         }
       });
 
-      /* Ensure remaining ancestors + current exist in root→leaf order. */
       const hopNodes = list.slice(1);
       hopNodes.forEach((n, i) => {
         const fromRoot = i + 1;
@@ -302,12 +338,9 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         if (!el) {
           el = document.createElement('button');
           el.type = 'button';
-          el.className = `pe-seg pe-seg-${axis}`;
+          el.className = `pe-seg pe-seg-${axis} pe-arrow`;
           el.dataset.goto = n.id;
-          el.innerHTML = `
-            <span class="pe-seg-color" aria-hidden="true"></span>
-            <span class="pe-mark" aria-hidden="true">${n.mark}</span>
-            <span class="pe-label">${n.label}</span>`;
+          el.innerHTML = hopInnerHtml(n);
           el.addEventListener('click', (ev) => {
             const scroller = el!.closest('.pe-scroll') as HTMLElement | null;
             if (scroller?.dataset.peSuppressClick) {
@@ -328,6 +361,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         el.classList.toggle('is-ancestor', n.id !== current.id);
         el.style.setProperty('--seg', n.color);
         el.style.setProperty('--mono', pathSegMono(current, fromRoot, list.length));
+        el.style.setProperty('--tile-ink', segInk(n, fromRoot, current, list.length));
         const mark = el.querySelector('.pe-mark');
         const label = el.querySelector('.pe-label');
         if (mark) mark.textContent = n.mark;
@@ -362,33 +396,48 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       }
       if (style === 'subtle') paintHint(stage, e);
     });
+
+    /* Mobile: left-edge swipe toggles sticky open (top pull-to-reveal stubbed). */
+    gestureCleanups.push(
+      bindMobileEdgeSwipe(stage, {
+        isOpen: () => stickyOpen.has(kind) || expanded.has(kind),
+        onToggle: (open) => setStickyOpen(kind, open),
+      }),
+    );
+    gestureCleanups.push(
+      bindTopPullReveal(stage, {
+        onReveal: () => setStickyOpen(kind, true),
+        onDismiss: () => setStickyOpen(kind, false),
+      }),
+    );
   }
 
   function hopHtml(n: PathNode, axis: PathEdgeAxis, page: PathNode, fromRoot: number, count: number): string {
     const here = fromRoot === count - 1;
     const mono = pathSegMono(page, fromRoot, count);
+    const ink = segInk(n, fromRoot, page, count);
     return `
-      <button type="button" class="pe-seg pe-seg-${axis} ${here ? 'is-here' : 'is-ancestor'}"
+      <button type="button" class="pe-seg pe-seg-${axis} pe-arrow ${here ? 'is-here' : 'is-ancestor'}"
         data-goto="${n.id}" data-from-root="${fromRoot}"
-        style="--seg:${n.color};--mono:${mono}"
+        style="--seg:${n.color};--mono:${mono};--tile-ink:${ink}"
         title="${n.label} · ${n.role}">
-        <span class="pe-seg-color" aria-hidden="true"></span>
-        <span class="pe-mark" aria-hidden="true">${n.mark}</span>
-        <span class="pe-label">${n.label}</span>
+        ${hopInnerHtml(n)}
       </button>`;
   }
 
   function homeHtml(rootNode: PathNode, page: PathNode, count: number, axis: PathEdgeAxis): string {
     const here = page.id === rootNode.id;
     const mono = pathSegMono(page, 0, count);
+    const ink = segInk(rootNode, 0, page, count);
     return `
-      <button type="button" class="pe-home pe-seg pe-seg-${axis} ${here ? 'is-here' : ''}"
+      <button type="button" class="pe-home pe-seg pe-seg-${axis} pe-arrow pe-arrow-home ${here ? 'is-here' : ''}"
         data-goto="${rootNode.id}" data-from-root="0"
-        style="--seg:${rootNode.color};--mono:${mono}"
+        style="--seg:${rootNode.color};--mono:${mono};--tile-ink:${ink}"
         title="${rootNode.label} · ${rootNode.role}"
         aria-label="${rootNode.label}">
         <span class="pe-seg-color" aria-hidden="true"></span>
-        <span class="pe-home-ico" aria-hidden="true">${rootNode.mark}</span>
+        <span class="pe-chevron" aria-hidden="true"></span>
+        <span class="pe-home-ico" aria-hidden="true">${HOME_ICON_SVG}</span>
       </button>`;
   }
 
@@ -436,7 +485,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     return `
       <article class="pe-cell ${live ? 'pe-cell-live' : 'pe-cell-rest'}" id="${kind}">
         <p class="pe-cell-label">${label}</p>
-        ${live ? '' : `<div class="pe-blend-slot">${blendButtons(blend)}</div>`}
+        ${live ? '' : `<div class="pe-blend-slot">${blendSelect(blend)}</div>`}
         <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
           data-stage="${kind}" data-edge="${edge}" data-live="${live ? '1' : '0'}"
           style="--blend:${blend};--page:${vars.page};--mono-top:${vars.monoTop};--mono-left:${vars.monoLeft}">
@@ -454,6 +503,10 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
 
   function clearDragBindings() {
     while (dragCleanups.length) dragCleanups.pop()?.();
+  }
+
+  function clearGestureBindings() {
+    while (gestureCleanups.length) gestureCleanups.pop()?.();
   }
 
   function bindScrollers() {
@@ -491,19 +544,35 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   function render() {
     observer?.disconnect();
     clearDragBindings();
+    clearGestureBindings();
     const list = nodes();
     const current = list[list.length - 1]!;
     root.innerHTML = `
+      <p class="pe-caption">
+        Top or Side — one full-length edge with a rail foundation behind every hop.
+        Home stays pinned; overflow hops hide under Home — drag, swipe, or arrow-key the rail to scroll.
+        On touch, swipe inward from the left stage edge to open or dismiss the bar
+        (pull-down reveal is stubbed until browsers stop owning that gesture for refresh).
+        Shrink the zone to force overflow. Side alignment packs hops inside the full rail.
+      </p>
       <div class="cr-toolbar pe-toolbar">
         <div class="mode-btns" role="group" aria-label="Edge placement">
           <span class="variant-switch-name">Edge</span>
-          <button type="button" class="mode-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top">Top</button>
-          <button type="button" class="mode-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left">Side</button>
+          <button type="button" class="mode-btn pe-ico-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top" title="Top edge" aria-label="Top edge">
+            ${EDGE_TOP_ICO}
+          </button>
+          <button type="button" class="mode-btn pe-ico-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left" title="Side edge" aria-label="Side edge">
+            ${EDGE_SIDE_ICO}
+          </button>
         </div>
         <div class="mode-btns" role="group" aria-label="Visual style">
           <span class="variant-switch-name">Style</span>
-          <button type="button" class="mode-btn${style === 'color' ? ' is-on' : ''}" data-style="color">Color</button>
-          <button type="button" class="mode-btn${style === 'subtle' ? ' is-on' : ''}" data-style="subtle">Subtle</button>
+          <button type="button" class="mode-btn pe-style-btn${style === 'color' ? ' is-on' : ''}" data-style="color" title="Color" aria-label="Color style">
+            <span class="pe-style-swatch pe-style-swatch-color" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="mode-btn pe-style-btn${style === 'subtle' ? ' is-on' : ''}" data-style="subtle" title="Subtle" aria-label="Subtle style">
+            <span class="pe-style-swatch pe-style-swatch-subtle" aria-hidden="true"></span>
+          </button>
         </div>
         <div class="mode-btns pe-align" role="group" aria-label="Side alignment" ${edge === 'left' ? '' : 'hidden'}>
           <span class="variant-switch-name">Alignment</span>
@@ -520,13 +589,10 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
             data-zone-size aria-valuetext="${zonePct} percent" />
           <span class="pe-zone-readout" data-zone-readout>${zonePct}%</span>
         </div>
+        <button type="button" class="mode-btn pe-reset" data-reset title="Reset path to the demo leaf">
+          Reset path
+        </button>
       </div>
-      <p class="pe-caption">
-        Top or Side — one full-length edge with a rail foundation behind every hop.
-        Home stays pinned; overflow hops hide under Home — drag, swipe, or arrow-key the rail to scroll.
-        Shrink the zone to force overflow; expand it to see hops fit. Side alignment packs the hop group
-        inside the full rail — the foundation still spans the whole edge.
-      </p>
       <div class="pe-rows" data-edge="${edge}">
         ${STAGES.map((s) => `
           <div class="pe-row pe-row-${s.id}">
@@ -543,7 +609,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     STAGES.forEach((s) => {
       const stage = root.querySelector(`[data-stage="${s.id}"]`) as HTMLElement | null;
       if (stage) {
-        if (expanded.has(s.id)) stage.classList.add('is-open');
+        if (expanded.has(s.id) || stickyOpen.has(s.id)) stage.classList.add('is-open');
         bindStage(stage, s.id, s.live);
       }
     });
@@ -570,6 +636,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         edge = next;
         focusByStage.clear();
         expanded.clear();
+        stickyOpen.clear();
         render();
       });
     });
@@ -590,6 +657,16 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       });
     });
 
+    root.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
+      if (currentId === DEFAULT_PATH_ID) {
+        revealCurrent();
+        return;
+      }
+      nameHops();
+      markLeaves(DEFAULT_PATH_ID);
+      runPathVt(() => applyPath(DEFAULT_PATH_ID));
+    });
+
     const zoneInput = root.querySelector<HTMLInputElement>('[data-zone-size]');
     zoneInput?.addEventListener('input', () => {
       zonePct = Number(zoneInput.value);
@@ -597,20 +674,15 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       requestAnimationFrame(() => revealCurrent());
     });
 
-    root.querySelectorAll<HTMLElement>('[data-blend-for]').forEach((group) => {
-      group.addEventListener('pointerleave', () => previewBlend(null));
-      group.querySelectorAll<HTMLButtonElement>('[data-blend]').forEach((btn) => {
-        btn.addEventListener('pointerenter', () => {
-          previewBlend(btn.dataset.blend as BlendMode);
-        });
-        btn.addEventListener('click', () => {
-          const mode = btn.dataset.blend as BlendMode;
-          if (style === 'subtle') blendSubtle = mode;
-          else blendColor = mode;
-          applyStyle();
-        });
-      });
+    const blendSel = root.querySelector<HTMLSelectElement>('[data-blend-select]');
+    blendSel?.addEventListener('change', () => {
+      const mode = blendSel.value as BlendMode;
+      if (style === 'subtle') blendSubtle = mode;
+      else blendColor = mode;
+      applyStyle();
     });
+    blendSel?.addEventListener('focus', () => previewBlend(blendSel.value as BlendMode));
+    blendSel?.addEventListener('blur', () => previewBlend(null));
 
     observer = new ResizeObserver(() => {
       requestAnimationFrame(() => syncShadows());
