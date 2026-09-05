@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Sheer selected button fills
+
+* Selected controls use translucent `--accent-sheer` fills instead of flat solid accent
+* Dark: darker sheer than solid accent (still lighter than idle); light: lighter sheer (still darker than idle)
+* link:changelog-details/2026-09-05%20-%20sheer-selected-button-fills.adoc[Details]
+
 == 2026-09-05 — Path hop snappiness, Home tip stack, side chevrons, bubble
 
 * Path hops: skip View Transitions on rapid or in-flight navigations so clicks stay immediate; delegated goto handling

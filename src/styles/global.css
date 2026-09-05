@@ -7,6 +7,10 @@ html[data-theme='dark'] {
   --bg: #0b1012;
   --panel: #12191c;
   --accent: #3d9b8f;
+  /* Selected / primary controls: sheer fill (darker than solid accent, lighter than idle wash) */
+  --accent-sheer: color-mix(in srgb, var(--accent) 44%, transparent);
+  --accent-sheer-border: color-mix(in srgb, var(--accent) 62%, transparent);
+  --accent-on-sheer: var(--ink);
   --wash: rgba(255, 255, 255, 0.03);
   --link-hover: #6ec4b8;
   /* Facsimile stage window — Map / Modal / Path share this drop shadow */
@@ -57,6 +61,10 @@ html[data-theme='light'] {
   --bg: #f4f7f6;
   --panel: #ffffff;
   --accent: #2a7a70;
+  /* Selected / primary controls: sheer fill (lighter than solid accent, darker than idle wash) */
+  --accent-sheer: color-mix(in srgb, var(--accent) 28%, transparent);
+  --accent-sheer-border: color-mix(in srgb, var(--accent) 42%, transparent);
+  --accent-on-sheer: var(--ink);
   --wash: rgba(0, 0, 0, 0.04);
   --link-hover: #1f5f57;
   --demo-stage-shadow: 0 22px 56px rgba(20, 28, 26, 0.22), 0 6px 18px rgba(20, 28, 26, 0.12);
@@ -617,12 +625,12 @@ html[data-theme='light'] .fw-solid {
 }
 
 .variant-thumb.is-current {
-  color: var(--bg);
-  background: var(--accent);
+  color: var(--accent-on-sheer);
+  background: var(--accent-sheer);
 }
 
 .variant-thumb.is-current:hover {
-  color: var(--bg);
+  color: var(--accent-on-sheer);
   filter: brightness(1.08);
 }
 
@@ -722,14 +730,14 @@ button.variant-switch-item:hover {
 }
 
 .variant-switch-item.is-current {
-  color: var(--bg);
-  background: var(--accent);
+  color: var(--accent-on-sheer);
+  background: var(--accent-sheer);
 }
 
 a.variant-switch-item.is-current:hover,
 button.variant-switch-item.is-current:hover {
-  color: var(--bg);
-  background: var(--accent);
+  color: var(--accent-on-sheer);
+  background: var(--accent-sheer);
   filter: brightness(1.08);
 }
 

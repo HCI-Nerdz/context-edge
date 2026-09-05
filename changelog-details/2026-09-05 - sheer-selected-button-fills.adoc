@@ -1,0 +1,6 @@
+= 2026-09-05 — Sheer selected button fills
+
+* Theme tokens `--accent-sheer`, `--accent-sheer-border`, and `--accent-on-sheer` replace flat solid accent fills on selected controls
+* Dark mode: selected fill is a translucent accent wash (darker than solid `#3d9b8f`, still lighter than idle buttons)
+* Light mode: selected fill is a lighter translucent wash (lighter than solid `#2a7a70`, still darker than idle buttons)
+* Applies to variant switch thumbs/items and Path Edge `.mode-btn.is-on`

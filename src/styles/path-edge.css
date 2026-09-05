@@ -252,9 +252,9 @@ html[data-theme='light'] .mode-btn {
 }
 
 .mode-btn.is-on {
-  color: var(--bg);
-  background: var(--accent);
-  border-color: var(--accent);
+  color: var(--accent-on-sheer);
+  background: var(--accent-sheer);
+  border-color: var(--accent-sheer-border);
 }
 
 .pe-align {
