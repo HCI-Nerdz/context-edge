@@ -1,0 +1,5 @@
+= 2026-09-05 — Shared stage shadow and Modal content light surfaces
+
+* Map (`.cr-stage`), Modal (`.me-viewport`), and Path (`.pe-stage`) all use `--demo-stage-shadow` so facsimile windows share the same drop shadow
+* Path no longer owns a private `--pe-stage-shadow`; the token lives on the page theme with the other chrome variables
+* `.cr-content` (Modal sheet body and Path stage body) follows `--cr-content-bg` / `--cr-content-line` so light mode is a light glass panel with dark ink instead of a hardcoded dark wash

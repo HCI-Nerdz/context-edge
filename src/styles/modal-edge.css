@@ -36,6 +36,7 @@
   overflow: hidden;
   background: var(--me-stage);
   color: var(--ink);
+  box-shadow: var(--demo-stage-shadow);
 }
 
 html[data-theme='light'] .me-viewport {

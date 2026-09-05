@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Shared stage shadow and Modal content light surfaces
+
+* Map / Modal / Path facsimile stages share `--demo-stage-shadow` (same Path drop shadow on every demo window)
+* Modal/Path `.cr-content` panels use theme tokens so light mode is light glass + dark ink, not a dark wash
+* link:changelog-details/2026-09-05%20-%20shared-stage-shadow-modal-content.adoc[Details]
+
 == 2026-09-05 — Demo head spacing across all variants
 
 * Map / Modal / Path demos share `DemoHead` grid spacing on every implementation

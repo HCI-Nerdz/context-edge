@@ -232,14 +232,13 @@ html[data-theme='light'] .mode-btn {
   --pe-mono-l-left: 28%;
   --pe-mono-l-min: 18%;
   --pe-mono-l-span: 42%;
-  --pe-stage-shadow: 0 22px 56px rgba(0, 0, 0, 0.48), 0 6px 18px rgba(0, 0, 0, 0.28);
   position: relative;
   min-height: 24rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
   color: var(--ink);
-  box-shadow: var(--pe-stage-shadow);
+  box-shadow: var(--demo-stage-shadow);
   background:
     radial-gradient(
       80% 70% at 100% 0%,
@@ -309,7 +308,6 @@ html[data-theme='light'] .pe-stage {
   --pe-mono-l-left: 70%;
   --pe-mono-l-min: 62%;
   --pe-mono-l-span: 28%;
-  --pe-stage-shadow: 0 22px 56px rgba(20, 28, 26, 0.22), 0 6px 18px rgba(20, 28, 26, 0.12);
 }
 
 .pe-stage.is-chroma {
