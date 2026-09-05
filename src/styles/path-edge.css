@@ -1,36 +1,89 @@
-.pe-toolbar {
-  /* Dark defaults — overridden in light theme */
-  --pe-control-bg: #1a1f23;
-  --pe-mode-bg: rgba(255, 255, 255, 0.04);
-  flex-wrap: wrap;
-}
-
-html[data-theme='light'] .pe-toolbar {
-  --pe-control-bg: #ffffff;
-  --pe-mode-bg: rgba(0, 0, 0, 0.04);
-}
-
-.pe-toolbar label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.pe-toolbar select {
-  font: inherit;
-  color: var(--ink);
-  background: var(--pe-control-bg);
-  border: 1px solid var(--line);
-  border-radius: 0.3rem;
-  padding: 0.2rem 0.4rem;
-}
-
 .pe-caption {
   margin: 0 0 0.85rem;
   font-size: 0.88rem;
   color: var(--muted);
   max-width: 48rem;
   line-height: 1.45;
+}
+
+/*
+ * Demo harness — explainer knobs only (not product UI).
+ * Dashed/neutral chrome so Edge / Style / Blend read as workshop controls.
+ */
+.pe-harness {
+  --pe-control-bg: #1a1f23;
+  --pe-mode-bg: rgba(255, 255, 255, 0.04);
+  --pe-harness-line: color-mix(in srgb, var(--muted) 55%, transparent);
+  font-family: var(--font-display);
+  margin: 0 0 1.15rem;
+  padding: 0.65rem 0.8rem 0.75rem;
+  border: 1px dashed var(--pe-harness-line);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+}
+
+html[data-theme='light'] .pe-harness {
+  --pe-control-bg: #ffffff;
+  --pe-mode-bg: rgba(0, 0, 0, 0.04);
+  background: color-mix(in srgb, var(--panel) 88%, var(--wash));
+}
+
+.pe-harness-label,
+.pe-harness-sublabel {
+  display: block;
+  margin: 0 0 0.45rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pe-harness-sublabel {
+  margin-top: 0.15rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.07em;
+  opacity: 0.92;
+}
+
+.pe-harness-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.75rem;
+}
+
+.pe-harness-primary {
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--pe-harness-line) 70%, transparent);
+}
+
+.pe-harness-subsection {
+  margin-top: 0.55rem;
+  padding: 0.5rem 0.55rem 0.55rem;
+  border: 1px dashed color-mix(in srgb, var(--pe-harness-line) 65%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--wash) 55%, transparent);
+}
+
+.pe-resize-hint {
+  margin: 0;
+  flex: 1 1 12rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted);
+  max-width: 22rem;
+}
+
+.pe-facsimile {
+  margin: 0;
+  /* Transparent track — stage shadows read against the page (shell pad), not a filled panel */
+  padding: 0.35rem 0 0.25rem;
+  border: 0;
+  background: transparent;
+  overflow: visible;
 }
 
 .pe-rows {
@@ -69,7 +122,7 @@ html[data-theme='light'] .pe-toolbar {
 }
 
 .pe-blend-slot {
-  margin: 0;
+  margin: 0.1rem 0 0.4rem;
 }
 
 .pe-blend-label {
@@ -104,6 +157,18 @@ html[data-theme='light'] .pe-blend-select {
   min-width: 2rem;
   min-height: 1.85rem;
   padding: 0.28rem 0.4rem;
+}
+
+.pe-style-btn {
+  grid-auto-flow: column;
+  gap: 0.35rem;
+  padding-inline: 0.45rem;
+}
+
+.pe-style-caption {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .pe-ctrl-svg {

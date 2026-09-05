@@ -1,0 +1,7 @@
+= 2026-09-05 — Path Edge harness vs facsimile controls
+
+* Workshop markup in `mountPathEdge` splits explainer knobs from virtualized stages: a `.pe-harness` region labeled **Demo controls**, then `.pe-facsimile` wrapping the Live / Still rows
+* Harness order: Edge, Alignment (side only), Appearance, Reset path, resize hint → **Blend math** → **Style** subsection (Color / Subtle with captions)
+* Blend math no longer mounts above the Still cell; hover/focus on the harness blend control still previews on the Still stage
+* CSS: dashed/neutral harness chrome so Edge / Style / Blend do not read as in-product UI; facsimile track stays transparent so stage shadows meet the page
+* Path lede clarifies that demo controls sit above the desks and Live/Still are the product facsimile

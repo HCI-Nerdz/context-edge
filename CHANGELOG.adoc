@@ -1,5 +1,17 @@
 = Changelog
 
+== 2026-09-05 — Stage shadows visible against the page
+
+* `.shell` keeps `overflow-x: clip` but adds `--demo-stage-shadow-pad` inline padding so Map / Modal / Path drop shadows show on the left and right at full width
+* Path facsimile track stays transparent/`overflow: visible` so stage shadows are not trapped in an opaque bezel
+* link:changelog-details/2026-09-05%20-%20stage-shadow-shell-pad.adoc[Details]
+
+== 2026-09-05 — Path Edge harness vs facsimile controls
+
+* Path workshop knobs live in a labeled **Demo controls** harness (dashed chrome); Live/Still desks sit below as the facsimile
+* Blend math moves above the Style subsection (Color / Subtle); no blend control inside the Still stage row
+* link:changelog-details/2026-09-05%20-%20path-edge-harness-facsimile.adoc[Details]
+
 == 2026-09-05 — Path Edge trail end inset
 
 * Keep ~50px of rail foundation past the last hop when overflow scroll engages and when aligning the current hop

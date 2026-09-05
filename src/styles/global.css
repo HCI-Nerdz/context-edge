@@ -11,6 +11,8 @@ html[data-theme='dark'] {
   --link-hover: #6ec4b8;
   /* Facsimile stage window — Map / Modal / Path share this drop shadow */
   --demo-stage-shadow: 0 22px 56px rgba(0, 0, 0, 0.48), 0 6px 18px rgba(0, 0, 0, 0.28);
+  /* Horizontal room inside .shell so stage shadows aren't clipped L/R */
+  --demo-stage-shadow-pad: 2.5rem;
   /* Sheet content panel inside Modal/Path stages */
   --cr-content-bg: rgba(8, 12, 14, 0.55);
   --cr-content-line: rgba(255, 255, 255, 0.12);
@@ -117,7 +119,8 @@ a:hover {
 .shell {
   width: min(64rem, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 1.5rem 0 3rem;
+  /* Inline pad lets --demo-stage-shadow show against the page; clip still blocks stray X-scroll */
+  padding: 1.5rem var(--demo-stage-shadow-pad) 3rem;
   overflow-x: clip;
 }
 

@@ -603,7 +603,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const resizeLabel = edge === 'top' ? 'Resize stage width' : 'Resize stage height';
     return `
       <article class="pe-cell ${live ? 'pe-cell-live' : 'pe-cell-rest'}" id="${kind}">
-        ${live ? '' : `<div class="pe-blend-slot">${blendSelect(blend)}</div>`}
         <p class="pe-cell-label">${label}</p>
         <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
           data-stage="${kind}" data-edge="${edge}" data-live="${live ? '1' : '0'}"
@@ -681,47 +680,60 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         Home stays pinned; overflow hops hide under Home — drag, swipe, or arrow-key the rail to scroll.
         On touch, swipe inward from the left stage edge to open or dismiss the bar
         (pull-down reveal is stubbed until browsers stop owning that gesture for refresh).
-        Drag the stage’s free edge to resize (Live and Still stay synced). Side alignment packs hops inside the full rail.
+        Side alignment packs hops inside the full rail.
         A zoomable facsimile-canvas shell is future work — this demo runs the real rail code.
       </p>
-      <div class="cr-toolbar pe-toolbar">
-        ${themeSwitchHtml('page')}
-        <div class="mode-btns" role="group" aria-label="Edge placement">
-          <span class="variant-switch-name">Edge</span>
-          <button type="button" class="mode-btn pe-ico-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top" title="Top edge" aria-label="Top edge">
-            ${EDGE_TOP_ICO}
+      <section class="pe-harness" role="region" aria-label="Demo controls">
+        <span class="pe-harness-label">Demo controls</span>
+        <div class="pe-harness-row pe-harness-primary">
+          <div class="mode-btns" role="group" aria-label="Edge placement">
+            <span class="variant-switch-name">Edge</span>
+            <button type="button" class="mode-btn pe-ico-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top" title="Top edge" aria-label="Top edge">
+              ${EDGE_TOP_ICO}
+            </button>
+            <button type="button" class="mode-btn pe-ico-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left" title="Side edge" aria-label="Side edge">
+              ${EDGE_SIDE_ICO}
+            </button>
+          </div>
+          <div class="mode-btns pe-align" role="group" aria-label="Side alignment" ${edge === 'left' ? '' : 'hidden'}>
+            <span class="variant-switch-name">Alignment</span>
+            <button type="button" class="mode-btn" data-pack="start" title="Pack hops toward the start of the rail">
+              <span class="align-ico align-ico-start" aria-hidden="true"><i></i><i></i><i></i></span>
+            </button>
+            <button type="button" class="mode-btn" data-pack="end" title="Pack hops toward the end of the rail">
+              <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
+            </button>
+          </div>
+          ${themeSwitchHtml('page')}
+          <button type="button" class="mode-btn pe-reset" data-reset title="Reset path to the demo leaf">
+            Reset path
           </button>
-          <button type="button" class="mode-btn pe-ico-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left" title="Side edge" aria-label="Side edge">
-            ${EDGE_SIDE_ICO}
-          </button>
+          <p class="pe-resize-hint">Drag a stage’s free edge to resize — Live and Still stay synced.</p>
         </div>
-        <div class="mode-btns" role="group" aria-label="Visual style">
-          <span class="variant-switch-name">Style</span>
-          <button type="button" class="mode-btn pe-style-btn${style === 'color' ? ' is-on' : ''}" data-style="color" title="Color" aria-label="Color style">
-            <span class="pe-style-swatch pe-style-swatch-color" aria-hidden="true"></span>
-          </button>
-          <button type="button" class="mode-btn pe-style-btn${style === 'subtle' ? ' is-on' : ''}" data-style="subtle" title="Subtle" aria-label="Subtle style">
-            <span class="pe-style-swatch pe-style-swatch-subtle" aria-hidden="true"></span>
-          </button>
+        <div class="pe-blend-slot">${blendSelect(activeBlend())}</div>
+        <div class="pe-harness-subsection" role="group" aria-label="Style">
+          <span class="pe-harness-sublabel">Style</span>
+          <div class="pe-harness-row pe-harness-style">
+            <div class="mode-btns" role="group" aria-label="Visual style">
+              <button type="button" class="mode-btn pe-style-btn${style === 'color' ? ' is-on' : ''}" data-style="color" title="Color" aria-label="Color style">
+                <span class="pe-style-swatch pe-style-swatch-color" aria-hidden="true"></span>
+                <span class="pe-style-caption">Color</span>
+              </button>
+              <button type="button" class="mode-btn pe-style-btn${style === 'subtle' ? ' is-on' : ''}" data-style="subtle" title="Subtle" aria-label="Subtle style">
+                <span class="pe-style-swatch pe-style-swatch-subtle" aria-hidden="true"></span>
+                <span class="pe-style-caption">Subtle</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="mode-btns pe-align" role="group" aria-label="Side alignment" ${edge === 'left' ? '' : 'hidden'}>
-          <span class="variant-switch-name">Alignment</span>
-          <button type="button" class="mode-btn" data-pack="start" title="Pack hops toward the start of the rail">
-            <span class="align-ico align-ico-start" aria-hidden="true"><i></i><i></i><i></i></span>
-          </button>
-          <button type="button" class="mode-btn" data-pack="end" title="Pack hops toward the end of the rail">
-            <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
-          </button>
+      </section>
+      <div class="pe-facsimile" aria-label="Product facsimile">
+        <div class="pe-rows" data-edge="${edge}">
+          ${STAGES.map((s) => `
+            <div class="pe-row pe-row-${s.id}">
+              ${stageHtml(s.id, s.label, s.live, list, current)}
+            </div>`).join('')}
         </div>
-        <button type="button" class="mode-btn pe-reset" data-reset title="Reset path to the demo leaf">
-          Reset path
-        </button>
-      </div>
-      <div class="pe-rows" data-edge="${edge}">
-        ${STAGES.map((s) => `
-          <div class="pe-row pe-row-${s.id}">
-            ${stageHtml(s.id, s.label, s.live, list, current)}
-          </div>`).join('')}
       </div>
     `;
 
@@ -794,7 +806,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       if (style === 'subtle') blendSubtle = mode;
       else blendColor = mode;
       applyStyle();
-      /* Keep Still open while interacting with the control */
+      /* Keep Still open while interacting with the harness blend control */
       openBlendPreview();
     });
     /* Any hover/focus on the blend control opens Still + previews — not only on change */

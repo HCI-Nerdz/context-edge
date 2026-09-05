@@ -1,0 +1,6 @@
+= 2026-09-05 — Stage shadows visible against the page
+
+* Root cause: `.shell` used `overflow-x: clip` with zero horizontal padding while Map (`.cr-stage`), Modal (`.me-viewport`), and Path (`.pe-stage`) are full content width — `--demo-stage-shadow` was clipped on the left and right
+* Fix: theme token `--demo-stage-shadow-pad` (2.5rem) as `.shell` inline padding; keep `overflow-x: clip` so stray horizontal scroll is still blocked
+* Path `.pe-facsimile` is a transparent, `overflow: visible` track (no opaque filled bezel) so Live/Still stage shadows land on the page background
+* Stage-internal `overflow: hidden` on rails/viewports is unchanged — only the page shell gutter changed
