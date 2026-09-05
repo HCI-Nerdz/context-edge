@@ -79,8 +79,8 @@ export default function ModalEdgeShell({
     <div>
       <div className="cr-toolbar">
         <span>
-          {island} implementation · Modal Edge · {revealed ? 'layers revealed' : 'sheet closed'} · {current.label}
-          {live ? ' · Live' : ' · Rest'}
+          {island} › Modal Edge › {revealed ? 'layers revealed' : 'sheet closed'} › {current.label} ›{' '}
+          {live ? 'Live' : 'Still'}
         </span>
         <button type="button" className="me-hint-btn" onClick={toggle}>
           {revealed ? 'Close stack' : 'Open Context Edge'}

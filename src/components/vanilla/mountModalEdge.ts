@@ -47,9 +47,9 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
     root.innerHTML = `
       <div class="cr-toolbar">
         <span>
-          Modal Edge · View Transitions stack ·
-          ${revealed ? 'layers revealed' : 'sheet closed'} · ${current.label}
-          ${live ? ' · Live' : ' · Rest'}
+          Modal Edge › View Transitions ›
+          ${revealed ? 'layers revealed' : 'sheet closed'} › ${current.label} ›
+          ${live ? 'Live' : 'Still'}
         </span>
         <button type="button" class="me-hint-btn" data-toggle>
           ${revealed ? 'Close stack' : 'Open Context Edge'}

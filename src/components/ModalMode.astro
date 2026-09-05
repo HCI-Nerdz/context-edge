@@ -9,8 +9,8 @@ interface Props {
 
 const { current, framework = 'vanilla' } = Astro.props;
 const items = [
-  { id: 'rest' as const, label: 'Rest', href: hrefWithBase(modalRoute(framework, 'rest')) },
   { id: 'live' as const, label: 'Live', href: hrefWithBase(modalRoute(framework, 'live')) },
+  { id: 'rest' as const, label: 'Still', href: hrefWithBase(modalRoute(framework, 'rest')) },
 ];
 ---
 

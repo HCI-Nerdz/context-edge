@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Demo chrome order, Modal Still, status crumbs
+
+* DemoHead: suite lede after Context Edge; Variant above variant name/desc; Implementation and Mode below
+* Modal Mode: Live first, then Still; status crumb uses `›` hierarchy (Rest renamed Still)
+* link:changelog-details/2026-09-05%20-%20demo-chrome-order-still-crumbs.adoc[Details]
+
 == 2026-09-05 — Demo chrome: Context Edge header and cold-reader ledes
 
 * Variant pages title the system (**Context Edge**); back link is **← All variants** to the suite hub

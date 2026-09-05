@@ -145,11 +145,11 @@ h1 {
 }
 
 .demo-head {
-  /* Fixed rows so Map / Modal / Path start the desk at the same offset on every
-     implementation. Order: back → meta → Context Edge → switches → variant blurb.
-     Row 2 is the back→eyebrow gap; row 5 fits Variant + Implementation (+ Mode). */
+  /* Fixed rows so Map / Modal / Path start the desk at the same offset.
+     Order: back → meta → Context Edge → suite lede → Variant → variant blurb
+     → Implementation (+ Mode). Row 2 is the back→eyebrow gap. */
   display: grid;
-  grid-template-rows: 1.75rem 0.55rem 1.45rem 2.6rem 10.5rem 7.2rem;
+  grid-template-rows: 1.75rem 0.55rem 1.45rem 2.6rem 3.1rem 5.6rem 7.2rem 5.2rem;
   margin-bottom: 0.25rem;
 }
 
@@ -183,11 +183,21 @@ h1 {
   line-height: 1.15;
 }
 
-.demo-head .demo-switches {
-  min-height: 10.5rem;
+.demo-head .suite-lede {
+  margin: 0;
+  max-width: 42rem;
+  align-self: start;
+  grid-row: 5;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.demo-head .demo-variant-switch {
+  min-height: 5.6rem;
   margin: 0;
   align-self: stretch;
-  grid-row: 5;
+  grid-row: 6;
 }
 
 .demo-head .variant-blurb {
@@ -195,7 +205,14 @@ h1 {
   overflow: auto;
   margin: 0;
   align-self: stretch;
-  grid-row: 6;
+  grid-row: 7;
+}
+
+.demo-head .demo-impl-switches {
+  min-height: 5.2rem;
+  margin: 0;
+  align-self: stretch;
+  grid-row: 8;
 }
 
 .demo-head .variant-title {
@@ -223,8 +240,14 @@ h1 {
   height: 1.05rem;
 }
 
-.demo-switches .variant-switch {
-  margin-bottom: 0.45rem;
+.demo-head .demo-variant-switch .variant-switch,
+.demo-head .demo-impl-switches .variant-switch {
+  margin: 0 0 0.45rem;
+}
+
+.demo-head .demo-impl-switches .variant-switch:last-child,
+.demo-head .demo-variant-switch .variant-switch:last-child {
+  margin-bottom: 0;
 }
 
 .back {

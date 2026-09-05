@@ -70,8 +70,8 @@
 <div>
   <div class="cr-toolbar">
     <span>
-      {island} implementation · Modal Edge · {revealed ? 'layers revealed' : 'sheet closed'} · {current.label}
-      {live ? ' · Live' : ' · Rest'}
+      {island} › Modal Edge › {revealed ? 'layers revealed' : 'sheet closed'} › {current.label} ›
+      {live ? 'Live' : 'Still'}
     </span>
     <button type="button" class="me-hint-btn" onclick={toggle}>
       {revealed ? 'Close stack' : 'Open Context Edge'}

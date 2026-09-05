@@ -4,6 +4,7 @@ import FrameworkSwitch from './FrameworkSwitch.astro';
 import ModalMode from './ModalMode.astro';
 import FrameworkMark from './FrameworkMark.astro';
 import { hrefWithBase } from '../lib/base';
+import { CONTEXT_EDGE_LEDE } from '../lib/context-edge';
 import type { FrameworkId } from '../lib/demo-routes';
 import { frameworks } from '../lib/demo-routes';
 
@@ -38,13 +39,16 @@ const eyebrow = parts.join(' · ');
     <FrameworkMark id={framework} />
     <h1>Context Edge</h1>
   </div>
-  <div class="demo-switches">
+  <p class="suite-lede">{CONTEXT_EDGE_LEDE}</p>
+  <div class="demo-variant-switch">
     <VariantSwitch current={variant} framework={framework} />
-    <FrameworkSwitch current={framework} variant={variant} mode={variant === 'modal' ? modalMode : undefined} />
-    {variant === 'modal' && mode && <ModalMode current={mode} framework={framework} />}
   </div>
   <div class="variant-blurb">
     <h2 class="variant-title">{title}</h2>
     <p class="lede">{lede}</p>
+  </div>
+  <div class="demo-impl-switches">
+    <FrameworkSwitch current={framework} variant={variant} mode={variant === 'modal' ? modalMode : undefined} />
+    {variant === 'modal' && mode && <ModalMode current={mode} framework={framework} />}
   </div>
 </div>

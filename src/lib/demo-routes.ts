@@ -32,7 +32,7 @@ export const variantRoutes: Record<FrameworkId, Record<VariantId, string>> = {
   },
 };
 
-/** Modal Live routes — Rest stays on variantRoutes.*.modal */
+/** Modal Live routes — Still stays on variantRoutes.*.modal */
 export const modalLiveRoutes: Record<FrameworkId, string> = {
   vanilla: 'demos/modal-edge-live/',
   solid: 'demos/solid-modal-live/',

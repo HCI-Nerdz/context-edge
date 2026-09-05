@@ -1,0 +1,5 @@
+= 2026-09-05 — Demo chrome order, Modal Still, status crumbs
+
+* DemoHead order: Context Edge → suite lede → Variant → variant name/desc → Implementation → Mode → desk
+* Modal Mode labels: Live first, then Still (not Rest); hub matrix matches
+* Modal toolbar status uses `›` hierarchy separators; Rest → Still in the crumb
