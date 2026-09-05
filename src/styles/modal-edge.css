@@ -1,11 +1,81 @@
-.me-hint-btn {
-  border: 1px solid var(--line);
-  background: var(--me-hint-bg);
-  color: inherit;
-  border-radius: 0.3rem;
-  padding: 0.35rem 0.7rem;
+/* Speech-bubble nudge above the Modal desk (replaces flat “Open Context Edge”). */
+.ce-click-bubble {
+  --ce-bubble-bg: var(--accent);
+  --ce-bubble-ink: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: fit-content;
+  margin: 0.15rem auto 0.85rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
   font-family: var(--font-display);
+  color: var(--ce-bubble-ink);
+  animation: ce-bubble-point 1.35s ease-in-out infinite;
+}
+
+.ce-click-bubble:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+
+.ce-click-bubble-label {
+  display: inline-block;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  background: var(--ce-bubble-bg);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.ce-click-bubble-tail {
+  display: block;
+  width: 0;
+  height: 0;
+  margin-top: -1px;
+  border-left: 0.55rem solid transparent;
+  border-right: 0.55rem solid transparent;
+  border-top: 0.65rem solid var(--ce-bubble-bg);
+}
+
+.ce-click-bubble.is-open {
+  animation: none;
+}
+
+.ce-click-bubble.is-open .ce-click-bubble-label {
+  background: var(--panel, var(--wash));
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.ce-click-bubble.is-open .ce-click-bubble-tail {
+  border-top-color: var(--line);
+}
+
+@keyframes ce-bubble-point {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  45% {
+    transform: translateY(0.35rem);
+  }
+  60% {
+    transform: translateY(0.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ce-click-bubble {
+    animation: none;
+  }
 }
 
 .me-viewport {

@@ -1,0 +1,5 @@
+= 2026-09-05 — DemoHead mobile stack and click-me bubble
+
+* Below ~52rem, DemoHead drops fixed grid row heights and stacks with natural gaps (no Mode-over-title overlap)
+* Implementation / Mode tracks wrap instead of forcing page-wide horizontal scroll
+* Modal “Open Context Edge” becomes an animated “click me” speech bubble pointing at the desk

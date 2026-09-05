@@ -82,10 +82,16 @@ export default function ModalEdgeShell({
           {island} › Modal Edge › {revealed ? 'layers revealed' : 'sheet closed'} › {current.label} ›{' '}
           {live ? 'Live' : 'Still'}
         </span>
-        <button type="button" className="me-hint-btn" onClick={toggle}>
-          {revealed ? 'Close stack' : 'Open Context Edge'}
-        </button>
       </div>
+      <button
+        type="button"
+        className={`ce-click-bubble${revealed ? ' is-open' : ''}`}
+        onClick={toggle}
+        aria-label={revealed ? 'Close stack' : 'Open Context Edge — click the demo edge'}
+      >
+        <span className="ce-click-bubble-label">{revealed ? 'close' : 'click me'}</span>
+        <span className="ce-click-bubble-tail" aria-hidden="true" />
+      </button>
       <div
         ref={viewportRef}
         className={`me-viewport${revealed ? ' is-revealed' : ''}`}

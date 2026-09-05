@@ -51,10 +51,16 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
           ${revealed ? 'layers revealed' : 'sheet closed'} › ${current.label} ›
           ${live ? 'Live' : 'Still'}
         </span>
-        <button type="button" class="me-hint-btn" data-toggle>
-          ${revealed ? 'Close stack' : 'Open Context Edge'}
-        </button>
       </div>
+      <button
+        type="button"
+        class="ce-click-bubble${revealed ? ' is-open' : ''}"
+        data-toggle
+        aria-label="${revealed ? 'Close stack' : 'Open Context Edge — click the demo edge'}"
+      >
+        <span class="ce-click-bubble-label">${revealed ? 'close' : 'click me'}</span>
+        <span class="ce-click-bubble-tail" aria-hidden="true"></span>
+      </button>
       <div
         class="me-viewport ${revealed ? 'is-revealed' : ''}"
         style="--overlay:${current.overlay};--overlay-2:${current.overlay2};--me-open:${revealed ? 1 : 0}"
@@ -131,8 +137,16 @@ export function mountModalEdge(opts: ModalEdgeOptions) {
     function applyReveal() {
       vp.classList.toggle('is-revealed', revealed);
       vp.style.setProperty('--me-open', revealed ? '1' : '0');
-      const btn = root.querySelector('.me-hint-btn');
-      if (btn) btn.textContent = revealed ? 'Close stack' : 'Open Context Edge';
+      const bubble = root.querySelector('.ce-click-bubble');
+      if (bubble) {
+        bubble.classList.toggle('is-open', revealed);
+        bubble.setAttribute(
+          'aria-label',
+          revealed ? 'Close stack' : 'Open Context Edge — click the demo edge',
+        );
+        const label = bubble.querySelector('.ce-click-bubble-label');
+        if (label) label.textContent = revealed ? 'close' : 'click me';
+      }
       const stackEl = root.querySelector('.me-stack');
       stackEl?.setAttribute('aria-hidden', revealed ? 'false' : 'true');
     }

@@ -73,10 +73,17 @@
       {island} › Modal Edge › {revealed ? 'layers revealed' : 'sheet closed'} › {current.label} ›
       {live ? 'Live' : 'Still'}
     </span>
-    <button type="button" class="me-hint-btn" onclick={toggle}>
-      {revealed ? 'Close stack' : 'Open Context Edge'}
-    </button>
   </div>
+  <button
+    type="button"
+    class="ce-click-bubble"
+    class:is-open={revealed}
+    onclick={toggle}
+    aria-label={revealed ? 'Close stack' : 'Open Context Edge — click the demo edge'}
+  >
+    <span class="ce-click-bubble-label">{revealed ? 'close' : 'click me'}</span>
+    <span class="ce-click-bubble-tail" aria-hidden="true"></span>
+  </button>
   <div
     bind:this={viewportEl}
     class="me-viewport"

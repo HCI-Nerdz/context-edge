@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — DemoHead mobile stack and click-me bubble
+
+* Narrow viewports: DemoHead uses auto-height stack (no fixed-row overlap); switch tracks wrap
+* Modal CTA: animated “click me” speech bubble pointing at the demo desk (replaces “Open Context Edge”)
+* link:changelog-details/2026-09-05%20-%20demohead-mobile-click-bubble.adoc[Details]
+
 == 2026-09-05 — Demo chrome order, Modal Still, status crumbs
 
 * DemoHead: suite lede after Context Edge; Variant above variant name/desc; Implementation and Mode below
