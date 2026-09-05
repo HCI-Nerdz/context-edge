@@ -174,9 +174,9 @@ export function pathSegInk(
 
 export type PathEdgeAxis = 'top' | 'left';
 
-/** Shared Path Edge page lede — vanilla and framework implementations. */
+/** Shared Path Edge page lede — DemoHead variant description (not the workshop island). */
 export const PATH_EDGE_LEDE =
-  'As you move across products, the places you visited stay on one thin rail — Top or Side — each hop its own color, Home pinned at the start. When the trail grows, drag or swipe the rail to scroll older stops out from under Home. Demo controls above the desks set Edge, blend math, and Color vs Subtle; the Live and Still stages below are the product facsimile — drag a stage edge to resize and force overflow.';
+  'As you move across products, the places you visited stay on one thin rail — Top or Side — with a rail foundation behind every hop. Each stop keeps its own color; Home stays pinned at the start. When the trail grows, drag, swipe, or arrow-key the rail to scroll older hops out from under Home. On touch, swipe inward from the left stage edge to open or dismiss the bar. Demo controls set Edge, Style, and blend math; Live and Still below are the product facsimile — drag a stage’s free edge to resize (both stay synced).';
 
 export const PATH_EDGE_DESCRIPTION =
   'Path Edge keeps your cross-product trail on one edge rail — colored hops, pinned Home, Top or Side.';

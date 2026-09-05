@@ -1,0 +1,6 @@
+= 2026-09-05 — DemoHead ownership, Path harness tidy, facsimile scale
+
+* **Ownership:** `DemoHead` keeps suite/variant copy (including Path lede from `PATH_EDGE_LEDE`); `mountPathWorkshop` mounts only Demo controls + Live/Still stages — the old workshop `pe-caption` is removed
+* **Chrome:** bordered, scrollable variant description with a spacer row before Implementation; Path desk no longer shifts down from duplicate caption
+* **Path controls:** Style then Blend math on one row; Edge / Appearance use matching label+button column grids (less nested harness chrome)
+* **Miniaturize:** shared `--demo-facsimile-scale` and stage/content tokens shrink Map / Modal / Path desks (lower min-heights, flatter Map aspect, smaller `.cr-content` / mock type) so facsimiles sit under page chrome instead of competing with it; Path rails stay full rem hit targets

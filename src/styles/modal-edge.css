@@ -100,7 +100,8 @@
   --me-layer-a: 0.55;
   --me-layer-b: 0.72;
   position: relative;
-  min-height: 28rem;
+  min-height: var(--demo-stage-min-modal);
+  max-height: var(--demo-stage-max-h);
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;

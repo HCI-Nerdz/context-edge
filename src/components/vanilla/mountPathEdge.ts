@@ -675,46 +675,43 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const list = nodes();
     const current = list[list.length - 1]!;
     root.innerHTML = `
-      <p class="pe-caption">
-        Top or Side — one full-length edge with a rail foundation behind every hop.
-        Home stays pinned; overflow hops hide under Home — drag, swipe, or arrow-key the rail to scroll.
-        On touch, swipe inward from the left stage edge to open or dismiss the bar
-        (pull-down reveal is stubbed until browsers stop owning that gesture for refresh).
-        Side alignment packs hops inside the full rail.
-        A zoomable facsimile-canvas shell is future work — this demo runs the real rail code.
-      </p>
       <section class="pe-harness" role="region" aria-label="Demo controls">
         <span class="pe-harness-label">Demo controls</span>
-        <div class="pe-harness-row pe-harness-primary">
-          <div class="mode-btns" role="group" aria-label="Edge placement">
+        <div class="pe-harness-row pe-harness-placement">
+          <div class="pe-ctrl" role="group" aria-label="Edge placement">
             <span class="variant-switch-name">Edge</span>
-            <button type="button" class="mode-btn pe-ico-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top" title="Top edge" aria-label="Top edge">
-              ${EDGE_TOP_ICO}
-            </button>
-            <button type="button" class="mode-btn pe-ico-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left" title="Side edge" aria-label="Side edge">
-              ${EDGE_SIDE_ICO}
-            </button>
+            <div class="pe-ctrl-btns">
+              <button type="button" class="mode-btn pe-ico-btn${edge === 'top' ? ' is-on' : ''}" data-edge="top" title="Top edge" aria-label="Top edge">
+                ${EDGE_TOP_ICO}
+              </button>
+              <button type="button" class="mode-btn pe-ico-btn${edge === 'left' ? ' is-on' : ''}" data-edge="left" title="Side edge" aria-label="Side edge">
+                ${EDGE_SIDE_ICO}
+              </button>
+            </div>
           </div>
-          <div class="mode-btns pe-align" role="group" aria-label="Side alignment" ${edge === 'left' ? '' : 'hidden'}>
+          <div class="pe-ctrl pe-align" role="group" aria-label="Side alignment" ${edge === 'left' ? '' : 'hidden'}>
             <span class="variant-switch-name">Alignment</span>
-            <button type="button" class="mode-btn" data-pack="start" title="Pack hops toward the start of the rail">
-              <span class="align-ico align-ico-start" aria-hidden="true"><i></i><i></i><i></i></span>
-            </button>
-            <button type="button" class="mode-btn" data-pack="end" title="Pack hops toward the end of the rail">
-              <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
-            </button>
+            <div class="pe-ctrl-btns">
+              <button type="button" class="mode-btn" data-pack="start" title="Pack hops toward the start of the rail">
+                <span class="align-ico align-ico-start" aria-hidden="true"><i></i><i></i><i></i></span>
+              </button>
+              <button type="button" class="mode-btn" data-pack="end" title="Pack hops toward the end of the rail">
+                <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
+              </button>
+            </div>
           </div>
-          ${themeSwitchHtml('page')}
+          <div class="pe-appearance">
+            ${themeSwitchHtml('page')}
+          </div>
           <button type="button" class="mode-btn pe-reset" data-reset title="Reset path to the demo leaf">
             Reset path
           </button>
           <p class="pe-resize-hint">Drag a stage’s free edge to resize — Live and Still stay synced.</p>
         </div>
-        <div class="pe-blend-slot">${blendSelect(activeBlend())}</div>
-        <div class="pe-harness-subsection" role="group" aria-label="Style">
-          <span class="pe-harness-sublabel">Style</span>
-          <div class="pe-harness-row pe-harness-style">
-            <div class="mode-btns" role="group" aria-label="Visual style">
+        <div class="pe-harness-row pe-harness-look">
+          <div class="pe-ctrl" role="group" aria-label="Visual style">
+            <span class="variant-switch-name">Style</span>
+            <div class="pe-ctrl-btns">
               <button type="button" class="mode-btn pe-style-btn${style === 'color' ? ' is-on' : ''}" data-style="color" title="Color" aria-label="Color style">
                 <span class="pe-style-swatch pe-style-swatch-color" aria-hidden="true"></span>
                 <span class="pe-style-caption">Color</span>
@@ -725,6 +722,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
               </button>
             </div>
           </div>
+          <div class="pe-blend-slot">${blendSelect(activeBlend())}</div>
         </div>
       </section>
       <div class="pe-facsimile" aria-label="Product facsimile">

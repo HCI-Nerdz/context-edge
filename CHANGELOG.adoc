@@ -1,5 +1,12 @@
 = Changelog
 
+== 2026-09-05 — DemoHead ownership, Path harness tidy, facsimile scale
+
+* DemoHead owns shared variant copy; Path workshop drops the duplicate “Top or Side…” caption
+* Bordered scrollable variant description with gap before Implementation; Path Style then Blend inline with aligned Edge/Appearance
+* Shared `--demo-facsimile-scale` miniaturizes Map / Modal / Path stage content under page chrome
+* link:changelog-details/2026-09-05%20-%20demohead-ownership-facsimile-scale.adoc[Details]
+
 == 2026-09-05 — Stage shadows visible against the page
 
 * `.shell` keeps `overflow-x: clip` but adds `--demo-stage-shadow-pad` inline padding so Map / Modal / Path drop shadows show on the left and right at full width

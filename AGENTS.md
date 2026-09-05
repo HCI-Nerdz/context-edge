@@ -7,6 +7,7 @@ MVP demos for **Context Edge** (repo slug `context-edge`):
 - **Variant A — Map Edge:** thin top/left edges → click slides the activity page off (View Transitions) to reveal a scrollable Alphabet/Google product tree underneath. Map VT is scoped to `.cr-stage` (`src/lib/map-vt.ts`). *Transition style* on the implementation. Footer *Appearance* is the real page (`html[data-theme]`). Implementation *Appearance* only themes `.cr-sheet` mocks — follows the page until overridden (`src/lib/theme.ts`)
 - **Variant B — Modal Edge:** edge = current node; scoped View Transitions slide the sheet to reveal colored ancestry layers (`src/lib/modal-vt.ts`; `/demos/modal-edge/` Live/Still on every implementation)
 - **Variant C — Path Edge:** breadcrumb as color series on one edge (Top labels or Side marks); full edge length; Live/Still rows with Color/Subtle style + stage edge drag-resize (`/demos/path-edge/` shared workshop mount; Solid/React/Svelte host the same suite)
+- **Demo chrome ownership:** `DemoHead.astro` owns back / Demo meta / Context Edge H1 / suite lede / Variant / variant name+description / Implementation / Mode. Shared copy lives in `src/lib/*` (`CONTEXT_EDGE_LEDE`, `MAP_EDGE_LEDE`, `MODAL_EDGE_LEDE*`, `PATH_EDGE_LEDE`). Path `mountPathWorkshop` owns only Demo controls + Live/Still stages — not the Path lede caption.
 - **L-join:** Map and Modal share `.cr-rail` / `.cr-rail-corner` / `.cr-rail-top` / `.cr-rail-left` in `global.css`. Path Edge is a single-edge placement (not an L).
 
 ## Links

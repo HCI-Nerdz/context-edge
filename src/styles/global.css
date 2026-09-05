@@ -13,6 +13,22 @@ html[data-theme='dark'] {
   --demo-stage-shadow: 0 22px 56px rgba(0, 0, 0, 0.48), 0 6px 18px rgba(0, 0, 0, 0.28);
   /* Horizontal room inside .shell so stage shadows aren't clipped L/R */
   --demo-stage-shadow-pad: 2.5rem;
+  /*
+   * Miniaturized product facsimile under DemoHead chrome.
+   * Scale multiplies content type/padding; stage mins stay compact so desks
+   * don't read as a second full page. Rails keep fixed rem hit targets.
+   */
+  --demo-facsimile-scale: 0.86;
+  --demo-stage-min-map: 16.5rem;
+  --demo-stage-min-modal: 18.5rem;
+  --demo-stage-min-path: 17rem;
+  --demo-stage-max-h: 22rem;
+  --demo-content-min-h: calc(10.5rem * var(--demo-facsimile-scale));
+  --demo-content-pad-block: calc(0.85rem * var(--demo-facsimile-scale));
+  --demo-content-pad-inline: calc(0.9rem * var(--demo-facsimile-scale));
+  --demo-content-title: calc(1.12rem * var(--demo-facsimile-scale));
+  --demo-content-meta: calc(0.78rem * var(--demo-facsimile-scale));
+  --demo-content-body: calc(0.82rem * var(--demo-facsimile-scale));
   /* Sheet content panel inside Modal/Path stages */
   --cr-content-bg: rgba(8, 12, 14, 0.55);
   --cr-content-line: rgba(255, 255, 255, 0.12);
@@ -151,9 +167,10 @@ h1 {
 .demo-head {
   /* Fixed rows so Map / Modal / Path start the desk at the same offset.
      Order: back → meta → Context Edge → suite lede → Variant → variant blurb
-     → Implementation (+ Mode). Row 2 is the back→eyebrow gap. */
+     → gap → Implementation (+ Mode). Row 2 is the back→eyebrow gap.
+     Row 8 is the blurb→Implementation spacer. */
   display: grid;
-  grid-template-rows: 1.75rem 0.55rem 1.45rem 2.6rem 3.1rem 5.6rem 7.2rem 5.2rem;
+  grid-template-rows: 1.75rem 0.55rem 1.45rem 2.6rem 3.1rem 5.6rem 7.6rem 0.85rem 5.2rem;
   margin-bottom: 0.25rem;
 }
 
@@ -205,18 +222,23 @@ h1 {
 }
 
 .demo-head .variant-blurb {
-  height: 7.2rem;
+  height: 7.6rem;
   overflow: auto;
   margin: 0;
+  padding: 0.55rem 0.7rem 0.6rem;
   align-self: stretch;
   grid-row: 7;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--wash) 70%, transparent);
+  box-sizing: border-box;
 }
 
 .demo-head .demo-impl-switches {
   min-height: 5.2rem;
   margin: 0;
   align-self: stretch;
-  grid-row: 8;
+  grid-row: 9;
 }
 
 .demo-head .variant-title {
@@ -274,6 +296,16 @@ h1 {
     min-height: 0;
     overflow: visible;
     align-self: stretch;
+  }
+
+  .demo-head .variant-blurb {
+    max-height: 11rem;
+    overflow: auto;
+    margin-bottom: 0.35rem;
+  }
+
+  .demo-head .demo-impl-switches {
+    margin-top: 0.35rem;
   }
 
   .demo-head .demo-back {
@@ -727,8 +759,9 @@ button.variant-switch-item.is-current:hover {
   --vt-ms: 0.48s;
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
-  min-height: 22.5rem;
+  aspect-ratio: 16 / 9;
+  min-height: var(--demo-stage-min-map);
+  max-height: var(--demo-stage-max-h);
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
@@ -814,7 +847,7 @@ button.variant-switch-item.is-current:hover {
 .cr-map-head h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: var(--demo-content-title);
 }
 
 .cr-map .meta {
@@ -911,13 +944,14 @@ button.variant-switch-item.is-current:hover {
 .cr-content {
   position: relative;
   z-index: 1;
-  margin: calc(var(--rail-idle) + 0.85rem) 1rem 1rem calc(var(--rail-idle) + 0.85rem);
-  padding: 1.15rem 1.2rem 1.35rem;
+  margin: calc(var(--rail-idle) + 0.55rem) 0.75rem 0.75rem calc(var(--rail-idle) + 0.55rem);
+  padding: var(--demo-content-pad-block) var(--demo-content-pad-inline);
   border: 1px solid var(--cr-content-line);
   border-radius: 0.35rem;
   background: var(--cr-content-bg);
   backdrop-filter: blur(6px);
-  min-height: 16rem;
+  min-height: var(--demo-content-min-h);
+  font-size: var(--demo-content-body);
 }
 
 .cr-app {
@@ -929,6 +963,7 @@ button.variant-switch-item.is-current:hover {
   overflow: hidden;
   color: var(--mock-ink);
   font-family: "Google Sans", Roboto, "Segoe UI", sans-serif;
+  font-size: calc(0.92rem * var(--demo-facsimile-scale));
 }
 
 .cr-app > * {
@@ -1635,20 +1670,21 @@ button.variant-switch-item.is-current:hover {
 }
 
 .cr-content h2 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.3rem;
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: var(--demo-content-title);
 }
 
 .cr-content .meta {
-  margin: 0 0 1rem;
-  font-size: 0.85rem;
-  opacity: 0.7;
+  margin: 0 0 0.55rem;
+  font-size: var(--demo-content-meta);
+  opacity: 0.72;
 }
 
 .cr-content p {
-  margin: 0 0 0.75rem;
-  line-height: 1.55;
+  margin: 0 0 0.55rem;
+  font-size: var(--demo-content-body);
+  line-height: 1.45;
   max-width: 40rem;
 }
 

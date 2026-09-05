@@ -1,14 +1,7 @@
-.pe-caption {
-  margin: 0 0 0.85rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-  max-width: 48rem;
-  line-height: 1.45;
-}
-
 /*
  * Demo harness — explainer knobs only (not product UI).
  * Dashed/neutral chrome so Edge / Style / Blend read as workshop controls.
+ * Shared copy (Path lede) lives in DemoHead — mount owns controls + stages only.
  */
 .pe-harness {
   --pe-control-bg: #1a1f23;
@@ -28,8 +21,7 @@ html[data-theme='light'] .pe-harness {
   background: color-mix(in srgb, var(--panel) 88%, var(--wash));
 }
 
-.pe-harness-label,
-.pe-harness-sublabel {
+.pe-harness-label {
   display: block;
   margin: 0 0 0.45rem;
   font-size: 0.65rem;
@@ -39,42 +31,76 @@ html[data-theme='light'] .pe-harness {
   color: var(--muted);
 }
 
-.pe-harness-sublabel {
-  margin-top: 0.15rem;
-  margin-bottom: 0.35rem;
-  font-size: 0.62rem;
-  letter-spacing: 0.07em;
-  opacity: 0.92;
-}
-
 .pe-harness-row {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.55rem 0.85rem;
+}
+
+.pe-harness-placement {
+  margin-bottom: 0.55rem;
+}
+
+.pe-harness-look {
+  margin-bottom: 0.15rem;
+}
+
+/* Column groups so Edge / Appearance labels share a row and buttons share a row */
+.pe-ctrl,
+.pe-blend-label {
+  display: grid;
+  grid-template-rows: 1.05rem auto;
+  align-items: start;
+  justify-items: start;
+  gap: 0.28rem;
+  margin: 0;
+}
+
+.pe-ctrl-btns {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.55rem 0.75rem;
+  gap: 0.35rem;
+  min-height: 1.85rem;
 }
 
-.pe-harness-primary {
-  margin-bottom: 0.65rem;
-  padding-bottom: 0.65rem;
-  border-bottom: 1px dashed color-mix(in srgb, var(--pe-harness-line) 70%, transparent);
+.pe-appearance .variant-switch {
+  display: grid;
+  grid-template-rows: 1.05rem auto;
+  align-items: start;
+  justify-items: start;
+  gap: 0.28rem;
+  margin: 0;
 }
 
-.pe-harness-subsection {
-  margin-top: 0.55rem;
-  padding: 0.5rem 0.55rem 0.55rem;
-  border: 1px dashed color-mix(in srgb, var(--pe-harness-line) 65%, transparent);
-  border-radius: 0.35rem;
-  background: color-mix(in srgb, var(--wash) 55%, transparent);
+.pe-appearance .variant-switch-track {
+  display: inline-flex;
+  min-height: 1.85rem;
+  align-items: stretch;
+}
+
+.pe-appearance .variant-switch-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.65rem;
+  font-size: 0.75rem;
+}
+
+.pe-blend-select {
+  min-height: 1.85rem;
+  box-sizing: border-box;
 }
 
 .pe-resize-hint {
   margin: 0;
+  align-self: end;
   flex: 1 1 12rem;
   font-size: 0.72rem;
   line-height: 1.35;
   color: var(--muted);
   max-width: 22rem;
+  padding-bottom: 0.2rem;
 }
 
 .pe-facsimile {
@@ -108,7 +134,7 @@ html[data-theme='light'] .pe-harness {
 /* Side edge: synced stage height so vertical overflow is visible */
 .pe-rows[data-edge='left'] .pe-stage {
   height: var(--pe-zone-height, auto);
-  min-height: 20rem;
+  min-height: calc(var(--demo-stage-min-path) * 0.92);
 }
 
 .pe-cell-label {
@@ -122,14 +148,10 @@ html[data-theme='light'] .pe-harness {
 }
 
 .pe-blend-slot {
-  margin: 0.1rem 0 0.4rem;
+  margin: 0;
 }
 
 .pe-blend-label {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45rem;
   font: inherit;
   color: var(--muted);
 }
@@ -199,6 +221,7 @@ html[data-theme='light'] .pe-blend-select {
 
 .pe-reset {
   margin-left: 0.15rem;
+  align-self: end;
 }
 
 .mode-btns {
@@ -300,7 +323,7 @@ html[data-theme='light'] .mode-btn {
   --pe-mono-l-min: 18%;
   --pe-mono-l-span: 42%;
   position: relative;
-  min-height: 24rem;
+  min-height: var(--demo-stage-min-path);
   border: 1px solid var(--line);
   border-radius: 0.45rem;
   overflow: hidden;
@@ -818,7 +841,7 @@ html[data-theme='light'] .pe-stage {
 }
 
 .pe-content {
-  margin: calc(var(--rail-idle) + 0.85rem) 1rem 1rem calc(var(--rail-idle) + 0.85rem);
+  margin: calc(var(--rail-idle) + 0.55rem) 0.75rem 0.75rem calc(var(--rail-idle) + 0.55rem);
 }
 
 .pe-crumbs {
