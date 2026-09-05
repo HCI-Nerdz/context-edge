@@ -191,7 +191,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       } else {
         left.append(home, scroll);
       }
-      /* Absolute overlay — keep after home for paint order under the pin. */
+      /* Sibling overlay between Home and scroll: Home above, hops below. */
       if (shadow) left.insertBefore(shadow, scroll);
     });
     root.querySelectorAll<HTMLButtonElement>('[data-pack]').forEach((btn) => {
@@ -522,7 +522,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const hops = list.slice(1);
     const trackHops = hops.map((n) => hopHtml(n, edge, current, list.indexOf(n), list.length)).join('');
     const home = homeHtml(rootNode, current, list.length, edge);
-    /* Depth shadow is a rail overlay (not inside the scrolling track). */
+    /* Depth shadow: rail chrome between Home and scroll (not inside the track). */
     const depth = `<div class="pe-depth-shadow" aria-hidden="true"></div>`;
 
     if (edge === 'top') {

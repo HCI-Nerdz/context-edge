@@ -373,11 +373,11 @@ html[data-theme='light'] .pe-stage {
 
 .pe-home {
   position: relative;
+  /* Above .pe-depth-shadow so Home’s face stays crisp; hops scroll under both. */
   z-index: 6;
   flex: 0 0 var(--pe-home-size);
   width: var(--pe-home-size);
   height: 100%;
-  /* Depth cue comes from .pe-depth-shadow under the pin, not a fixed home drop-shadow. */
 }
 
 .pe-stage[data-edge='left'] .pe-home {
@@ -478,9 +478,10 @@ html[data-theme='light'] .pe-stage {
 }
 
 /*
- * Depth shadow: fixed to the rail (does not scroll with hops).
- * Extends under Home; intensity/span set by syncPathDepthShadow from underflow.
- * Short, dramatic falloff — transparent edge sits ~halfway along the bar at full effect.
+ * Depth shadow: rail chrome sibling between Home and the scroll track.
+ * Z-order: Home (6) > shadow (5) > .pe-scroll (1). Positioned at the Home|hop
+ * seam into the hop area only (syncPathDepthShadow); never covers Home’s face.
+ * Tight falloff — short band, not a wash across the rail.
  */
 .pe-depth-shadow {
   position: absolute;
@@ -491,11 +492,11 @@ html[data-theme='light'] .pe-stage {
   width: 0;
   height: 100%;
   opacity: 0;
+  --pe-depth-i: 0;
   background: linear-gradient(
     to right,
     var(--pe-depth-shadow) 0%,
-    color-mix(in srgb, var(--pe-depth-shadow) 72%, transparent) 22%,
-    color-mix(in srgb, var(--pe-depth-shadow) 28%, transparent) 55%,
+    color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent) 42%,
     transparent 100%
   );
 }
@@ -506,8 +507,7 @@ html[data-theme='light'] .pe-stage {
   background: linear-gradient(
     to bottom,
     var(--pe-depth-shadow) 0%,
-    color-mix(in srgb, var(--pe-depth-shadow) 72%, transparent) 22%,
-    color-mix(in srgb, var(--pe-depth-shadow) 28%, transparent) 55%,
+    color-mix(in srgb, var(--pe-depth-shadow) 55%, transparent) 42%,
     transparent 100%
   );
 }

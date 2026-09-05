@@ -352,15 +352,19 @@ export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): (
 }
 
 /**
- * Depth shadow under Home — fixed to the rail (does not scroll with hops).
- * Intensity grows as the first hop slips under Home; full effect at ~½ tile under.
- * No darkening when hops sit flush next to Home (scroll underflow = 0).
+ * Depth shadow at the Home|hop seam — rail chrome overlay (does not scroll with hops).
+ *
+ * Paint order: Home (above) → shadow → scrolling hops (below).
+ * Placement: short band just past Home’s layout edge into the hop area (never over Home’s face).
+ * Intensity: off when flush (underflow 0); ramps fast as the first hop slides under Home;
+ * full effect by ~½ first-tile under (sooner via ease curve).
  */
 export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
   const shadow = rail.querySelector('.pe-depth-shadow') as HTMLElement | null;
   const scroller = rail.querySelector('.pe-scroll') as HTMLElement | null;
   const track = rail.querySelector('.pe-track') as HTMLElement | null;
-  if (!shadow || !scroller || !track) return;
+  const home = rail.querySelector('.pe-home') as HTMLElement | null;
+  if (!shadow || !scroller || !track || !home) return;
 
   const firstHop = track.querySelector('.pe-seg') as HTMLElement | null;
   const scrollPos = axis === 'top' ? scroller.scrollLeft : scroller.scrollTop;
@@ -369,25 +373,31 @@ export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
       ? firstHop.offsetWidth
       : firstHop.offsetHeight
     : 0;
-  const fullAt = Math.max(hopSize * 0.5, 1);
-  const intensity = Math.min(1, Math.max(0, scrollPos / fullAt));
-  const barLen = axis === 'top' ? rail.clientWidth : rail.clientHeight;
-  /* Short, dramatic falloff: at full effect the transparent edge sits ~halfway along the bar. */
-  const span = intensity <= 0 ? 0 : barLen * (0.28 + 0.22 * intensity);
+  const homeSize = axis === 'top' ? home.offsetWidth : home.offsetHeight;
+
+  /* Full drama by ~halfway under the first hop; ease so strength arrives early. */
+  const fullAt = Math.max(hopSize * 0.45, 1);
+  const t = Math.min(1, Math.max(0, scrollPos / fullAt));
+  const intensity = t <= 0 ? 0 : Math.min(1, Math.pow(t, 0.55));
+
+  /* Tight band at the seam — fraction of Home / first hop, not of the whole rail. */
+  const spanMax = Math.max(homeSize * 0.55, Math.min(hopSize * 0.32, homeSize * 0.9));
+  const span = intensity <= 0 ? 0 : spanMax * (0.65 + 0.35 * intensity);
 
   shadow.style.setProperty('--pe-depth-i', String(intensity));
-  shadow.style.opacity = intensity <= 0.001 ? '0' : String(0.2 + 0.8 * intensity);
+  shadow.style.opacity = intensity <= 0.001 ? '0' : String(intensity);
 
   if (axis === 'top') {
+    /* Seam = Home’s far edge; band extends into the hop scroller only. */
+    shadow.style.left = `${home.offsetLeft + home.offsetWidth}px`;
+    shadow.style.top = '0';
     shadow.style.width = `${span}px`;
     shadow.style.height = '100%';
-    shadow.style.left = '0';
-    shadow.style.top = '0';
   } else {
+    shadow.style.top = `${home.offsetTop + home.offsetHeight}px`;
+    shadow.style.left = '0';
     shadow.style.height = `${span}px`;
     shadow.style.width = '100%';
-    shadow.style.top = '0';
-    shadow.style.left = '0';
   }
 }
 
