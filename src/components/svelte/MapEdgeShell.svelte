@@ -59,7 +59,7 @@
 <div>
   <div class="cr-toolbar">
     <span>
-      Svelte island · community shell · {navOpen ? 'map open' : 'rails idle'} · {active.label}
+      Svelte implementation · community shell · {navOpen ? 'map open' : 'rails idle'} · {active.label}
     </span>
     {@html themeSwitchHtml('mock')}
     <nav class="variant-switch" aria-label="Transition style">

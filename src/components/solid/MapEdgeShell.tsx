@@ -71,7 +71,7 @@ export default function MapEdgeShell(props: Props) {
           </label>
         </Show>
         <span>
-          Solid island · {navOpen() ? 'map open' : 'rails idle'} · {active().label}
+          Solid implementation · {navOpen() ? 'map open' : 'rails idle'} · {active().label}
         </span>
         <div innerHTML={themeSwitchHtml('mock')} />
         <nav class="variant-switch" aria-label="Transition style">

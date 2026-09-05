@@ -595,7 +595,7 @@ button.variant-switch-item.is-current:hover {
   margin: 0;
 }
 
-/* Shared stage chrome used by islands via class names */
+/* Shared stage chrome used by framework implementations via class names */
 .cr-stage {
   --overlay: 210 55% 42%;
   --overlay-2: 200 40% 28%;

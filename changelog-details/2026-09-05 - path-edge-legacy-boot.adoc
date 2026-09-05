@@ -1,0 +1,5 @@
+= 2026-09-05 — Path Edge legacy redirects and Implementation chrome
+
+* Redirects for retired Path URLs land on workshop query/hash state the desk actually reads
+* `mountPathWorkshop` applies `style` / `stage` from the URL (including legacy `#subtle` and `#live-subtle`) on first paint
+* Map / Modal user-facing chrome and meta descriptions use *implementation* for framework hosts

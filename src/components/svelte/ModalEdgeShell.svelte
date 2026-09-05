@@ -70,7 +70,7 @@
 <div>
   <div class="cr-toolbar">
     <span>
-      {island} island · Modal Edge · {revealed ? 'layers revealed' : 'sheet closed'} · {current.label}
+      {island} implementation · Modal Edge · {revealed ? 'layers revealed' : 'sheet closed'} · {current.label}
       {live ? ' · Live' : ' · Rest'}
     </span>
     <button type="button" class="me-hint-btn" onclick={toggle}>

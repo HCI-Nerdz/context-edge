@@ -61,7 +61,7 @@ export default function MapEdgeShell({
     <div>
       <div className="cr-toolbar">
         <span>
-          React island · suite shell · {navOpen ? 'map open' : 'rails idle'} ·{' '}
+          React implementation · suite shell · {navOpen ? 'map open' : 'rails idle'} ·{' '}
           {active.label}
         </span>
         <div dangerouslySetInnerHTML={{ __html: themeSwitchHtml('mock') }} />

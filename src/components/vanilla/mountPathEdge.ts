@@ -36,12 +36,55 @@ function blendButtons(active: BlendMode): string {
     </div>`;
 }
 
+/** Boot from ?style=&stage= and hashes (#live|#rest|#subtle|#live-subtle). */
+function readBootIntent(): { style: VisualStyle; focusStage: StageKind | null; legacy: boolean } {
+  const params = new URLSearchParams(location.search);
+  const hash = (location.hash || '').replace(/^#/, '').toLowerCase();
+
+  let style: VisualStyle = 'color';
+  let focusStage: StageKind | null = null;
+  let legacy = false;
+
+  const qStyle = params.get('style');
+  if (qStyle === 'subtle' || qStyle === 'color') style = qStyle;
+  const qStage = params.get('stage');
+  if (qStage === 'live' || qStage === 'rest') focusStage = qStage;
+
+  if (hash === 'live-subtle') {
+    legacy = true;
+    style = 'subtle';
+    focusStage = focusStage ?? 'live';
+  } else if (hash === 'subtle') {
+    legacy = true;
+    style = 'subtle';
+  } else if (hash === 'live' || hash === 'rest') {
+    focusStage = focusStage ?? hash;
+  }
+
+  return { style, focusStage, legacy };
+}
+
+function canonicalizeBootUrl(style: VisualStyle, focusStage: StageKind | null) {
+  const url = new URL(location.href);
+  if (style === 'subtle') url.searchParams.set('style', 'subtle');
+  else url.searchParams.delete('style');
+  if (focusStage) {
+    url.searchParams.set('stage', focusStage);
+    url.hash = focusStage;
+  } else {
+    url.searchParams.delete('stage');
+    url.hash = '';
+  }
+  history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
 export function mountPathWorkshop(opts: { root: HTMLElement }) {
   const all = demoPath;
   let currentId = all[all.length - 1]!.id;
   let edge: PathEdgeAxis = 'top';
   let leftPack: Pack = 'start';
-  let style: VisualStyle = 'color';
+  const boot = readBootIntent();
+  let style: VisualStyle = boot.style;
   let blendColor: BlendMode = 'normal';
   let blendSubtle: BlendMode = 'color';
   let zonePct = ZONE_DEFAULT;
@@ -49,6 +92,12 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   /** Live dock-zoom focus — Rest ignores this. */
   const focusByStage = new Map<StageKind, number | null>();
   let observer: ResizeObserver | null = null;
+  let didBootScroll = false;
+
+  if (boot.focusStage) expanded.add(boot.focusStage);
+  if (boot.legacy || boot.focusStage || boot.style === 'subtle') {
+    canonicalizeBootUrl(boot.style, boot.focusStage);
+  }
 
   const root = opts.root;
 
@@ -426,6 +475,14 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     observer = new ResizeObserver(() => applyLayout());
     root.querySelectorAll('.pe-top, .pe-left').forEach((el) => observer!.observe(el));
     applyLayout();
+
+    if (!didBootScroll && boot.focusStage) {
+      didBootScroll = true;
+      const cell = root.querySelector(`#${boot.focusStage}`);
+      requestAnimationFrame(() => {
+        cell?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
+    }
   }
 
   render();

@@ -68,7 +68,7 @@ export default function ModalEdgeShell(props: Props) {
     <div>
       <div class="cr-toolbar">
         <span>
-          {props.island ?? 'Solid'} island · Modal Edge · {revealed() ? 'layers revealed' : 'sheet closed'} ·{' '}
+          {props.island ?? 'Solid'} implementation · Modal Edge · {revealed() ? 'layers revealed' : 'sheet closed'} ·{' '}
           {current().label}
           {live() ? ' · Live' : ' · Rest'}
         </span>

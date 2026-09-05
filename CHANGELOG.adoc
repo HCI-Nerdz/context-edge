@@ -1,5 +1,12 @@
 = Changelog
 
+== 2026-09-05 — Path Edge legacy redirects and Implementation chrome
+
+* Legacy Path pages (`path-edge-live`, `path-edge-tint`, `path-edge-tint-live`) redirect with `?style=` / `?stage=` and `#live` / `#rest`
+* Workshop boot reads query + legacy hashes (`#subtle`, `#live-subtle`) and scrolls/opens the matching row
+* Map and Modal status chrome and page descriptions say *implementation* (not island)
+* link:changelog-details/2026-09-05%20-%20path-edge-legacy-boot.adoc[Details]
+
 == 2026-09-05 — Path Edge workshop suite for every implementation
 
 * Solid / React / Svelte Path pages host the same workshop as vanilla (shared `mountPathWorkshop`)

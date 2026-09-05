@@ -66,7 +66,7 @@ export function mountVanillaRails(opts: MountOptions) {
     const active = findOrg(activeId);
     root.innerHTML = `
       <div class="cr-toolbar">
-        <span>Vanilla island · ${navOpen ? 'map open' : 'rails idle'} · ${active.label}</span>
+        <span>Vanilla implementation · ${navOpen ? 'map open' : 'rails idle'} · ${active.label}</span>
         ${themeSwitchHtml('mock')}
         <nav class="variant-switch" aria-label="Transition style">
           <span class="variant-switch-name">Transition style</span>
