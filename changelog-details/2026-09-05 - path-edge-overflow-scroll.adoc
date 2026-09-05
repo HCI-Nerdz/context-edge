@@ -3,5 +3,5 @@
 * Hops keep conventional size; overflow clips under a pinned Home control instead of log-compress / end-zone sizing
 * Drag, swipe, and arrow keys scroll the hop track (hidden scrollbar) on Top and Side, Rest and Live, Color and Subtle
 * Top hops are mark-forward with quieter subordinate labels; Home is a distinct `.pe-home` icon control
-* Depth shadow scrolls with the track, right-aligned to the current hop and capped at bar length
-* Full-edge rail foundation paints behind tiles; zone slider still demonstrates fit vs overflow
+* Depth shadow originally scrolled with the track and right-aligned to the current hop — later revised so the shadow is a fixed rail overlay under Home driven by underflow intensity (see 2026-09-05 drag-resize/shadow entry)
+* Full-edge rail foundation paints behind tiles; stage size was later switched from a zone slider to edge drag-resize

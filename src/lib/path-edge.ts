@@ -44,7 +44,7 @@ export const demoPath: PathNode[] = [
     id: 'invoices',
     label: 'Invoices',
     role: 'Collection',
-    blurb: 'Another hop so a tight zone overflows — drag or swipe the rail to reveal ancestors under Home.',
+    blurb: 'Another hop so a tight stage overflows — drag or swipe the rail to reveal ancestors under Home.',
     color: '#00acc1',
     mark: '▤',
   },
@@ -84,8 +84,8 @@ export const BLEND_MODES = [
 
 export type BlendMode = (typeof BLEND_MODES)[number];
 
-/** Heroicons v2 outline home — MIT. Inline so currentColor follows tile ink. */
-export const HOME_ICON_SVG = `<svg class="pe-home-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.25 12L11.2045 3.04549C11.6438 2.60615 12.3562 2.60615 12.7955 3.04549L21.75 12M4.5 9.75V19.875C4.5 20.4963 5.00368 21 5.625 21H9.75V16.125C9.75 15.5037 10.2537 15 10.875 15H13.125C13.7463 15 14.25 15.5037 14.25 16.125V21H18.375C18.9963 21 19.5 20.4963 19.5 19.875V9.75M8.25 21H16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+/** Filled home glyph (Uiverse emmanuelh-dev path) — currentColor follows tile ink. */
+export const HOME_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" class="pe-home-svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>`;
 
 /**
  * Relative luminance (WCAG). Returns 0–1 for sRGB hex (#rgb / #rrggbb).
@@ -176,10 +176,10 @@ export type PathEdgeAxis = 'top' | 'left';
 
 /** Shared Path Edge page lede — vanilla and framework implementations. */
 export const PATH_EDGE_LEDE =
-  'One edge at a time — Top (marks + quiet labels) or Side (icons + labels). Resting and Live each get a full stage; Color / Subtle is a style switch. Shrink the demo zone to overflow; drag or swipe the rail to scroll hops out from under Home.';
+  'One edge at a time — Top (marks + quiet labels) or Side (icons + labels). Still and Live each get a full stage; Color / Subtle is a style switch. Drag a stage edge to resize and force overflow; drag or swipe the rail to scroll hops out from under Home.';
 
 export const PATH_EDGE_DESCRIPTION =
-  'Path Edge workshop: Top or Side; Resting and Live rows; Color / Subtle style; overflow scroll with pinned Home.';
+  'Path Edge workshop: Top or Side; Still and Live rows; Color / Subtle style; overflow scroll with pinned Home.';
 
 /**
  * FUTURE: pull-down / swipe-down on the page to reveal then dismiss the top Path bar.
@@ -351,37 +351,42 @@ export function bindPathDragScroll(scroller: HTMLElement, axis: PathEdgeAxis): (
   };
 }
 
-/** Size the depth shadow to the current hop’s far edge, capped at the bar length. */
+/**
+ * Depth shadow under Home — fixed to the rail (does not scroll with hops).
+ * Intensity grows as the first hop slips under Home; full effect at ~½ tile under.
+ * No darkening when hops sit flush next to Home (scroll underflow = 0).
+ */
 export function syncPathDepthShadow(rail: HTMLElement, axis: PathEdgeAxis) {
-  const track = rail.querySelector('.pe-track') as HTMLElement | null;
   const shadow = rail.querySelector('.pe-depth-shadow') as HTMLElement | null;
-  const here = rail.querySelector('.pe-seg.is-here') as HTMLElement | null;
-  if (!track || !shadow) return;
+  const scroller = rail.querySelector('.pe-scroll') as HTMLElement | null;
+  const track = rail.querySelector('.pe-track') as HTMLElement | null;
+  if (!shadow || !scroller || !track) return;
 
+  const firstHop = track.querySelector('.pe-seg') as HTMLElement | null;
+  const scrollPos = axis === 'top' ? scroller.scrollLeft : scroller.scrollTop;
+  const hopSize = firstHop
+    ? axis === 'top'
+      ? firstHop.offsetWidth
+      : firstHop.offsetHeight
+    : 0;
+  const fullAt = Math.max(hopSize * 0.5, 1);
+  const intensity = Math.min(1, Math.max(0, scrollPos / fullAt));
   const barLen = axis === 'top' ? rail.clientWidth : rail.clientHeight;
-  if (!here) {
-    shadow.style.width = axis === 'top' ? '0px' : '100%';
-    shadow.style.height = axis === 'top' ? '100%' : '0px';
-    return;
-  }
+  /* Short, dramatic falloff: at full effect the transparent edge sits ~halfway along the bar. */
+  const span = intensity <= 0 ? 0 : barLen * (0.28 + 0.22 * intensity);
 
-  /* Far edge of current in track coords; shadow right-aligns to that edge. */
-  const far =
-    axis === 'top'
-      ? here.offsetLeft + here.offsetWidth
-      : here.offsetTop + here.offsetHeight;
-  const span = Math.min(Math.max(far, 0), barLen);
-  const start = Math.max(0, far - span);
+  shadow.style.setProperty('--pe-depth-i', String(intensity));
+  shadow.style.opacity = intensity <= 0.001 ? '0' : String(0.2 + 0.8 * intensity);
 
   if (axis === 'top') {
     shadow.style.width = `${span}px`;
     shadow.style.height = '100%';
-    shadow.style.left = `${start}px`;
+    shadow.style.left = '0';
     shadow.style.top = '0';
   } else {
     shadow.style.height = `${span}px`;
     shadow.style.width = '100%';
-    shadow.style.top = `${start}px`;
+    shadow.style.top = '0';
     shadow.style.left = '0';
   }
 }

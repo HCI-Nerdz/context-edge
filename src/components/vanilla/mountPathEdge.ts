@@ -21,19 +21,19 @@ type VisualStyle = 'color' | 'subtle';
 type StageKind = 'rest' | 'live';
 
 const STAGES: { id: StageKind; live: boolean; label: string }[] = [
-  { id: 'rest', live: false, label: 'Resting' },
+  { id: 'rest', live: false, label: 'Still' },
   { id: 'live', live: true, label: 'Live' },
 ];
 
 const DEFAULT_PATH_ID = demoPath[demoPath.length - 1]!.id;
 
-/** Zone size as % of the workshop width (top) or a rem height (side). */
-const ZONE_MIN = 42;
-const ZONE_MAX = 100;
-const ZONE_DEFAULT = 100;
+/** Demo stage size bounds (px) for edge drag-resize. */
+const ZONE_MIN_W = 260;
+const ZONE_MIN_H = 200;
 
-const EDGE_TOP_ICO = `<svg class="pe-ctrl-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5h18v3H3V5zm0 0v14h2V5H3zm18 0v14h-2V5h2z"/><path fill="currentColor" d="M7 8h10v2H7V8z" opacity=".55"/></svg>`;
-const EDGE_SIDE_ICO = `<svg class="pe-ctrl-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3h3v18H5V3zm0 0h14v2H5V3zm0 16h14v2H5v-2z"/><path fill="currentColor" d="M8 7h2v10H8V7z" opacity=".55"/></svg>`;
+/** Lucide panel-top / panel-left (ISC) — currentColor. */
+const EDGE_TOP_ICO = `<svg class="pe-ctrl-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>`;
+const EDGE_SIDE_ICO = `<svg class="pe-ctrl-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>`;
 
 function blendSelect(active: BlendMode): string {
   return `
@@ -98,7 +98,9 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   let style: VisualStyle = boot.style;
   let blendColor: BlendMode = 'normal';
   let blendSubtle: BlendMode = 'color';
-  let zonePct = ZONE_DEFAULT;
+  /** Synced stage width (top) / height (side); null = natural full size. */
+  let zoneWidthPx: number | null = null;
+  let zoneHeightPx: number | null = null;
   const expanded = new Set<StageKind>();
   /** Sticky open from mobile edge-swipe (survives pointerleave). */
   const stickyOpen = new Set<StageKind>();
@@ -108,6 +110,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   let didBootScroll = false;
   const dragCleanups: Array<() => void> = [];
   const gestureCleanups: Array<() => void> = [];
+  const resizeCleanups: Array<() => void> = [];
 
   if (boot.focusStage) expanded.add(boot.focusStage);
   if (boot.legacy || boot.focusStage || boot.style === 'subtle') {
@@ -129,13 +132,17 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
   }
 
   function applyZone() {
-    root.style.setProperty('--pe-zone-pct', String(zonePct));
     const rows = root.querySelector<HTMLElement>('.pe-rows');
-    if (rows) rows.style.setProperty('--pe-zone-pct', String(zonePct));
-    const slider = root.querySelector<HTMLInputElement>('[data-zone-size]');
-    if (slider) slider.value = String(zonePct);
-    const read = root.querySelector('[data-zone-readout]');
-    if (read) read.textContent = `${zonePct}%`;
+    if (!rows) return;
+    if (edge === 'top') {
+      rows.style.removeProperty('--pe-zone-height');
+      if (zoneWidthPx != null) rows.style.setProperty('--pe-zone-width', `${zoneWidthPx}px`);
+      else rows.style.removeProperty('--pe-zone-width');
+    } else {
+      rows.style.removeProperty('--pe-zone-width');
+      if (zoneHeightPx != null) rows.style.setProperty('--pe-zone-height', `${zoneHeightPx}px`);
+      else rows.style.removeProperty('--pe-zone-height');
+    }
   }
 
   function syncShadows() {
@@ -174,12 +181,18 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       const home = left.querySelector('.pe-home');
       const scroll = left.querySelector('.pe-scroll');
       const slack = left.querySelector('.pe-slack');
+      const shadow = left.querySelector('.pe-depth-shadow');
       if (!home || !scroll) return;
       if (leftPack === 'start') {
         if (slack) left.append(home, scroll, slack);
         else left.append(home, scroll);
-      } else if (slack) left.append(slack, home, scroll);
-      else left.append(home, scroll);
+      } else if (slack) {
+        left.append(slack, home, scroll);
+      } else {
+        left.append(home, scroll);
+      }
+      /* Absolute overlay — keep after home for paint order under the pin. */
+      if (shadow) left.insertBefore(shadow, scroll);
     });
     root.querySelectorAll<HTMLButtonElement>('[data-pack]').forEach((btn) => {
       btn.classList.toggle('is-on', btn.dataset.pack === leftPack);
@@ -412,6 +425,69 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     );
   }
 
+  function bindStageResize(handle: HTMLElement, mode: 'width' | 'height') {
+    let active = false;
+    let pointerId = -1;
+    let startClient = 0;
+    let startSize = 0;
+
+    const onDown = (e: PointerEvent) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const stage = handle.closest('.pe-stage') as HTMLElement | null;
+      if (!stage) return;
+      active = true;
+      pointerId = e.pointerId;
+      startClient = mode === 'width' ? e.clientX : e.clientY;
+      startSize = mode === 'width' ? stage.offsetWidth : stage.offsetHeight;
+      handle.classList.add('is-dragging');
+      try {
+        handle.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (!active || e.pointerId !== pointerId) return;
+      const delta = (mode === 'width' ? e.clientX : e.clientY) - startClient;
+      const rows = root.querySelector('.pe-rows') as HTMLElement | null;
+      const maxW = rows?.clientWidth ?? 1200;
+      if (mode === 'width') {
+        zoneWidthPx = Math.min(maxW, Math.max(ZONE_MIN_W, Math.round(startSize + delta)));
+      } else {
+        zoneHeightPx = Math.max(ZONE_MIN_H, Math.round(startSize + delta));
+      }
+      applyZone();
+      requestAnimationFrame(() => revealCurrent());
+    };
+
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerId !== pointerId) return;
+      active = false;
+      pointerId = -1;
+      handle.classList.remove('is-dragging');
+      try {
+        handle.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    };
+
+    handle.addEventListener('pointerdown', onDown);
+    handle.addEventListener('pointermove', onMove);
+    handle.addEventListener('pointerup', onUp);
+    handle.addEventListener('pointercancel', onUp);
+
+    resizeCleanups.push(() => {
+      handle.removeEventListener('pointerdown', onDown);
+      handle.removeEventListener('pointermove', onMove);
+      handle.removeEventListener('pointerup', onUp);
+      handle.removeEventListener('pointercancel', onUp);
+    });
+  }
+
   function hopHtml(n: PathNode, axis: PathEdgeAxis, page: PathNode, fromRoot: number, count: number): string {
     const here = fromRoot === count - 1;
     const mono = pathSegMono(page, fromRoot, count);
@@ -446,14 +522,16 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const hops = list.slice(1);
     const trackHops = hops.map((n) => hopHtml(n, edge, current, list.indexOf(n), list.length)).join('');
     const home = homeHtml(rootNode, current, list.length, edge);
+    /* Depth shadow is a rail overlay (not inside the scrolling track). */
+    const depth = `<div class="pe-depth-shadow" aria-hidden="true"></div>`;
 
     if (edge === 'top') {
       return `
         <div class="pe-top cr-rail cr-rail-top" role="toolbar" aria-label="${label} top path">
           ${home}
+          ${depth}
           <div class="pe-scroll pe-scroll-top" tabindex="0" aria-label="Path hops">
             <div class="pe-track pe-track-top">
-              <div class="pe-depth-shadow" aria-hidden="true"></div>
               ${trackHops}
             </div>
           </div>
@@ -462,9 +540,9 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     return `
       <div class="pe-left cr-rail cr-rail-left" data-pack="${leftPack}" role="toolbar" aria-label="${label} side path">
         ${home}
+        ${depth}
         <div class="pe-scroll pe-scroll-left" tabindex="0" aria-label="Path hops">
           <div class="pe-track pe-track-left">
-            <div class="pe-depth-shadow" aria-hidden="true"></div>
             ${trackHops}
           </div>
         </div>
@@ -482,10 +560,13 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     const blend = activeBlend();
     const vars = pathStageVars(current);
     const subtle = style === 'subtle';
+    const resizeMode = edge === 'top' ? 'width' : 'height';
+    const resizeClass = edge === 'top' ? 'pe-resize-e' : 'pe-resize-s';
+    const resizeLabel = edge === 'top' ? 'Resize stage width' : 'Resize stage height';
     return `
       <article class="pe-cell ${live ? 'pe-cell-live' : 'pe-cell-rest'}" id="${kind}">
-        <p class="pe-cell-label">${label}</p>
         ${live ? '' : `<div class="pe-blend-slot">${blendSelect(blend)}</div>`}
+        <p class="pe-cell-label">${label}</p>
         <div class="pe-stage ${subtle ? 'is-tint' : 'is-chroma'} ${live ? 'is-live' : ''}"
           data-stage="${kind}" data-edge="${edge}" data-live="${live ? '1' : '0'}"
           style="--blend:${blend};--page:${vars.page};--mono-top:${vars.monoTop};--mono-left:${vars.monoLeft}">
@@ -497,6 +578,9 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
             <p class="meta">${current.role}</p>
             <p>${current.blurb}</p>
           </div>
+          <div class="pe-resize ${resizeClass}" data-resize="${resizeMode}"
+            role="separator" tabindex="0" aria-orientation="${edge === 'top' ? 'vertical' : 'horizontal'}"
+            aria-label="${resizeLabel}" title="${resizeLabel}"></div>
         </div>
       </article>`;
   }
@@ -507,6 +591,10 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
 
   function clearGestureBindings() {
     while (gestureCleanups.length) gestureCleanups.pop()?.();
+  }
+
+  function clearResizeBindings() {
+    while (resizeCleanups.length) resizeCleanups.pop()?.();
   }
 
   function bindScrollers() {
@@ -545,6 +633,7 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
     observer?.disconnect();
     clearDragBindings();
     clearGestureBindings();
+    clearResizeBindings();
     const list = nodes();
     const current = list[list.length - 1]!;
     root.innerHTML = `
@@ -553,7 +642,8 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         Home stays pinned; overflow hops hide under Home — drag, swipe, or arrow-key the rail to scroll.
         On touch, swipe inward from the left stage edge to open or dismiss the bar
         (pull-down reveal is stubbed until browsers stop owning that gesture for refresh).
-        Shrink the zone to force overflow. Side alignment packs hops inside the full rail.
+        Drag the stage’s free edge to resize (Still and Live stay synced). Side alignment packs hops inside the full rail.
+        A zoomable facsimile-canvas shell is future work — this demo runs the real rail code.
       </p>
       <div class="cr-toolbar pe-toolbar">
         <div class="mode-btns" role="group" aria-label="Edge placement">
@@ -583,12 +673,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
             <span class="align-ico align-ico-end" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
         </div>
-        <div class="mode-btns pe-zone" role="group" aria-label="Demo zone size">
-          <span class="variant-switch-name">Zone</span>
-          <input type="range" min="${ZONE_MIN}" max="${ZONE_MAX}" value="${zonePct}"
-            data-zone-size aria-valuetext="${zonePct} percent" />
-          <span class="pe-zone-readout" data-zone-readout>${zonePct}%</span>
-        </div>
         <button type="button" class="mode-btn pe-reset" data-reset title="Reset path to the demo leaf">
           Reset path
         </button>
@@ -612,6 +696,11 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
         if (expanded.has(s.id) || stickyOpen.has(s.id)) stage.classList.add('is-open');
         bindStage(stage, s.id, s.live);
       }
+    });
+
+    root.querySelectorAll<HTMLElement>('[data-resize]').forEach((handle) => {
+      const mode = handle.dataset.resize === 'height' ? 'height' : 'width';
+      bindStageResize(handle, mode);
     });
 
     root.querySelectorAll('[data-goto]').forEach((el) => {
@@ -665,13 +754,6 @@ export function mountPathWorkshop(opts: { root: HTMLElement }) {
       nameHops();
       markLeaves(DEFAULT_PATH_ID);
       runPathVt(() => applyPath(DEFAULT_PATH_ID));
-    });
-
-    const zoneInput = root.querySelector<HTMLInputElement>('[data-zone-size]');
-    zoneInput?.addEventListener('input', () => {
-      zonePct = Number(zoneInput.value);
-      applyZone();
-      requestAnimationFrame(() => revealCurrent());
     });
 
     const blendSel = root.querySelector<HTMLSelectElement>('[data-blend-select]');

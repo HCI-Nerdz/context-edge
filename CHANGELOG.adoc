@@ -1,5 +1,12 @@
 = Changelog
 
+== 2026-09-05 — Path Edge drag-resize and depth shadow
+
+* Zone slider → stage edge drag-resize (Still + Live synced); Resting → Still; Blend above Still
+* Depth shadow under Home from underflow (no track scroll); filled home glyph; Lucide Edge icons; side arrows fixed
+* Facsimile-canvas shell deferred so demos keep the real rail code
+* link:changelog-details/2026-09-05%20-%20path-edge-drag-resize-shadow.adoc[Details]
+
 == 2026-09-05 — Path Edge rail UX polish
 
 * Thicker idle/open rails; side open width fits icon + label

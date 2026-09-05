@@ -1,0 +1,7 @@
+= 2026-09-05 — Path Edge drag-resize and depth shadow
+
+* Zone slider replaced by stage edge drag-resize (right for Top, bottom for Side); Still and Live stay synced
+* Resting renamed Still; Blend math sits above the Still label
+* Depth shadow is a rail overlay under Home — intensity from hop underflow, does not scroll with the track (revises earlier “scroll with / right-align to current” behavior)
+* Filled home glyph (Uiverse path) via `--tile-ink`; Lucide panel Edge icons; side arrow clip-path winding fixed
+* Caption notes a zoomable facsimile-canvas shell as future work so demos keep running the real rail code
