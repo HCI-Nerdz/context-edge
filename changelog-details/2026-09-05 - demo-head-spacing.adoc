@@ -1,0 +1,5 @@
+= 2026-09-05 — Demo head spacing across all variants
+
+* Map and Modal Solid / React / Svelte pages use shared `DemoHead` (same grid as Path and vanilla)
+* Demo-head back row is a real grid item; switches scoped under `.demo-head` so section gaps match
+* Live Modal eyebrow includes · Live on every implementation

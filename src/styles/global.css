@@ -137,15 +137,15 @@ h1 {
 }
 
 .demo-head {
-  /* Fixed rows so vanilla / Solid / React / Svelte Path (and peers) start the
-     desk at the same vertical offset. Row 5 fits Variant + Implementation + Mode.
-     Extra air between ← Context Edge and the Demo eyebrow. */
+  /* Fixed rows so Map / Modal / Path start the desk at the same offset on every
+     implementation. Row 2 is the back→eyebrow gap; row 6 fits Variant +
+     Implementation (+ Mode on Modal). */
   display: grid;
   grid-template-rows: 1.75rem 0.55rem 1.45rem 2.6rem 4.8rem 10.5rem;
   margin-bottom: 0.25rem;
 }
 
-.demo-head .back {
+.demo-head .demo-back {
   margin: 0;
   align-self: start;
   grid-row: 1;
@@ -183,7 +183,7 @@ h1 {
   grid-row: 5;
 }
 
-.demo-switches {
+.demo-head .demo-switches {
   min-height: 10.5rem;
   margin: 0;
   align-self: stretch;

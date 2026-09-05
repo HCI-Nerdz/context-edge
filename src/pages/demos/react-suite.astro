@@ -1,10 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
-import FrameworkMark from '../../components/FrameworkMark.astro';
+import DemoHead from '../../components/DemoHead.astro';
 import MapEdgeShell from '../../components/react/MapEdgeShell';
-import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
@@ -12,19 +9,12 @@ import { hrefWithBase } from '../../lib/base';
   description="React implementation demo — suite shell with duo-tone platform overlays."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · React</p>
-    <div class="page-kicker">
-      <FrameworkMark id="react" />
-      <h1>Suite shell</h1>
-    </div>
-    <p class="lede">
-      Portable toward Next.js App Router as a client layout wrapper around page content.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="map" framework="react" />
-      <FrameworkSwitch current="react" variant="map" />
-    </div>
+    <DemoHead
+      variant="map"
+      framework="react"
+      title="Suite shell"
+      lede="Portable toward Next.js App Router as a client layout wrapper around page content."
+    />
     <MapEdgeShell client:load initialId="gmail" />
   </main>
 </BaseLayout>

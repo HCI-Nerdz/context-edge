@@ -19,12 +19,19 @@ const { variant, mode, framework = 'vanilla', title, lede } = Astro.props;
 const letter = variant === 'map' ? 'A' : variant === 'modal' ? 'B' : 'C';
 const modalMode = mode ?? 'rest';
 const fwLabel = frameworks.find((f) => f.id === framework)?.label ?? 'Vanilla';
-const eyebrow =
-  framework === 'vanilla' ? `Demo · Variant ${letter}` : `Demo · ${fwLabel} · Variant ${letter}`;
+const parts = [
+  'Demo',
+  framework === 'vanilla' ? null : fwLabel,
+  `Variant ${letter}`,
+  mode === 'live' ? 'Live' : null,
+].filter(Boolean);
+const eyebrow = parts.join(' · ');
 ---
 
 <div class="demo-head" transition:name="demo-head">
-  <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
+  <p class="demo-back">
+    <a class="back" href={hrefWithBase('')}>← Context Edge</a>
+  </p>
   <p class="eyebrow">{eyebrow}</p>
   <div class="page-kicker">
     <FrameworkMark id={framework} />

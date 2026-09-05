@@ -1,11 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
-import ModalMode from '../../components/ModalMode.astro';
-import FrameworkMark from '../../components/FrameworkMark.astro';
+import DemoHead from '../../components/DemoHead.astro';
 import ModalEdgeShell from '../../components/svelte/ModalEdgeShell.svelte';
-import { hrefWithBase } from '../../lib/base';
 import '../../styles/modal-edge.css';
 ---
 
@@ -14,20 +10,13 @@ import '../../styles/modal-edge.css';
   description="Svelte implementation — Modal Edge with live edge peek."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · Svelte · Variant B · Live</p>
-    <div class="page-kicker">
-      <FrameworkMark id="svelte" />
-      <h1>Modal Edge</h1>
-    </div>
-    <p class="lede">
-      Pointer near the edges peeks the sheet. Click to open the full stack.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="modal" framework="svelte" />
-      <FrameworkSwitch current="svelte" variant="modal" mode="live" />
-      <ModalMode current="live" framework="svelte" />
-    </div>
+    <DemoHead
+      variant="modal"
+      mode="live"
+      framework="svelte"
+      title="Modal Edge"
+      lede="Pointer near the edges peeks the sheet. Click to open the full stack."
+    />
     <ModalEdgeShell client:load island="Svelte" live={true} />
   </main>
 </BaseLayout>

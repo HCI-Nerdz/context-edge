@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-05 — Demo head spacing across all variants
+
+* Map / Modal / Path demos share `DemoHead` grid spacing on every implementation
+* Back → eyebrow gap and desk start line no longer drift on framework Map/Modal pages
+* link:changelog-details/2026-09-05%20-%20demo-head-spacing.adoc[Details]
+
 == 2026-09-05 — Path Edge blend layering and workshop polish
 
 * Blend math stays on tile color faces over a fixed face base; rail foundation and depth shadow stay unblended

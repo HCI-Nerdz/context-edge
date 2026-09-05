@@ -1,11 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
-import ModalMode from '../../components/ModalMode.astro';
-import FrameworkMark from '../../components/FrameworkMark.astro';
+import DemoHead from '../../components/DemoHead.astro';
 import ModalEdgeShell from '../../components/solid/ModalEdgeShell';
-import { hrefWithBase } from '../../lib/base';
 import '../../styles/modal-edge.css';
 ---
 
@@ -14,20 +10,13 @@ import '../../styles/modal-edge.css';
   description="Solid implementation — Modal Edge with live edge peek."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · Solid · Variant B · Live</p>
-    <div class="page-kicker">
-      <FrameworkMark id="solid" />
-      <h1>Modal Edge</h1>
-    </div>
-    <p class="lede">
-      Pointer near the edges peeks the sheet. Click to open the full stack.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="modal" framework="solid" />
-      <FrameworkSwitch current="solid" variant="modal" mode="live" />
-      <ModalMode current="live" framework="solid" />
-    </div>
+    <DemoHead
+      variant="modal"
+      mode="live"
+      framework="solid"
+      title="Modal Edge"
+      lede="Pointer near the edges peeks the sheet. Click to open the full stack."
+    />
     <ModalEdgeShell client:load island="Solid" live={true} />
   </main>
 </BaseLayout>

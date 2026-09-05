@@ -1,11 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
-import ModalMode from '../../components/ModalMode.astro';
-import FrameworkMark from '../../components/FrameworkMark.astro';
+import DemoHead from '../../components/DemoHead.astro';
 import ModalEdgeShell from '../../components/svelte/ModalEdgeShell.svelte';
-import { hrefWithBase } from '../../lib/base';
 import '../../styles/modal-edge.css';
 ---
 
@@ -14,20 +10,13 @@ import '../../styles/modal-edge.css';
   description="Svelte implementation — Modal Edge ancestry stack."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · Svelte · Variant B</p>
-    <div class="page-kicker">
-      <FrameworkMark id="svelte" />
-      <h1>Modal Edge</h1>
-    </div>
-    <p class="lede">
-      Same L-join as Map. Click slides this sheet back; ancestors stay as colored layers.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="modal" framework="svelte" />
-      <FrameworkSwitch current="svelte" variant="modal" mode="rest" />
-      <ModalMode current="rest" framework="svelte" />
-    </div>
+    <DemoHead
+      variant="modal"
+      mode="rest"
+      framework="svelte"
+      title="Modal Edge"
+      lede="Same L-join as Map. Click slides this sheet back; ancestors stay as colored layers."
+    />
     <ModalEdgeShell client:load island="Svelte" />
   </main>
 </BaseLayout>

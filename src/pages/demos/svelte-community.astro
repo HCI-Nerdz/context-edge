@@ -1,10 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import VariantSwitch from '../../components/VariantSwitch.astro';
-import FrameworkSwitch from '../../components/FrameworkSwitch.astro';
-import FrameworkMark from '../../components/FrameworkMark.astro';
+import DemoHead from '../../components/DemoHead.astro';
 import MapEdgeShell from '../../components/svelte/MapEdgeShell.svelte';
-import { hrefWithBase } from '../../lib/base';
 ---
 
 <BaseLayout
@@ -12,19 +9,12 @@ import { hrefWithBase } from '../../lib/base';
   description="Svelte implementation demo — community/spaces ecosystem with softer chrome."
 >
   <main class="shell">
-    <p><a class="back" href={hrefWithBase('')}>← Context Edge</a></p>
-    <p class="eyebrow">Demo · Svelte</p>
-    <div class="page-kicker">
-      <FrameworkMark id="svelte" />
-      <h1>Community spaces</h1>
-    </div>
-    <p class="lede">
-      Subsection and role navigation as substrate — not ephemeral header pills on the feed.
-    </p>
-    <div class="demo-switches">
-      <VariantSwitch current="map" framework="svelte" />
-      <FrameworkSwitch current="svelte" variant="map" />
-    </div>
+    <DemoHead
+      variant="map"
+      framework="svelte"
+      title="Community spaces"
+      lede="Subsection and role navigation as substrate — not ephemeral header pills on the feed."
+    />
     <MapEdgeShell client:load initialId="docs" />
   </main>
 </BaseLayout>
