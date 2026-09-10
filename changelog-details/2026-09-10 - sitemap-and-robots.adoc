@@ -1,0 +1,5 @@
+= 2026-09-10 — Sitemap and robots.txt
+
+* `@astrojs/sitemap` is registered alongside the Solid/React/Svelte integrations
+* Build emits `sitemap-index.xml` under the project base path
+* `public/robots.txt` advertises `https://hci-nerdz.github.io/context-edge/sitemap-index.xml`

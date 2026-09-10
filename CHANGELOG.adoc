@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-09-10 — Sitemap and robots.txt
+
+* Add `@astrojs/sitemap` under the existing `site` + `base` (`/context-edge/`).
+* Add `public/robots.txt` with `Sitemap: https://hci-nerdz.github.io/context-edge/sitemap-index.xml`.
+* link:changelog-details/2026-09-10%20-%20sitemap-and-robots.adoc[Details]
+
 == 2026-09-05 — Hub eyebrow links to site desk
 
 * Hub eyebrow “HCI Nerdz” links to the org site desk; the separate “Site desk” meta link is removed
